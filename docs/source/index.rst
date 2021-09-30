@@ -12,11 +12,3 @@ Welcome to 测试开发笔记's documentation!
    
    windows-shortcuts.md
 
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
