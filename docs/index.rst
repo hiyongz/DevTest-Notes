@@ -7,5 +7,5 @@
    :maxdepth: 2
    :caption: Contents:
    
-   test/*
+   test/windows-shortcuts.md
 
