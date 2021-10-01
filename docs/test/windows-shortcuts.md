@@ -13,6 +13,8 @@ cmd 命令窗口按下 `F7` 可以显示历史命令记录
 
 ![img](windows-shortcuts/adb.jpg)
 
+<img src="windows-shortcuts/adb.jpg" width="30%" height="30%" />
+
 ## 记事本
 打开，命令窗口输入：
 ```bash
