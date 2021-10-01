@@ -1,0 +1,13 @@
+{
+    "Arrays": [
+        1,
+        2,
+        3
+    ],
+    "Dicts": {
+        "1": 1,
+        "2": 2
+    },
+    "Numbers": 1,
+    "Strings": "value"
+}
