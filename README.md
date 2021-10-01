@@ -4,6 +4,7 @@
   <a href="https://blog.csdn.net/u010698107"><img src="https://img.shields.io/badge/csdn-CSDN-red.svg" alt="csdn"></a>
   <a href="https://www.cnblogs.com/hiyong/"><img src="https://img.shields.io/badge/cnblogs-博客园-blue.svg" alt="csdn"></a> 
 </p>
+
 ## 前言
 
 在线阅读地址：[https://devtest-notes.readthedocs.io/](https://devtest-notes.readthedocs.io/)
@@ -18,7 +19,7 @@
 
 偶然光临本项目，皆为缘分，希望对你有所帮助，如有错误之处，欢迎指正！
 
-下面是我的公众号，会不定时发布测试开发相关笔记以及一些读书笔记，欢迎关注。
+**下面是我的公众号，会不定时发布测试开发相关笔记以及一些读书笔记，欢迎关注。**
 <p align="center">
   <a href="docs\img\wechat.png"><img src="docs\img\wechat.png" alt="微信公众号" width="60%" height="60%" ></a>
 </p>
