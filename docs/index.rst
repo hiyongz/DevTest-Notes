@@ -9,7 +9,9 @@
    
    python/Python-Enhancement-Proposals.md
    python/python-notes-for-passing-arguments-in-function.md
-   
+
+.. toctree::
+   :maxdepth: 2   
    :caption: Python进阶
    
    python/python-notes-for-coroutines.md
