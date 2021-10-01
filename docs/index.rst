@@ -5,7 +5,12 @@
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: Python基础知识
    
-   test/windows-shortcuts.md
+   python/Python-Enhancement-Proposals.md
+   python/python-notes-for-passing-arguments-in-function.md
+   
+   :caption: Python进阶
+   python/python-notes-for-coroutines.md
+   
 
