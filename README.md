@@ -21,5 +21,5 @@
 
 **下面是我的公众号，会不定时发布测试开发相关笔记以及一些读书笔记，欢迎关注。**
 <p align="center">
-  <a href="docs\img\wechat.png"><img src="docs\img\wechat.png" alt="微信公众号" width="30%" height="30%" ></a>
+  <a href="https://github.com/hiyongz/DevTest-Notes/blob/main/docs/img/wechat.png"><img src="docs\img\wechat.png" alt="微信公众号" width="30%" height="30%" ></a>
 </p>
