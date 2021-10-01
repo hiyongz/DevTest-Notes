@@ -1,6 +1,6 @@
 # 测试开发小记
 <p align="center">
-  <a href="docs\img\wechat.png"><img src="https://img.shields.io/badge/%E5%85%AC%E4%BC%97%E5%8F%B7-%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E5%B0%8F%E8%AE%B0-brightgreen.svg?style=plastic&logo=WeChat" alt="公众号"></a>
+  <a href="https://github.com/hiyongz/DevTest-Notes/blob/main/docs/img/wechat.png"><img src="https://img.shields.io/badge/%E5%85%AC%E4%BC%97%E5%8F%B7-%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E5%B0%8F%E8%AE%B0-brightgreen.svg?style=plastic&logo=WeChat" alt="公众号"></a>
   <a href="https://blog.csdn.net/u010698107"><img src="https://img.shields.io/badge/csdn-CSDN-red.svg" alt="csdn"></a>
   <a href="https://www.cnblogs.com/hiyong/"><img src="https://img.shields.io/badge/cnblogs-博客园-blue.svg" alt="csdn"></a> 
 </p>
@@ -21,5 +21,5 @@
 
 **下面是我的公众号，会不定时发布测试开发相关笔记以及一些读书笔记，欢迎关注。**
 <p align="center">
-  <a href="https://github.com/hiyongz/DevTest-Notes/blob/main/docs/img/wechat.png"><img src="docs\img\wechat.png" alt="微信公众号" width="30%" height="30%" ></a>
+  <a><img src="docs\img\wechat.png" alt="微信公众号" width="30%" height="30%" ></a>
 </p>
