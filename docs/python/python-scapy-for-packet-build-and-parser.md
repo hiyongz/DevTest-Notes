@@ -9,7 +9,7 @@ Nmap、Netdiscover、tcpdump和tshark介绍可参考：
 本文主要介绍Scapy进行报文构造，报文发送和报文解析。
 <!--more-->
 
-# 下载安装
+## 下载安装
 官网：[https://scapy.net/](https://scapy.net/)
 github地址：[https://github.com/secdev/scapy](https://github.com/secdev/scapy)
 官方文档：[https://scapy.readthedocs.io/en/latest/](https://scapy.readthedocs.io/en/latest/)
@@ -18,7 +18,7 @@ github地址：[https://github.com/secdev/scapy](https://github.com/secdev/scapy
 pip install scapy
 ```
 ![](python-scapy-for-packet-build-and-parser/scapy.png)
-# Scapy 的使用
+## Scapy 的使用
 lsc() 命令：列出scapy通用的操作方法，常用的函数包括：
 - arpcachepoison（用于arp毒化攻击，也叫arp欺骗攻击）
 - arping（用于构造一个ARP的who-has包）
@@ -57,8 +57,8 @@ ls()：查看支持的协议
 ls(IP)：查看IP包的默认参数
 ![](python-scapy-for-packet-build-and-parser/scapy-ls-ip.png)
 
-# 报文嗅探
-## sniff() 函数参数
+## 报文嗅探
+### sniff() 函数参数
 Scapy使用 sniff() 函数进行报文嗅探， sniff() 方法有以下参数：
 ```python
 def _run(self,
@@ -93,7 +93,7 @@ BPF语法示例：
 - `not broadcast`：排除广播报文
 - `!arp`：排除arp报文
 
-## sniff() 抓包
+### sniff() 抓包
 ```python
 from scapy.all import *
 
@@ -134,7 +134,7 @@ wrpcap("test.pcap", package)  # 将抓取的包保存为test.pcap文件
 
 除了使用scapy抓包外，也可以使用tcpdump（Linux）和tshark（Windows）进行抓包。
 
-# DHCPv6报文构造
+## DHCPv6报文构造
 我们首先用Scapy打开一个真实抓到的DHCPv6 Request报文，查看一下报文结构：
 ```python
 from scapy.all import *
@@ -170,8 +170,8 @@ ls(DHCP6OptIA_NA)
 运行上面程序，打印构造的报文：
 ![](python-scapy-for-packet-build-and-parser/scapy-packet.png)构造成功！
 
-# 发送报文
-## 1. 只发不收
+## 发送报文
+### 1. 只发不收
 - send：发送3层报文（ 如TCP/UDP 协议），不接收数据包
 - sendp：发送2层报文(通过mac地址转发)，不接收
 ```python
@@ -181,7 +181,7 @@ sendp(packet, iface='eth0')
 count，发送报文数，默认发送一个报文
 iface，指定接口
 
-## 2. 发且收
+### 2. 发且收
 - sr：发送，接收3层报文，返回有回应的数据包和没有回应的数据包。
 - sr1：发送，只接收1个响应包
 - srp：发送，接收2层报文
@@ -192,7 +192,7 @@ iface，指定接口
 sr(packet, iface='eth1')
 ```
 
-# 报文过滤
+## 报文过滤
 在网络协议的测试中，我们需要检测某个报文字段是否存在，对抓取到的报文进行解析，可以使用tshark命令解析报文解析(参考文章[tcpdump抓包及tshark解包方法介绍](https://blog.csdn.net/u010698107/article/details/112727035))。
 
 当然，Scapy也可以解析数据包，下面查找DHCPv6 Solicit报文，且目的MAC为00:0c:29:d9:98:c7
@@ -221,5 +221,4 @@ pkts = sniff(offline='packet_solicit.pcap')
 >>> pkts[3]
 <Ether  dst=ff:ff:ff:ff:ff:ff src=00:0c:29:d9:98:c7 type=IPv6 |<IPv6  version=6 tc=0 fl=0 plen=46 nh=UDP hlim=64 src=fe80::20c:29ff:fed9:98c7 dst=ff02::1:2 |<UDP  sport=dhcpv6_client dport=dhcpv6_server len=46 chksum=0x764d |<DHCP6_Solicit  msgtype=SOLICIT trid=0x0 |<DHCP6OptClientId  optcode=CLIENTID optlen=14 duid=<DUID_LLT  type=Link-layer address plus time hwtype=Ethernet (10Mb) timeval=Sat, 01 Jan 2000 00:00:00 +0000 (946684800) lladdr=00:0c:29:d9:98:c7 |> |<DHCP6OptIA_NA  optcode=IA_NA optlen=12 iaid=0x0 T1=0 T2=0 |>>>>>>
 ```
-
 

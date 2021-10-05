@@ -1,8 +1,10 @@
-# Python笔记：命令行参数解析
+# Python 命令行参数解析
+
+Python命令行参数解析方法介绍。
 
 <!--more-->
 
-# sys.argv
+## sys.argv
 sys.argv是传入的参数列表，sys.argv[0]是当前python脚本的名称，sys.argv[1]表示第一个参数，以此类推。
 
 ```python
@@ -20,7 +22,7 @@ test_sys_argv.py
 可以看到传入的参数通过sys.argv来获取，它就是一个参数列表。
 
 
-# getopt方法
+## getopt方法
 
 python的getopt与C语言的的getopt()函数类似。相比于sys模块，支持长参数和短参数，并对参数解析赋值。但它需要结合sys模块进行参数解析，语法格式如下：
 ```bash
@@ -84,7 +86,7 @@ display-filter: hello
 ```
 注意：短参数(options)和长参数(long_options)不需要一一对应，可以任意顺序，也可以只有短参数或者只有长参数。
 
-# argparse方法
+## argparse方法
 
 argparse模块提供了很多可以设置的参数，例如参数的默认值，帮助消息，参数的数据类型等。argparse类主要包括ArgumentParser、add_argument和parse_args三个方法。
 - ArgumentParser用于初始化解析器，可设置脚本名，描述信息，帮助信息等
@@ -92,7 +94,7 @@ argparse模块提供了很多可以设置的参数，例如参数的默认值，
 - parse_args用于解析参数
 
 下面介绍这三个函数的使用方法。
-## ArgumentParser
+### ArgumentParser
 argparse默认提供了`-h | --help`参数：
 ```python
 import argparse
@@ -110,7 +112,7 @@ usage: test_argparse.py [-h]
 optional arguments:
   -h, --help  show this help message and exit
 ```
-## add_argument
+### add_argument
 下面列出部分参数：
 - name or flags： 参数
 - action：对参数执行的动作，比如将多个参数放到列表中：`action='append'`
@@ -149,7 +151,7 @@ count: 2
 type(count): <class 'int'>
 ```
 
-## parse_args
+### parse_args
 parse_args() 方法用于解析参数，在前面的示例代码中使用parse_args方法来提取参数值，对于无效或者错误的参数会打印错误信息和帮助信息：
 
 命令行运行：
@@ -160,12 +162,11 @@ usage: test_argparse.py [-h] [-f FIELD]
 test_argparse.py: error: unrecognized arguments: -F test
 ```
 
-# 总结
+## 小结
 本文介绍了Python的三种命令行参数解析方法sys.argv、getopt和argparse，可以根据自己的需要进行选择，getopt和argparse两种方法相比来说，建议选择argparse，代码量更少更简洁。更详细的使用方法参考官方文档：
 1. argparse：[https://docs.python.org/zh-cn/3/library/argparse.html](https://docs.python.org/zh-cn/3/library/argparse.html)
 2. getopt：[https://docs.python.org/zh-cn/3/library/getopt.html](https://docs.python.org/zh-cn/3/library/getopt.html)
 3. sys.argv：[https://docs.python.org/zh-cn/3/library/sys.html](https://docs.python.org/zh-cn/3/library/sys.html)
-
 
 
 

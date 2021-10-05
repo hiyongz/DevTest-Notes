@@ -4,7 +4,7 @@
 <!--more-->
 
 
-# python简单装饰器
+## python简单装饰器
 
 python装饰器可以定义如下：
 ```python
@@ -43,7 +43,7 @@ test_decorator('hello world')
 ```
 @my_decorator就相当于 `decorator = my_decorator(test_decorator)` 语句。
 
-## functools()
+### functools()
 内置装饰器@functools.wrap可用于保留原函数的元信息（将原函数的元信息，拷贝到对应的装饰器函数里）。先来看看没有使用functools的情况：
 
 ```python
@@ -105,7 +105,7 @@ Help on function test_decorator in module __main__:
 test_decorator(message)
 ```
 
-# 带参数的装饰器
+## 带参数的装饰器
 装饰器可以接受自定义参数。比如定义一个参数来设置装饰器内部函数的执行次数：
 
 ```python
@@ -133,7 +133,7 @@ counter: 3
 hello world
 ```
 
-# 装饰器的嵌套
+## 装饰器的嵌套
 Python 支持多个装饰器嵌套：
 
 ```python
@@ -143,7 +143,7 @@ Python 支持多个装饰器嵌套：
 def func():
     ...
 ```
-## 嵌套示例
+### 嵌套示例
 ```python
 import functools
 
@@ -200,7 +200,7 @@ hello world
 ```
 
 
-# 类装饰器
+## 类装饰器
 类也可以作为装饰器，类装饰器主要依赖\_\_call\_\_()方法，是python中所有能被调用的对象具有的内置方法（python魔术方法），每当调用一个类的实例时，\_\_call\_\_()就会被执行一次。
 
 下面的类装饰器实现统计函数执行次数：
@@ -230,10 +230,10 @@ num of calls is: 2
 hello world
 ```
 
-# 装饰器使用实例
+## 装饰器使用实例
 下面介绍两种装饰器使用场景
 
-## 统计函数执行时间
+### 统计函数执行时间
 统计函数执行所花费的时间
 ```python
 import functools
@@ -267,7 +267,7 @@ test_sum 执行时间为：0.0046 秒
 ```
 
 
-## 登录认证
+### 登录认证
 在使用某些web服务时，需要先判断用户是否登录，如果没有登录就跳转到登录页面或者提示用户登录：
 ```python
 import functools
@@ -287,5 +287,4 @@ def secret()
     ...
  
 ```
-
 

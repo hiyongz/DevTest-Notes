@@ -2,7 +2,7 @@
 List相关操作小例子
 <!--more-->
 
-# 获取list的下标和值
+## 获取list的下标和值
 ```python
 >>> mylist = ['a', 'b', 'c', 'd']
 >>> for index, value in enumerate(mylist):
@@ -15,7 +15,7 @@ List相关操作小例子
 >>>
 ```
 
-# 删除list中的空字符
+## 删除list中的空字符
 
 ```python
 list1 = ['1', '','2', '3', '  ', ' 4  ', '  5', '    ','6 ', '', '     ',None, '7']
@@ -28,7 +28,7 @@ list4 = list(filter(None, list3))  
 print(list4) # ['1', '2', '3', '4', '5', '6', '7']
 ```
 
-# 删除list元素
+## 删除list元素
 使用remove、pop和del方法参删除list中的某个元素
 ```python
 >>> mylist = ['a', 'b', 'c', 'd','e','f','g','h']
@@ -53,7 +53,7 @@ NameError: name 'mylist' is not defined
 >>>
 ```
 
-# 计算中位数
+## 计算中位数
 ```python
 def get_median(data):
      data.sort()
@@ -61,7 +61,7 @@ def get_median(data):
      return (data[half] + data[~half]) / 2
 ```
 
-# 将字符串list转换为int
+## 将字符串list转换为int
 ```python
 >>> test_list = ['1', '4', '3', '6', '7']
 >>> test_list = list(map(int, test_list))
@@ -70,7 +70,7 @@ def get_median(data):
 >>>
 ```
 
-# 合并、连接字符串list
+## 合并、连接字符串list
 ```python
 >>> test_list = ['192', '168', '0', '1']
 >>> test_list = '.'.join(test_list)
@@ -79,7 +79,7 @@ def get_median(data):
 >>>
 ```
 
-# 取多个字符串/list交集
+## 取多个字符串/list交集
 ```python
 >>> a = ['123','234','1253']
 >>> list(reduce(lambda x,y : set(x) & set(y), a))
@@ -89,7 +89,7 @@ def get_median(data):
 [1, 2]
 ```
 
-# 合并字典value值
+## 合并字典value值
 ```python
 >>> mydict = {0:"hello ", 1:"world"}
 >>> mylist =reduce(lambda x, y : x + y, mydict.values())
@@ -107,5 +107,4 @@ def get_median(data):
 ```python
 from functools import reduce
 ```
-
 

@@ -3,7 +3,7 @@
 
 <!--more-->
 
-# `__new__` 和 ` __init__` 
+## `__new__` 和 ` __init__` 
 
 `__new__` 和 ` __init__` 主要具有如下区别：
 
@@ -38,7 +38,7 @@ __new__ is called
 __init__ is called
 ```
 
-# python实现单例模式
+## python实现单例模式
 
 单例(Singleton)模式就是一个类只能实例化一个对象，这个类必须自己创建自己的唯一实例。
 
@@ -115,11 +115,11 @@ lishi
 
 两个实例化对象指向了相同的内存地址，单例模式可以保证系统中一个类只有一个实例，如果希望某个类的对象只能存在一个，使用单例模式可以节省内存。
 
-# python元类MetaClass
+## python元类MetaClass
 
 `__new__` 方法也用于自定义元类(MetaClass)，下面先来介绍MetaClass的概念。
 
-## 什么是MetaClass
+### 什么是MetaClass
 
 metaclass定义为类中的类（the class of a class），Meta 起源于希腊词汇 meta，有“超越”和“改变”的意思，所以metaclass包含了“超越类”和“变形类”的含义。
 
@@ -170,7 +170,7 @@ MyClass
 
 如果一个类或它的一个基类有`__metaclass__`属性，它就被当作元类。否则，type就是元类。对元类的自定义要用到`__new__` 和 ` __init__`方法，接下来介绍元类的定义。
 
-## 定义元类
+### 定义元类
 
 元类可以实现在创建类时，动态修改类中定义的属性或者方法，一般使用`__new__`方法来修改类属性。
 
@@ -227,17 +227,17 @@ hello
 
 在元类的创建中，可以对name, bases, attrs进行修改，实现我们想要的功能，可以使用getattr()、setattr()等Python反射函数，Python反射机制介绍可参考[Python反射介绍]()。
 
-# PyYAML的序列化和反序列化
+## PyYAML的序列化和反序列化
 在实际应用中，Python 的YAML使用metaclass 的超越变形特性实现了序列化和反序列化（serialization & deserialization）。
 
-## 序列化和反序列化
+### 序列化和反序列化
 - 序列化：将结构化数据转换为可存储或可传输格式的过程，就是把对象转换成字节序列的过程。
 
 - 反序列化：把字节序列恢复成对象的过程。
 
 序列化的好处是实现了数据的持久化，可以把数据永久地保存到硬盘上；另外，利用序列化实现远程数据传输，在网络上传输对象的字节序列。
 
-## PyYAML使用
+### PyYAML使用
 
 下面的例子中，使用yaml.load()反序列化文本中的Person对象，使用yaml.dump()来序列化创建的Person类。
 
@@ -284,7 +284,7 @@ name: lishi
 
 yaml.load()把 yaml 序列加载成一个 Python Object；yaml.dump()把YAMLObject 子类序列化。我们不需要提前知道任何类型信息，这实现了超动态配置编程。
 
-# 总结
+## 小结
 
 本文简要介绍了Python的`__new__` 和 ` __init__`方法，`__new__`在实例创建之前调用并返回实例对象， ` __init__`是在实例对象创建完成后被调用，用于初始化一个类实例，是一个实例方法。
 

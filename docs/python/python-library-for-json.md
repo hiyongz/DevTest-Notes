@@ -4,9 +4,9 @@ JSON (JavaScript Object Notation)是一个受 JavaScript 的对象字面量语�
 <!--more-->
 
 
-# json序列化
+## json序列化
 
-## dump
+### dump
 写入到文件，将对象转换为json字符串格式，这样更容易存储。
 
 
@@ -18,7 +18,7 @@ with open("data1.json", "w", encoding="utf-8") as f:
 ```
 
 ![](python-library-for-json/json_dump.png)
-## dumps
+### dumps
 
 将对象转换为string，这样更容易传输
 
@@ -45,7 +45,7 @@ print(type(data))
 ```
 
 
-## 将类实例转化成json字符串
+### 将类实例转化成json字符串
 也可以将类实例转化成json字符串，需要先将实例转化为可序列化操作的对象。下面介绍3种方案：  
 1. 获取实例的`__dict__`成员变量  
 2. 使用Python内置函数`vars()`获取`__dict__`  
@@ -98,14 +98,14 @@ print(data4)
 ```
 
 
-# json反序列化
+## json反序列化
 
 json反序列化是将json数据或者字符串转化为Python对象，对应load和loads两个方法：
 - load：针对文件句柄，用于读取文件  
 - loads：针对内存对象，将string转换为对象
 
 
-## load
+### load
 
 
 ```python
@@ -124,7 +124,7 @@ with open("data1.json", "r", encoding="utf-8") as f:
 ```
 
 
-## loads
+### loads
 
 
 ```python
@@ -141,7 +141,7 @@ print(type(data))
 ```
 
 
-## JSON反序列化类对象
+### JSON反序列化类对象
 
 
 ```python

@@ -4,13 +4,13 @@
 <!--more-->
 
 
-# 反射
+## 反射
 
 > 反射的概念是由Smith在1982年首次提出的，主要是指**程序可以访问、检测和修改它本身状态或行为**的一种能力。
 
 在程序运行时可以获取对象类型定义信息，例如，Python中的type(obj)将返回obj对象的类型，这种获取对象的type、attribute或者method的能力称为反射。通过反射机制，可以用来检查对象里的某个方法，或某个变量是否存在。也就是可以**通过字符串映射对象的方法或者属性**。
 
-# Python反射函数
+## Python反射函数
 
 Python反射常用的内置函数
 
@@ -23,7 +23,7 @@ Python反射常用的内置函数
 - **setattr**(obj, attr, val)：给模块添加属性（函数或者变量）
 - **delattr**(obj, attr)：删除模块中某个变量或者函数
 
-# 反射函数使用方法
+## 反射函数使用方法
 
 先创建一个类：
 
@@ -43,7 +43,7 @@ class Person():
     def talk(self):
         print(f"My age is {self.age} and height is {self.height}")
 ```
-## dir()
+### dir()
 利用反射的能力，我们可以通过属性字典`__dict__`来访问对象的属性：
 
 ```python
@@ -81,7 +81,7 @@ hello!!!
 
 接下来测试一下其他反射函数：
 
-## callable()
+### callable()
 
 ```python
 if (callable(p)):
@@ -96,7 +96,7 @@ Out:
 p is callable
 ```
 
-## isinstance()和type()
+### isinstance()和type()
 ```python
 print(isinstance(p, Person))
 print(type(p) == Person)
@@ -111,7 +111,7 @@ True
 True
 True
 ```
-## hasattr()
+### hasattr()
 
 ```python
 print(hasattr(p,"talk"))
@@ -124,7 +124,7 @@ Out:
 True
 True
 ```
-## getattr()
+### getattr()
 ```python
 print(getattr(p,"talk"))
 print(getattr(p.talk, "__call__"))
@@ -144,7 +144,7 @@ Out:
 I can't walk
 None
 ```
-## setattr()
+### setattr()
 ```python
 setattr(p,'walk','ON')
 if hasattr(p,'walk'):
@@ -160,7 +160,7 @@ ON
 {'age': 22, 'height': 180, 'weight': 60, 'walk': 'ON'}
 
 ```
-## delattr()
+### delattr()
 ```python
 delattr(p,'walk')
 if hasattr(p,'walk'):
@@ -177,11 +177,11 @@ I can't walk
 
 ```
 
-# 应用
+## 应用
 
 下面介绍两种Python反射的应用场景。
 
-## 动态调用
+### 动态调用
 
 从前面举的例子中，我们了解到可以通过**字符串**来获取对象的属性（`getattr()`），这是非常有用的一个功能。比如，一个类中有很多方法，它们提供不同的服务，通过输入的参数来判断执行某个方法，一般的使用如下写法：
 
@@ -224,7 +224,7 @@ if __name__ == '__main__':
 
 这样是不是简洁了很多，上面的例子中，通过反射，将字符串变成了函数，实现了对对象方法的动态调用。
 
-## 动态属性设置
+### 动态属性设置
 
 可以通过setattr()方法进行动态属性设置，在使用scapy库构造报文时，我们需要设置某些报文字段，然而网络协议的报文字段很多，在需要设置大量字段时，一个一个的赋值就很麻烦：
 
@@ -255,7 +255,6 @@ ip = IP()
 for key, val in fields.items():
     setattr(ip, key, val)
 ```
-
 
 
 

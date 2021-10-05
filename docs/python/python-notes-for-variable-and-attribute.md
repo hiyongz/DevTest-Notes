@@ -1,8 +1,8 @@
-# Python笔记：属性值设置和判断变量是否存在
+# 属性值设置和判断变量是否存在
 介绍Python设置属性值方法setattr()和判断变量是否存在的方法
 <!--more-->
 
-# 以属性名为变量的方式给一个对象添加属性
+## 以属性名为变量的方式给一个对象添加属性
 使用 setattr 方法
 ```python
 obj = SomeClass()
@@ -31,7 +31,7 @@ out:
   type      = IPv6
 ```
 
-# 判断变量是否存在
+## 判断变量是否存在
 三种方法：
 * locals().keys()
 * dir()
@@ -54,7 +54,6 @@ print(f'message:{message}')
 C:\Users\DELL>python3 test_locals.py
 message:['ethernet', 'dhcpv6']
 ```
-
 
 
 

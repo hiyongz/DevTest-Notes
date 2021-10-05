@@ -2,7 +2,7 @@
 在Python中，一般使用def关键字来定义普通函数。顾名思义，匿名函数意味着函数没有名称，Python使用lambda关键字定义匿名函数。在某些情况下，使用匿名函数可以简化代码，提高代码的可读性。本文介绍python匿名函数的使用方法。
 <!--more-->
 
-# 匿名函数
+## 匿名函数
 
 Python匿名函数的语法格式：
 
@@ -73,7 +73,7 @@ lambda 用于快速编写简单函数，对于更复杂的多行逻辑使用常�
 
 Lambda函数具有函数式编程的特性，关于函数式编程这里不做介绍，后面有时间单独写一篇文章。Lambda函数可以与filter()、map()和reduce()等内置函数一起使用，下面介绍使用方法。
 
-# filter()函数
+## filter()函数
 
 Python中的filter()函数接受一个函数对象和一个可迭代对象作为参数。
 
@@ -122,7 +122,7 @@ print(list1)
 [6, 2, 8, True]
 ```
 
-# map() 函数
+## map() 函数
 
 和filter()类似，`map(function, iterable)` 函数表示对 iterable 中的每个元素，都运用 function 这个函数，最后返回一个新的可遍历的集合：
 
@@ -147,7 +147,7 @@ print(list_square3)
 [9, 16, 36, 4, 25, 64]
 ```
 
-# reduce() 函数
+## reduce() 函数
 
 reduce(function, iterable)函数同样接收一个函数和一个列表作为参数，reduce()函数属于functools模块，通常用来对一个集合做一些累积操作。function 对象有两个参数，表示对 iterable 中的每个元素以及上一次调用后的结果，运用 function 进行计算，也就是执行重复操作，最终返回一个数值。
 
@@ -159,12 +159,11 @@ sum = reduce(lambda x, y: x + y, list_num)
 print(sum) # 输出：28 = 3 + 4 + 6 + 2 + 5 + 8
 ```
 
-# 总结
+## 小结
 
 本文介绍了lambda函数和常见的 map()，fiilter() 和 reduce() 三个函数，匿名函数通常用于实现一个简单功能，并且该函数只调用一次。
 
 map()，fiilter() 和 reduce() 三个函数通常与lambda函数结合使用，它们的功能也可以使用列表推导式 (List Comprehension)来实现。它们的性能差异不大，可以根据自己习惯使用。
-
 
 
 

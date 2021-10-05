@@ -3,12 +3,12 @@ yaml相比json来说数据表示更加简洁，特别适合用来读取/更新�
 
 <!--more-->
 
-# YAML介绍
+## YAML介绍
 YAML是YAML Ain't a Markup Language（YAML不是一种标记语言）的缩写，它其实也是一种标记语言（Yet Another Markup Language），但为了强调这种语言以数据作为中心，而不是以标记语言为重点，而用反向缩略语重命名。(维基百科：[https://zh.wikipedia.org/wiki/YAML](https://zh.wikipedia.org/wiki/YAML))
 
 在[**Python中的`__new__`、`__init__`以及metaclass**](https://blog.csdn.net/u010698107/article/details/117629711)中介绍了序列化和反序列化概念，PyYAML使用了metaclass 的超越变形特性实现序列化和反序列化。
 
-## YAML和JSON差异
+### YAML和JSON差异
 1. YAML使用缩进表示层级关系，使用空格进行缩进，JSON使用大括号和方括号  
 2. YAML允许使用`#`注释，JSON不能  
 3. YAML的字符串可以使用单引号或者双引号，JSON必须使用双引号
@@ -41,12 +41,12 @@ JSON文档：
 ```
 
 
-# yaml序列化
+## yaml序列化
 Python 安装 PyYAML库
 ```sh 
 pip install pyyaml
 ```
-## dump
+### dump
 dump函数将Python对象序列化为一个YAML文档或者字符串。
 
 
@@ -74,7 +74,7 @@ Strings: value
 ```
 
 
-## dump_all
+### dump_all
 序列化多组对象，yaml文件中的多组数据用`---`分隔。
 
 
@@ -100,7 +100,7 @@ Strings: value
 - 3
 ```
 
-## 保存到文件中
+### 保存到文件中
 
 可以将序列化数据保存到文件中。
 
@@ -110,7 +110,7 @@ with open("data1.yaml", "w", encoding="utf-8") as f:
     yaml.dump(data1,f,allow_unicode=True)
 ```
 
-## 序列化类实例
+### 序列化类实例
 
 和json一样，也可以序列化类实例。
 
@@ -141,11 +141,11 @@ name: zhangsan
 ```
 
 ![](python-library-for-pyyaml/yaml_dump_class.png)
-# yaml反序列化
+## yaml反序列化
 
 主要有load、safe_load、load_all和safe_load_all4种方法，`safe_load()`方法只识别标准的YAML标签，防止不信任的对象输入。
 
-## load
+### load
 支持任意类型的python对象，
 
 ```python
@@ -161,7 +161,7 @@ print(type(data))
 <class 'dict'>
 ```
 
-## load_all
+### load_all
 
 加载多组序列化yaml数据
 
@@ -184,7 +184,7 @@ with open("data1.yaml", encoding="utf-8") as f:
 ```
 
 
-## 修改字段内容
+### 修改字段内容
 
 
 ```python
@@ -208,7 +208,7 @@ with open("data1.yaml", "w", encoding="utf-8") as f:
 ```
 
 
-## 加载Python类实例
+### 加载Python类实例
 和json一样，也支持加载Python类的实例
 
 
@@ -236,7 +236,6 @@ zhangsan
 
 **参考文档：**
 pyyaml官方文档：[https://pyyaml.org/wiki/PyYAMLDocumentation](https://pyyaml.org/wiki/PyYAMLDocumentation)
-
 
 
 

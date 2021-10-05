@@ -3,7 +3,7 @@
 
 <!--more-->
 
-# click简介
+## click简介
 click相比于其他命令行工具的一个优势就是支持多个命令的嵌套和组合，主要包含以下特性：（摘自：[为什么用 Click?](https://click-docs-zh-cn.readthedocs.io/zh/latest/why.html)）
 - 没有限制可以简单组合
 - 完全遵循 Unix 命令行约定
@@ -16,7 +16,7 @@ click相比于其他命令行工具的一个优势就是支持多个命令的嵌
 
 
 
-# 选项设置
+## 选项设置
 
 下面使用click来实现文章[Python笔记：命令行参数解析](https://blog.csdn.net/u010698107/article/details/116346563)中的命令行，可以对比一下它们的差异。
 
@@ -39,7 +39,7 @@ if __name__ == '__main__':
 
 可以看到，click使用装饰器@click.command()将cli()方法包装成 click 对象，然后使用@click.option来添加选项参数，下面来介绍这些参数的含义。
 
-## 基本选项
+### 基本选项
 
 默认第一个参数为长选项，`help`参数用于设置选项的描述信息：
 
@@ -70,7 +70,7 @@ Options:
 
 
 
-## 多个选项和选项多个值
+### 多个选项和选项多个值
 
 1、选项可以设置多个值，可以通过两种方式：
 
@@ -87,7 +87,7 @@ $ python3 test_click.py -f tcp -f udp -Y ip.version==4 -c 1
 ('tcp', 'udp') ip.version==4 1
 ```
 
-## 密码提示
+### 密码提示
 
 Click 支持隐藏输入信息和确认，比如输入密码时隐藏内容，也可以直接用 `password_option()`装饰器：
 
@@ -115,7 +115,7 @@ the password is 123456
 
 ```
 
-# 总结
+## 小结
 
 Click相比argparse使用起来更加简洁，可以实现快速构建命令行程序，当然在扩展性上就没有argparse库好。本文只介绍了click的部分功能，更详细的用法可参考：
 

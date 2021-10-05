@@ -2,7 +2,7 @@
 字符串相关操作
 <!--more-->
 
-# 统计字符串中某个单词的出现的次数
+## 统计字符串中某个单词的出现的次数
 
 ```python
 a = 'test 123 dfg test'
@@ -13,7 +13,7 @@ len([i for i in a.split(' ') if i == test])
 len(a.split('test'))-1
 ```
 
-# Python提取两个字符串之间的内容
+## Python提取两个字符串之间的内容
 ```python
 import re 
 str = '''/begin MEASUREMENT
@@ -37,8 +37,8 @@ matches = re.findall(regex, str)
 test = matches[0].strip()
 ```
 
-# 字符删除、替换
-## 删除空格
+## 字符删除、替换
+### 删除空格
 ```python
 s = ' 123abcd456  '
 # 删除两边的空格
@@ -59,7 +59,7 @@ print(s.strip("'"))
 string = " hello , world !"
 string = [x.strip() for x in string.split(',')]
 ```
-## 将格式化字符转换为字典
+### 将格式化字符转换为字典
 ```python
 string = "dst='192.168.0.1',src='192.168.1.2'"
 fields = dict((field.split('=') for field in string.split(',')))
@@ -71,7 +71,7 @@ fields = dict(((lambda a:(a[0].strip("'"),a[1].strip("'"))) (field.split('='
 {'dst': "'192.168.0.1'", 'src': "'192.168.1.2'"}
 ```
 
-## 删除(替换)任意位置字符
+### 删除(替换)任意位置字符
 ```python
 s = '11233aabcdd41556'
 # 删除某个特定字符
@@ -80,5 +80,4 @@ print(ss.replace('1', ''))
 import re
 print(re.sub('[1a]', '', s))
 ```
-
 
