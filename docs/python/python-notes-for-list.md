@@ -1,4 +1,4 @@
-# Python笔记：List相关操作
+# List相关操作
 List相关操作小例子
 <!--more-->
 
