@@ -1,4 +1,4 @@
-# VSCode + Python环境配置
+# VSCode 配置 Python 环境
 VSCode Python开发环境配置
 <!--more-->
 ## Visual Studio Code 下载安装
