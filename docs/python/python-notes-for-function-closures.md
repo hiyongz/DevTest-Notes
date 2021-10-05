@@ -1,4 +1,4 @@
-# Python中的闭包
+# Python闭包函数
 闭包 (closure) 是函数式编程中的一个概念，Python虽然不是纯粹的是函数式编程语言，但它仍然具有函数式编程的一些特性。在以前的文章[Python笔记：Python装饰器](https://blog.csdn.net/u010698107/article/details/114716537)中介绍的装饰器其实就使用了闭包，本文来介绍一下Python中的闭包。
 
 <!--more-->
