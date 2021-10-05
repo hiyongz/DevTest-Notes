@@ -1,15 +1,4 @@
----
-title: Python笔记：属性值设置和判断变量是否存在
-date: 2021-02-16 12:22:00
-author: hiyo
-copyright: true
-tags:
-	- setattr
-	- Python
-categories: 
-	- [编程语言,python]
----
-
+# Python笔记：属性值设置和判断变量是否存在
 介绍Python设置属性值方法setattr()和判断变量是否存在的方法
 <!--more-->
 
@@ -68,4 +57,4 @@ message:['ethernet', 'dhcpv6']
 
 
 
-<center><b>--THE END--<b></center>
+

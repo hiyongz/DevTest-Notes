@@ -1,16 +1,4 @@
----
-title: Python对象及内存管理机制
-date: 2021-06-01 12:12:00
-author: hiyo
-copyright: true
-tags:
-	- Python
-	- 内存管理
-
-categories: 
-	- [编程语言,python]
----
-
+# Python对象及内存管理机制
 Python是一门面向对象的编程语言，python中一切皆为对象，对每一个对象分配内存空间，python的内存管理机制主要包括引用计数、垃圾回收和内存池机制。本文简要介绍python对象及内存管理机制。
 
 <!--more-->
@@ -429,8 +417,7 @@ Python实现了一个**内存池(memory pool)机制**，使用Pymalloc对小块�
 3. 第1层和第2层：由python的接口函数Pymem_Malloc实现，若请求的内存在小于等于256kb时使用该层进行分配。
 4. 第3层(最上层）：用户对python对象的直接操作
 
-<img src="python-memory.png" width="60%" height="60%" />
-
+![](python-notes-for-object-and-copy/python-memory.png)
 <center><font size="2">图片来源：https://www.c-sharpcorner.com/article/memory-management-in-python/</font></center>
 
 
@@ -444,5 +431,5 @@ Python实现了一个**内存池(memory pool)机制**，使用Pymalloc对小块�
 - Python垃圾回收包括引用计数、标记清除和分代回收三种，可以使用gc模块来进行垃圾回收的配置。为了减少内存碎片，提升效率，Python使用了Pymalloc来管理小于等于256kb的小内存。
 
 
-<center><b>--THE END--<b></center>
+
 

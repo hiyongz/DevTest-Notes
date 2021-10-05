@@ -1,15 +1,4 @@
----
-title: Python中的闭包
-date: 2021-06-10 12:12:00
-author: hiyo
-copyright: true
-tags:
-	- Python
-	- 闭包
-categories: 
-	- [编程语言,python]
----
-
+# Python中的闭包
 闭包 (closure) 是函数式编程中的一个概念，Python虽然不是纯粹的是函数式编程语言，但它仍然具有函数式编程的一些特性。在以前的文章[Python笔记：Python装饰器](https://blog.csdn.net/u010698107/article/details/114716537)中介绍的装饰器其实就使用了闭包，本文来介绍一下Python中的闭包。
 
 <!--more-->
@@ -193,5 +182,5 @@ print(cube.__closure__[0].cell_contents)
 
 和嵌套函数返回一个值不同，闭包返回的是一个函数对象。闭包和嵌套函数的优点是可以让程序变得更简洁易读。python装饰器（decorator）中也使用闭包，可参考：[Python笔记：Python装饰器](https://blog.csdn.net/u010698107/article/details/114716537)。
 
-<center><b>--THE END--<b></center>
+
 

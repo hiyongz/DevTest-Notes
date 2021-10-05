@@ -1,15 +1,4 @@
----
-title: Python笔记：Python装饰器
-date: 2021-03-13 12:12:00
-author: hiyo
-copyright: true
-tags:
-	- 装饰器
-	- Python
-categories: 
-	- [编程语言,python]
----
-
+# Python笔记：Python装饰器
 装饰器是通过装饰器函数修改原函数的一些功能而不需要修改原函数，在很多场景可以用到它，比如① 执行某个测试用例之前，判断是否需要登录或者执行某些特定操作；② 统计某个函数的执行时间；③ 判断输入合法性等。合理使用装饰器可以极大地提高程序的可读性以及运行效率。本文将介绍Python装饰器的使用方法。
 
 <!--more-->
@@ -299,4 +288,4 @@ def secret()
  
 ```
 
-<center><b>--THE END--<b></center>
+

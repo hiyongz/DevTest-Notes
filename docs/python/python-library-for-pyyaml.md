@@ -1,15 +1,4 @@
----
-title: Python yaml文件读写
-date: 2021-07-13 12:12:00
-author: hiyo
-copyright: true
-tags:
-	- Python
-	- yaml
-categories: 
-	- [编程语言,python]
----
-
+# Python yaml文件读写
 yaml相比json来说数据表示更加简洁，特别适合用来读取/更新配置文件，和json一样，也是一种数据串行化格式。本文介绍在Python中PyYAML库解析、保存yaml文件的方法。
 
 <!--more-->
@@ -151,8 +140,7 @@ height: 175
 name: zhangsan
 ```
 
-<img src="yaml_dump_class.png" width="60%" height="60%" />
-
+![](python-library-for-pyyaml/yaml_dump_class.png)
 # yaml反序列化
 
 主要有load、safe_load、load_all和safe_load_all4种方法，`safe_load()`方法只识别标准的YAML标签，防止不信任的对象输入。
@@ -250,5 +238,5 @@ zhangsan
 pyyaml官方文档：[https://pyyaml.org/wiki/PyYAMLDocumentation](https://pyyaml.org/wiki/PyYAMLDocumentation)
 
 
-<center><b>--THE END--<b></center>
+
 

@@ -1,10 +1,9 @@
 # Python函数的参数类型
-
 python函数的参数类型主要包括必选参数、可选参数、可变参数、位置参数和关键字参数，本文介绍一下他们的定义以及可变数据类型参数传递需要注意的地方。
 <!--more-->
 
 
-## 必选参数
+# 必选参数
 必选参数（Required arguments）是必须输入的参数，比如下面的代码，必须输入2个参数，否则就会报错：
 
 ```python
@@ -25,14 +24,14 @@ print(test_divide(num2=2,num1=1))
 ```
 
 
-## 可选参数
+# 可选参数
 可选参数（Optional arguments）可以不用传入函数，有一个默认值，如果没有传入会使用默认值，不会报错。
 
 ```python
 def test_add(num=1):
   return num + 1
 ```
-## 位置参数
+# 位置参数
 位置参数（positional arguments）根据其在函数定义中的位置调用，下面是pow()函数的帮助信息:
 ```sh
 >>> help(pow)
@@ -84,7 +83,7 @@ TypeError: test_divide() got some positional-only arguments passed as keyword ar
 不能使用关键字参数形式赋值了。
 
 
-## 可变参数
+# 可变参数
 
 可变参数 (varargs argument) 就是传入的参数个数是可变的，可以是0-n个，使用星号（`*`）将输入参数自动组装为一个元组（tuple）：
 
@@ -108,7 +107,7 @@ print(test_sum(1,2,3,4))
 10
 ```
 
-## 关键字参数
+# 关键字参数
 
 关键字参数（keyword argument）允许将任意个含参数名的参数导入到python函数中，使用双星号（`**`），在函数内部自动组装为一个字典。
 
@@ -152,7 +151,7 @@ my name is zhangsan, age 18, hobbies ('running', 'swimming'), others {'height': 
 注意：由于传入的参数个数不定，所以当与普通参数一同使用时，必须把带星号的参数放在最后。
 
 
-## 强制关键字参数
+# 强制关键字参数
 强制关键字参数（Keyword-Only Arguments）是python3引入的特性，可参考：[https://www.python.org/dev/peps/pep-3102/](https://www.python.org/dev/peps/pep-3102/)。 使用一个星号隔开：
 ```python
 def person(name,age=20,*, height, weight):    
@@ -185,7 +184,7 @@ my name is zhangsan, age 18, hobbies ('running', 'swimming'), height 175, weight
 ```
 
 
-## Python函数的参数传递
+# Python函数的参数传递
 
 在[Python对象及内存管理机制](https://blog.csdn.net/u010698107/article/details/117406942)中介绍了python中的参数传递属于对象的**引用传递**（pass by object reference），在编写函数的时候需要特别注意。
 
@@ -294,7 +293,7 @@ print(l1 is l2)
 
 也可以使用浅拷贝或者深度拷贝，具体使用方法可参考[Python对象及内存管理机制](https://blog.csdn.net/u010698107/article/details/117406942)。这个问题在Python编程时需要特别注意。
 
-## 小结
+# 总结
 本文主要介绍了python函数的几种参数类型：必选参数、可选参数、可变参数、位置参数、强制位置参数、关键字参数、强制关键字参数，注意他们不是完全独立的，比如必选参数、可选参数也可以是关键字参数，位置参数可以是必选参数或者可选参数。
 
 另外，python中的参数传递属于对象的**引用传递**，在对可变数据类型进行参数传递时需要特别注意，如有必要，使用python的拷贝方法。
@@ -304,5 +303,5 @@ print(l1 is l2)
 1. Positional-Only Parameters：[https://www.python.org/dev/peps/pep-0570/](https://www.python.org/dev/peps/pep-0570/)
 2. Keyword-Only Arguments：[https://www.python.org/dev/peps/pep-3102/](https://www.python.org/dev/peps/pep-3102/)
 
-<center><b>--THE END--<b></center>
+
 

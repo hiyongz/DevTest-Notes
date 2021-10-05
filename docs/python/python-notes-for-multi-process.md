@@ -1,16 +1,4 @@
----
-title: Python多线程与多进程
-date: 2021-05-25 12:12:00
-author: hiyo
-copyright: true
-tags:
-	- 多线程
-	- 多进程
-	- Python
-categories: 
-	- [编程语言,python]
----
-
+# Python多线程与多进程
 进程(process)和线程(thread)是操作系统的基本概念，是操作系统程序运行的基本单元，本文简要介绍进程和线程的概念以及Python中的多进程和多线程。
 <!--more-->
 
@@ -34,8 +22,7 @@ categories:
 
 # 并发、并行
 
-<img src="Python-process.jpg" width="80%" height="80%" />
-
+![](python-notes-for-multi-process/Python-process.jpg)
 <center><font size="2">https://medium.com/@k.wahome/concurrency-is-not-parallelism-a5451d1cde8d</font></center>
 
 并发通常应用于 I/O 操作频繁的场景，并行则更多应用于 CPU heavy 的场景。
@@ -83,8 +70,7 @@ CPython 使用引用计数来管理内存，所有 Python 脚本中创建的实�
 - 执行对应线程的代码
 - 释放 GIL
 
-<img src="python-gil.png" width="80%" height="80%" />
-
+![](python-notes-for-multi-process/python-gil.png)
 某个线程想要执行，必须先拿到 GIL，并且在一个 Python 进程中，GIL 只有一个，导致即使在多核的条件下，同一时刻也只能执行一个线程。每一个线程执行完一段后，会释放 GIL，以允许别的线程开始利用资源。
 
 # Python多线程、多进程实例：CPU 密集型任务
@@ -361,5 +347,5 @@ Python 由于GIL锁的存在，无法利用多进程的优势，要真正利用�
 
 对于多线程任务，如果线程数量很多，建议使用Python协程，执行效率比多线程高。
 
-<center><b>--THE END--<b></center>
+
 

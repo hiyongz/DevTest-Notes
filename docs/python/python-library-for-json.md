@@ -1,15 +1,4 @@
----
-title: Python json文件读写
-date: 2021-07-08 12:12:00
-author: hiyo
-copyright: true
-tags:
-	- Python
-	- yaml
-categories: 
-	- [编程语言,python]
----
-
+# Python json文件读写
 JSON (JavaScript Object Notation)是一个受 JavaScript 的对象字面量语法启发的轻量级数据交换格式，本文介绍Python json库的使用，也就是json的序列化和反序列化方法。
 
 <!--more-->
@@ -28,8 +17,7 @@ with open("data1.json", "w", encoding="utf-8") as f:
     json.dump(data, f, sort_keys=True, indent=4)
 ```
 
-<img src="json_dump.png" width="60%" height="60%" />
-
+![](python-library-for-json/json_dump.png)
 ## dumps
 
 将对象转换为string，这样更容易传输
@@ -183,5 +171,5 @@ My name is zhangsan
 
 1. https://docs.python.org/zh-cn/3.9/library/json.html
 
-<center><b>--THE END--<b></center>
+
 

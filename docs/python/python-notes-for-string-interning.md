@@ -1,15 +1,4 @@
----
-title: Python内存驻留机制
-date: 2021-07-22 12:12:00
-author: hiyo
-copyright: true
-tags:
-	- Python
-	- 内存驻留
-categories: 
-	- [编程语言,python]
----
-
+# Python内存驻留机制
 字符串驻留机制在许多面向对象编程语言中都支持，比如Java、python、Ruby、PHP等，它是一种数据缓存机制，对不可变数据类型使用同一个内存地址，有效的节省了空间，本文主要介绍Python的内存驻留机制。
 
 
@@ -237,5 +226,5 @@ print(id(e))
 
 
 
-<center><b>--THE END--<b></center>
+
 

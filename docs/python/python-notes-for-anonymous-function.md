@@ -1,15 +1,4 @@
----
-title: Python笔记：lambda匿名函数
-date: 2021-06-24 12:12:00
-author: hiyo
-copyright: true
-tags:
-	- Python
-	- 匿名函数
-categories: 
-	- [编程语言,python]
----
-
+# Python笔记：lambda匿名函数
 在Python中，一般使用def关键字来定义普通函数。顾名思义，匿名函数意味着函数没有名称，Python使用lambda关键字定义匿名函数。在某些情况下，使用匿名函数可以简化代码，提高代码的可读性。本文介绍python匿名函数的使用方法。
 <!--more-->
 
@@ -177,5 +166,5 @@ print(sum) # 输出：28 = 3 + 4 + 6 + 2 + 5 + 8
 map()，fiilter() 和 reduce() 三个函数通常与lambda函数结合使用，它们的功能也可以使用列表推导式 (List Comprehension)来实现。它们的性能差异不大，可以根据自己习惯使用。
 
 
-<center><b>--THE END--<b></center>
+
 

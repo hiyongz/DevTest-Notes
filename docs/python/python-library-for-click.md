@@ -1,16 +1,4 @@
----
-title: Python 命令行参数解析之 Click
-date: 2021-06-29 12:12:00
-author: hiyo
-copyright: true
-tags:
-	- click
-	- 命令行参数
-	- Python
-categories: 
-	- [编程语言,python]
----
-
+# Python 命令行参数解析之 Click
 在[Python笔记：命令行参数解析](https://blog.csdn.net/u010698107/article/details/116346563)中介绍了sys.argv、getopt 和 argparse三种命令行参数解析方法，今天来分享另外一个python命令行工具click，它是用来支持 Web开发框架 Flask的，都由[Pallets 项目](https://palletsprojects.com/)组织开发。
 
 <!--more-->
@@ -136,5 +124,5 @@ Click相比argparse使用起来更加简洁，可以实现快速构建命令行�
 
 
 
-<center><b>--THE END--<b></center>
+
 

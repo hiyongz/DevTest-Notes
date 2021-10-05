@@ -1,16 +1,4 @@
----
-title: Python笔记：命令行参数解析
-date: 2021-05-05 12:12:00
-author: hiyo
-copyright: true
-tags:
-	- getopt
-	- 命令行参数
-	- Python
-categories: 
-	- [编程语言,python]
----
-有些时候我们需要通过命令行将参数传递给脚本，C语言中有个getopt()方法，python中也有个类似的命令行参数解析方法getopt()。python也提供了比getopt()更简洁的argparse方法。另外，sys模块也可以实现简单的参数解析，本文将对这3种命令行参数解析方法简要介绍。
+# Python笔记：命令行参数解析
 
 <!--more-->
 
@@ -179,5 +167,5 @@ test_argparse.py: error: unrecognized arguments: -F test
 3. sys.argv：[https://docs.python.org/zh-cn/3/library/sys.html](https://docs.python.org/zh-cn/3/library/sys.html)
 
 
-<center><b>--THE END--<b></center>
+
 

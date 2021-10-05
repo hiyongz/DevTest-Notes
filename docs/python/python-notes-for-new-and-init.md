@@ -1,17 +1,4 @@
----
-title: Python中的__new__、__init__以及metaclass
-date: 2021-06-22 12:12:00
-author: hiyo
-copyright: true
-tags:
-	- Python
-	- 单例模式
-	- metaclass
-
-categories: 
-	- [编程语言,python]
----
-
+# Python中的__new__、__init__以及metaclass
 在Python的面向对象编程中，首先得创建实例对象，然后初始化实例对象，Python中`__new__`负责创建实例对象，` __init__` 负责初始化对象，本文介绍`__new__`和` __init__` 的区别以及Python中的元类。
 
 <!--more-->
@@ -305,5 +292,5 @@ python的元类比较复杂，不好理解，一般在Python框架开发中使�
 
 元类可以实现类似装饰器的功能，如果不想在方法前面加@decorator_func，可以使用元类来实现。
 
-<center><b>--THE END--<b></center>
+
 

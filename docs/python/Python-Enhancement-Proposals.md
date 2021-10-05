@@ -1,5 +1,4 @@
 # Python PEP—Python增强提案
-
 PEP的全称是Python Enhancement Proposals，Python增强提案。描述了Python的语言特性、功能、编程规范等，包括了技术规范和功能的基本原理说明，是了解Python语言的详细指南。
 <!--more-->
 PEP官网：https://www.python.org/dev/peps/

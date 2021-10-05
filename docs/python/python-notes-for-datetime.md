@@ -1,15 +1,4 @@
----
-title: Python笔记：日期时间获取与转换
-date: 2021-03-19 12:12:00
-author: hiyo
-copyright: true
-tags:
-	- datetime
-	- Python
-categories: 
-	- [编程语言,python]
----
-
+# Python笔记：日期时间获取与转换
 python 日期时间获取与转换
 <!--more-->
 
@@ -133,4 +122,4 @@ now_time + datetime.timedelta(weeks=-1)
 ```
 
 
-<center><b>--THE END--<b></center>
+

@@ -1,39 +1,22 @@
----
-title: VSCode + Python环境配置
-date: 2021-01-26 12:02:00
-author: hiyo
-copyright: true
-tags:
-	- VSCode
-	- Jupyter Notebook
-	- Python
-categories: 
-	- [编程语言,python]
----
-
+# VSCode + Python环境配置
 VSCode Python开发环境配置
 <!--more-->
 # Visual Studio Code 下载安装
 Visual Studio Code下载地址: [https://code.visualstudio.com/Download](https://code.visualstudio.com/Download)
 
 安装Visual Studio Code后，打开Visual Studio Code，安装python：
-![png](vscode-python.png)
-
+![](python-vscode-jupyter-notebook/vscode-python.png)
 # 设置 Python 环境
 Ctrl+Shift+P
-![png](vscode-python2.png)
-
+![](python-vscode-jupyter-notebook/vscode-python2.png)
 输入\>python select Interpreter
-![png](vscode-python-interpreter.png)
-
+![](python-vscode-jupyter-notebook/vscode-python-interpreter.png)
 会列出系统所有python解释器，选择对应的解释器：
-![png](vscode-python-interpreter2.png)
-
+![](python-vscode-jupyter-notebook/vscode-python-interpreter2.png)
 # 安装code runner插件
 
 ## 配置code runner
-![png](vscode-python-coderunner.png)
-
+![](python-vscode-jupyter-notebook/vscode-python-coderunner.png)
 运行代码方式：
 * 键盘快捷键 Ctrl+Alt+N
 * 快捷键 Ctrl+Shift+P调出 命令面板, 然后输入 Run Code
@@ -51,14 +34,12 @@ Ctrl+Shift+P
 可以把代码放到 VS Code 内置的 Terminal 来运行
 
 选择 文件 -> 首选项 -> 设置，打开VS Code设置页面，找到 Run Code configuration，勾上 Run In Terminal 选项。设置之后，代码就会在 Terminal 中运行了。
-![png](vscode-python-terminal.png)
-
+![](python-vscode-jupyter-notebook/vscode-python-terminal.png)
 
 # 其它配置
 ## 配置VSCode自动保存
 进入设置界面
-![png](vscode-autosave.png)
-
+![](python-vscode-jupyter-notebook/vscode-autosave.png)
 ## 快捷键
 显示所有函数列表
 Shift+Ctl+O
@@ -80,10 +61,8 @@ Jupyter 主要优点包括：
 
 VSCode Jupyter Notebook插件安装：
 搜索Jupyter，安装
-![png](vscode-python-jupyter.png)
-插件安装成功后，新建\*.ipynb文件：
-![png](vscode-python-ipynb.png)
-
+![](python-vscode-jupyter-notebook/vscode-python-jupyter.png)插件安装成功后，新建\*.ipynb文件：
+![](python-vscode-jupyter-notebook/vscode-python-ipynb.png)
 ## 将ipynb文件转换为markdown
 将ipynb文件转换为markdown
 ```bash
@@ -93,4 +72,4 @@ jupyter nbconvert --to markdown *.ipynb
 ```
 
 
-<center><b>--THE END--<b></center>
+

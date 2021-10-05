@@ -1,15 +1,4 @@
----
-title: Python笔记：字符串操作
-date: 2021-02-16 12:12:00
-author: hiyo
-copyright: true
-tags:
-	- 字符串
-	- Python
-categories: 
-	- [编程语言,python]
----
-
+# Python笔记：字符串操作
 字符串相关操作
 <!--more-->
 
@@ -92,4 +81,4 @@ import re
 print(re.sub('[1a]', '', s))
 ```
 
-<center><b>--THE END--<b></center>
+

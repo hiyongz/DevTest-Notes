@@ -1,18 +1,4 @@
----
-title: Python Scapy 报文构造和解析
-date: 2021-02-17 12:12:00
-author: hiyo
-copyright: true
-tags:
-	- wireshark
-	- tcpdump
-	- scapy
-	- Python
-categories: 
-	- [计算机网络]
-	- [编程语言,python]
----
-
+# Python Scapy 报文构造和解析
 Scapy是一款强大的交互式数据包处理工具、数据包生成器、网络扫描器、网络发现、攻击工具和包嗅探工具。能灵活地构造各种数据包、发送数据包、包嗅探、应答和反馈匹配等功能。它可以实现Nmap扫描工具、tcpdump抓包工具 、 tshark工具、Netdiscover网络扫描工具的功能。
 
 Nmap、Netdiscover、tcpdump和tshark介绍可参考：
@@ -31,8 +17,7 @@ github地址：[https://github.com/secdev/scapy](https://github.com/secdev/scapy
 ```python
 pip install scapy
 ```
-![png](scapy.png)
-
+![](python-scapy-for-packet-build-and-parser/scapy.png)
 # Scapy 的使用
 lsc() 命令：列出scapy通用的操作方法，常用的函数包括：
 - arpcachepoison（用于arp毒化攻击，也叫arp欺骗攻击）
@@ -68,11 +53,9 @@ srp1                :
 ```
 
 ls()：查看支持的协议
-![png](scapy-ls.png)
-
+![](python-scapy-for-packet-build-and-parser/scapy-ls.png)
 ls(IP)：查看IP包的默认参数
-![png](scapy-ls-ip.png)
-
+![](python-scapy-for-packet-build-and-parser/scapy-ls-ip.png)
 
 # 报文嗅探
 ## sniff() 函数参数
@@ -159,9 +142,7 @@ pkts = rdpcap('packet.pcap')
 pkts[1021].show() # 序号为1022的报文为DHCPv6 Request报文（通过wireshark查看）
 ```
 报文打印如下：
-![png](scapy-dhcpv6-1.png)
-![png](scapy-dhcpv6-2.png)
-
+![](python-scapy-for-packet-build-and-parser/scapy-dhcpv6-1.png)![](python-scapy-for-packet-build-and-parser/scapy-dhcpv6-2.png)
 
 下面开始构造每一层报文：
 ```python
@@ -185,11 +166,9 @@ packet.show()
 ls(DHCP6OptIA_PD)
 ls(DHCP6OptIA_NA)
 ```
-![png](scapy-ls-opts.png)
-
+![](python-scapy-for-packet-build-and-parser/scapy-ls-opts.png)
 运行上面程序，打印构造的报文：
-![png](scapy-packet.png)
-构造成功！
+![](python-scapy-for-packet-build-and-parser/scapy-packet.png)构造成功！
 
 # 发送报文
 ## 1. 只发不收
@@ -243,4 +222,4 @@ pkts = sniff(offline='packet_solicit.pcap')
 <Ether  dst=ff:ff:ff:ff:ff:ff src=00:0c:29:d9:98:c7 type=IPv6 |<IPv6  version=6 tc=0 fl=0 plen=46 nh=UDP hlim=64 src=fe80::20c:29ff:fed9:98c7 dst=ff02::1:2 |<UDP  sport=dhcpv6_client dport=dhcpv6_server len=46 chksum=0x764d |<DHCP6_Solicit  msgtype=SOLICIT trid=0x0 |<DHCP6OptClientId  optcode=CLIENTID optlen=14 duid=<DUID_LLT  type=Link-layer address plus time hwtype=Ethernet (10Mb) timeval=Sat, 01 Jan 2000 00:00:00 +0000 (946684800) lladdr=00:0c:29:d9:98:c7 |> |<DHCP6OptIA_NA  optcode=IA_NA optlen=12 iaid=0x0 T1=0 T2=0 |>>>>>>
 ```
 
-<center><b>--THE END--<b></center>
+

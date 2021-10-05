@@ -1,16 +1,4 @@
----
-title: Python反射介绍
-date: 2021-06-17 12:12:00
-author: hiyo
-copyright: true
-tags:
-	- Python
-	- 反射机制
-
-categories: 
-	- [编程语言,python]
----
-
+# Python反射介绍
 反射机制是面向对象编程语言中比较重要的功能，可以动态获取对象信息以及动态调用对象，Python作为一门动态编程语言，当然也有反射机制，本文介绍Python反射函数使用方法。
 
 <!--more-->
@@ -271,5 +259,5 @@ for key, val in fields.items():
 
 
 
-<center><b>--THE END--<b></center>
+
 

@@ -1,15 +1,4 @@
----
-title: Python笔记：List相关操作
-date: 2021-02-16 12:06:00
-author: hiyo
-copyright: true
-tags:
-	- list
-	- Python
-categories: 
-	- [编程语言,python]
----
-
+# Python笔记：List相关操作
 List相关操作小例子
 <!--more-->
 
@@ -119,4 +108,4 @@ def get_median(data):
 from functools import reduce
 ```
 
-<center><b>--THE END--<b></center>
+
