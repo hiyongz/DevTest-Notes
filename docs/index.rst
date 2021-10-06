@@ -17,6 +17,18 @@
 
 .. toctree::
    :maxdepth: 2
+   :caption: pytest测试框架
+
+   pytest/pytest-install-and-running.md
+   pytest/pytest-xunit-style-of-setup-teardown.md
+   pytest/pytest-fixture.md
+   pytest/pytest-allure-report.md
+   pytest/pytest-parametrize.md
+   pytest/pytest-plugin.md
+
+
+.. toctree::
+   :maxdepth: 2
    :caption: Web自动化测试
    
    web/selenium-architecture-introduce.md
