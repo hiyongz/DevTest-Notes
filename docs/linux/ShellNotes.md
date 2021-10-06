@@ -1,4 +1,4 @@
-# shell 笔记
+# Linux、Windows笔记
 Linux笔记请参阅：[https://notes-of-shell.readthedocs.io](https://notes-of-shell.readthedocs.io/)
 
 ## Linux基础
