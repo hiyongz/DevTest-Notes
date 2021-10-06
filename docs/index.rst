@@ -11,6 +11,6 @@
 
 .. toctree::
    :maxdepth: 2
-   :caption: Linux基础
+   :caption: shell基础知识
    
    linux/ShellNotes.md
