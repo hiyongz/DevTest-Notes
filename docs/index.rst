@@ -114,3 +114,8 @@
    network/network-cookies-session-and-token.md
    network/network-tcpdump-and-wireshark.md
 
+关注公众号【测试开发小记】及时接收最新技术文章！
+
+.. image:: /img/wechat.png
+   :scale: 20%
+   :align: center
