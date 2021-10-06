@@ -50,5 +50,17 @@
    app/app-testing-tools-for-airtestproject.md   
    app/app-testing-for-ios-app-on-windows.md
    app/app-testing-for-ios-location-with-predicate-locator.md
+
+.. toctree::
+   :maxdepth: 2
+   :caption: 接口自动化测试
    
-   
+   api/api-test-and-web-protocol.md
+   api/api-test-postman-guide.md   
+   api/api-test-requests.md
+   api/api-test-curl-guide.md
+   api/api-test-charles-ca-certificate-install.md
+   api/api-test-charles-guide.md
+   api/api-test-mitmproxy-guide.md
+
+
