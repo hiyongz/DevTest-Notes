@@ -65,6 +65,15 @@
 
 .. toctree::
    :maxdepth: 2
+   :caption: 性能测试
+   
+   perf/performance-testing-using-jmeter.md
+   perf/performance-testing-jmeter-concurrency.md
+   perf/performance-testing-for-performance-monitoring-system.md
+   perf/performance-monitoring-for-server-with-prometheus.md
+   
+.. toctree::
+   :maxdepth: 2
    :caption: 安全测试
    
    security/api-test-security-testing-nmap-tool.md
@@ -81,3 +90,4 @@
    CI/continuous-integration-for-jenkins-api.md
    CI/continuous-integration-for-jenkins-blog-build.md
    CI/continuous-integration-for-blog-build-with-github-actions.md
+
