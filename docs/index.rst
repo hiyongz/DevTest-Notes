@@ -10,7 +10,7 @@
    python/PythonNotes.md
 
 .. toctree::
-   :maxdepth: 2   
+   :maxdepth: 2
    :caption: Linux基础
    
    linux/ShellNotes.md
