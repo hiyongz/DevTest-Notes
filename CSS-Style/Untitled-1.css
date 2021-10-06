@@ -1,0 +1,10 @@
+.posts-collapse::before {
+  background: linear-gradient(180deg,#1317f8 0,#3f3cf3 15%,#6a73f0 30%,#8aacf5 44%,#5073b8 58%,#1098ad 72%,#07b39b 86%,#6dba82 100%);
+  opacity: 0.3
+}
+p {
+background: #00d0f5;
+background-color: #7ac8ec;
+position: relative
+}
+

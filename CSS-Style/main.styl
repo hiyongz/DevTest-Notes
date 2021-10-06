@@ -1,0 +1,203 @@
+// CSS Style Guide: http://codeguide.co/#css
+
+
+$scheme    = hexo-config('scheme') ? hexo-config('scheme') : 'Muse';
+
+$variables = base $scheme;
+
+
+// Variables Layer
+// --------------------------------------------------
+for $variable in $variables
+  @import "_variables/" + $variable;
+for $inject_variable in hexo-config('injects.variable')
+  @import $inject_variable;
+
+// Mixins Layer
+// --------------------------------------------------
+@import "_mixins.styl";
+for $inject_mixin in hexo-config('injects.mixin')
+  @import $inject_mixin;
+
+// Dark mode colors
+// --------------------------------------------------
+@import "_colors.styl";
+
+// Common Layer
+// --------------------------------------------------
+
+// Scaffolding
+@import "_common/scaffolding";
+
+// Layout
+@import "_common/outline";
+
+// Components
+@import "_common/components";
+
+
+// Schemes Layer
+// --------------------------------------------------
+@import "_schemes/" + $scheme;
+
+
+// Custom Layer
+// --------------------------------------------------
+for $inject_style in hexo-config('injects.style')
+  @import $inject_style;
+
+// 阅读全文按钮美化
+.btn {
+  padding: 3px 15px;
+  color: #34495e!important;
+  box-shadow: 0 0 0 1px #34495e;
+  border: 1px;
+  border-radius: 15px;
+  position: relative!important;
+  text-decoration: none!important;
+  transition: color .3s ease-in-out;
+  display: inline-block;
+  line-height: 2;
+}
+.btn:hover{
+  color: #fff!important
+  border-color: #222;
+  background: #34495e;
+}
+
+/*
+**
+  文章内容美化
+***
+ */
+// 文章字体设为高级的灰色
+.post-body {
+  color: #333;
+}
+
+strong {
+  color: #bf360c;
+}
+
+
+.post-body h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0;  
+  padding: 0;
+  font-weight: bold;
+  letter-spacing: 0.1em !important;
+  color:#1fcb27;
+
+}
+
+.post-body h1 {
+  font-size: 1.4em;
+  margin: 35px 0;
+  border-bottom: 1.2px solid #ddd;
+  text-align: center !important;
+  color: black;
+}
+
+.post-body h2 {
+  font-size: 1.3em;
+  border-left: 4px solid #1fcb27 !important;
+  padding-left: 15px;
+  color: #070707;;
+}
+
+.post-body h3 {
+  font-size: 1.2em;
+  color: #1fcb27;;
+  font-weight: bold;  
+}
+
+.post-body h4 {
+  font-size: 1.1em;
+  font-weight: normal;
+}
+
+.post-body h5 {
+  font-size: 1em;
+}
+
+.post-body h6 {
+  font-size: 1em;
+  color: #777;
+}
+
+.post-body a {
+  color: #4183C4 !important;
+  text-decoration: none !important;
+}
+
+
+// Code部分美化
+.post-body code {
+  padding: 2px 4px;
+  word-wrap: break-word;
+  color: #ff7600;
+  background: #fbf7f8;
+  border-radius: 3px;
+  font-size: 15px;
+  font-weight: bolder;
+}
+// 修改代码块mac-panel上方颜色
+// .post-body .highlight-container{
+//   background: #00d0f5
+// }
+
+// 主文章页面
+.post-block {                                                                                                                                                                                  // 主文章页面
+  border-radius: 15px !important;
+  box-shadow: 0 1px 2px 0px rgba(0,0,0,0.1), 0 2px 4px 0px rgba(0,0,0,0.1)     // 覆盖
+  margin-top: 10px;    // 露出全部
+  margin-bottom: 20px;
+  // border: solid rgba(180,255,0,0.6) 2px;
+  padding: 30px 20px 20px 30px;    // 上右下左
+  background: rgba(255,255,255,0.9);    // 增加透明度
+}
+.post-block:hover{
+  transition-property: all;
+  transition-duration: 0.3s;
+  transition-timing-function: ease;
+  transition-delay: 0s;
+  box-shadow:0 2px 4px 0px rgba(0,0,0,0.1),
+    0 4px 8px 0px rgba(0,0,0,0.1),
+    0 8px 16px 0px rgba(0,0,0,0.1),
+    0 16px 32px 0px rgba(0,0,0,0.1) !important;
+
+}
+
+// 文章底部标签样式
+.posts-expand .post-tags a {
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, .12), 0 1px 2px rgba(0, 0, 0, .24);
+  -moz-box-shadow: 0 1px 3px rgba(0, 0, 0, .12), 0 1px 2px rgba(0, 0, 0, .24);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .12), 0 1px 2px rgba(0, 0, 0, .24);
+  font-family: 'Comic Sans MS', sans-serif;
+  transition: .2s ease-out;
+  padding: 3px 10px;
+  margin: 5px;
+  background: #f5f5f5;
+  border-bottom: none;
+  border-radius: 15px;
+
+  +mobile() {
+    padding: 1px 3px;
+    font-size: 8px;
+  }
+
+  &:hover {
+    background: #34495e;
+    color: #fff;
+    -webkit-box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    -moz-box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  }
+}
+
+// 文章分类页面中,标签的颜色属性.
+.category-list a{
+  color:#00d0f5;
+}
+
+
+

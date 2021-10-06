@@ -1,0 +1,304 @@
+// CSS Style Guide: http://codeguide.co/#css
+
+$scheme    = hexo-config('scheme') ? hexo-config('scheme') : 'Muse';
+
+$variables = base $scheme;
+$mixins    = base $scheme;
+
+
+// Variables Layer
+// --------------------------------------------------
+for $variable in $variables
+  @import "_variables/" + $variable;
+for $inject_variable in hexo-config('injects.variable')
+  @import $inject_variable;
+
+// Mixins Layer
+// --------------------------------------------------
+for $mixin in $mixins
+  @import "_mixins/" + $mixin;
+for $inject_mixin in hexo-config('injects.mixin')
+  @import $inject_mixin;
+
+// Common Layer
+// --------------------------------------------------
+
+// Scaffolding
+@import "_common/scaffolding";
+
+// Layout
+@import "_common/outline";
+
+// Components
+@import "_common/components";
+
+
+// Schemes Layer
+// --------------------------------------------------
+@import "_schemes/" + $scheme;
+
+
+// Custom Layer
+// --------------------------------------------------
+for $inject_style in hexo-config('injects.style')
+  @import $inject_style;
+
+// ---------------------------------------------------------------------------------------------------
+个人定制美化开始步骤
+// ---------------------------------------------------------------------------------------------------
+
+body {
+//  background:url(https://source.unsplash.com/random/1600x900);
+    background:url(/images/background.jpg);
+    background-repeat: no-repeat;
+    background-attachment:fixed;
+    background-position:50% 50%;
+    //background:#55aaad85;                    // 添加背景颜色
+}
+// 修改全局字体大小
+.post-body {
+    font-size: 1.0em;
+}
+// 美化 h2 h3 标签
+.post-body h2 {
+    border-radius: 20px 20px 20px 20px;
+    box-shadow: 0 0 0 1px #5f5a4b, 1px 1px 9px 2px rgba(10,10,0,0.5);
+    font-weight: bold;
+    background-color: #3199e4;
+    border-radius: 5px;
+    color: #fff;
+    padding-left: 8px;
+    text-shadow: 1px 1px 1px #000;
+}
+.post-body h3 {
+    background: #5b9600;
+    border-radius: 30px 6px 37px 6px;
+    box-shadow: 0 0 0 1px #5f5a4b, 1px 1px 6px 2px rgba(10,10,0,0.5);
+    color: #fff;
+    font-size: 15px;
+    line-height: 20px;
+    margin: 12px 0 !important;
+    padding: 5px 0 5px 10px;
+    text-shadow: 2px 2px 3px #222;
+}
+pre, .highlight {
+    background: #f7f7f7;
+    color: #5cb85c;
+    line-height: 1.1;
+}
+// 归档的美化,设置归档方框美化
+.posts-collapse .post-header {
+position: relative;
+    transition-duration: 0.2s;
+    transition-timing-function: ease-in-out;
+    transition-delay: 0s;
+    transition-property: inherit;
+    box-shadow: 0 1px 3px #6f42c100, 0 1px 2px #6f42c1;
+    padding: 2px 10px;
+    margin: 8px;
+    background: #c1425c00;
+    border-bottom: none;
+    border-radius: 20px;
+}
+// 顶部进度条的隐藏代码
+.headband {
+  height: 0px;
+  background: #fc6423;
+}
+// 标签的美化,使用圆形方框美化
+.tag-cloud a {
+    box-shadow: 0 1px 3px #6f42c1, 0 1px 2px #d9534f;
+    padding: 2px 10px;
+    margin: 8px;
+    background: #c1425c00;
+    border-bottom: none;
+    border-radius: 20px;
+}
+// 美化标签底部选择按钮(1.2.3.4.5)颜色
+.pagination .page-number.current {
+    background: #a166ab;
+    border-radius: 20px 20px 20px 20px;
+}
+.pagination .prev, .pagination .next, .pagination .page-number {
+    color: blueviolet;
+    font-weight: 500;
+    border-radius: 30px 30px 30px 30px;
+}
+// 美化归档栏整体布局,调整时间日期
+.posts-collapse .post-meta {
+    color: #5073b8;
+    font-weight: 900;
+}
+.posts-collapse .post-title {
+    margin-left: 70px;
+}
+// 归档竖线呈现出,彩带效果,包括彩球的美化代码
+.posts-collapse::before {
+    background-image: linear-gradient(180deg,#f79533 0,#f37055 15%,#ef4e7b 30%,#a166ab 44%,#5073b8 58%,#1098ad 72%,#07b39b 86%,#6dba82 100%);
+}
+.page-archive .posts-collapse .archive-move-on{
+	background-color: #fc6423;
+}
+.posts-collapse .collection-title::before{
+	background-color: #fc6423;
+}
+.posts-collapse .post-header::before {
+	background-color: #f0ffff00;
+}
+// 文章分类页面中,标签的颜色属性.
+.category-list a{
+  color:#6f42c1;
+}
+// 当光标放入阅读全文上时,应用下面的配色方案
+.post-button .btn:hover{
+  border-color: #6f42c1;
+  color: #fff;
+  background: #e431d3;
+  background-image: linear-gradient(90deg,#a166ab 0,#ef4e7b 25%,#f37055 50%,#ef4e7b 75%,#a166ab 100%);
+}
+// 光标放到文章列表上面的时候,会变成彩色
+.posts-expand .post-title-link::before {
+    background-image: linear-gradient(90deg,#a166ab 0,#ef4e7b 25%,#f37055 50%,#ef4e7b 75%,#a166ab 100%);
+}
+// 针对阅读全文按钮的美化
+.post-button .btn {
+    color: #555!important;
+    background-color: #fff;
+    border-radius: 3px;
+    font-size: 15px;
+    box-shadow: inset 0 0 10px 0 #e346035c;
+    border: none!important;
+    transition-property: unset;
+    padding: 0 15px;
+    border-radius: 30px 30px 30px 30px;
+}
+// 鼠标选择的段落变成黄色
+::selection {
+    background-color: #59ff83;
+    color: #555;
+}
+// 对页面文章的标题的美化
+.posts-expand .post-title-link {
+    color: #d9534f;
+}
+.posts-expand .post-title {
+    color: #d9534f;
+}
+// 代码框的美化代码
+.highlight {
+    border-radius: 1px;
+    background-color: rgb(246, 248, 250);
+    overflow: auto;
+    border-width: 1px 1px 1px 2px;
+    border-style: dashed dashed dashed solid;
+    border-color: rgb(170, 170, 170) rgb(170, 170, 170) rgb(170, 170, 170) rgb(108, 226, 108);
+    border-image: initial;
+    position: relative;
+}
+// 针对strong标签的美化效果.
+strong{
+    font-weight: bold;
+    /* background-color: #9f95ff; */
+    border-radius: 39px;
+    color: #171be7;
+    padding-left: 0px;
+    padding-right: 1px;
+    text-shadow: 1px 1px 1px #0003;
+}
+// 针对Code代码标签的美化
+code {
+  padding: 2px 4px;
+  word-wrap: break-word;
+  color: #ff7600;
+  background: #fbf7f8;
+  border-radius: 3px;
+  font-size: 15px;
+  font-weight: bolder;
+}
+// 一二级菜单美化
+blockquote {
+  padding: 0 15px;
+  color: #000000;
+  font-family: cursive;
+  background-color: #f0faf9;
+  border-left-color: #42c1b8;
+}
+// 下划线,美化
+hr {
+  background-color: #86dca3;
+}
+// 去掉图片的边框,显得更加自然
+.posts-expand .post-body img {
+    border: 1px #6f42c1;
+}
+// 主标题栏位字体美化
+.site-title{
+	/*font-family: 'Lato', "PingFang SC", "华文新魏", sans-serif;*/
+	/*font-size: 20px;*/
+}
+// 主标题栏位背景颜色美化
+.site-meta {
+    //background-image: linear-gradient(200deg, #e4a0a3, #3F51B5);
+    //background-image: linear-gradient(90deg, #4263c1 0, #ef4ec5 25%, #b255f3 50%, #4eb2ef 75%, #8466ab 100%);
+}
+// ---------------------------------------------------------------------------------------------------------------------------------------------
+// 暂时屏蔽全局美化过程
+/*
+// 配置全局页面,椭圆化(页面方框变成椭圆的),以及添加透明度(将页面方框透明化)
+.header-inner {                                                                                                                                                                                // 菜单栏
+    border-radius: 30px 30px 30px 30px;
+    box-shadow: 8px 7px 2px 0 rgba(0,0,0,0.12), 7px 4px 1px -2px rgba(0,0,0,0.06), 0 1px 5px 0 rgba(0,0,0,0.12);                      //增加阴影部分
+//    background: rgba(255,255,255,.5);                                                                                                                                         // 增加透明度
+}
+.sidebar-inner {                                                                                                                                                                                // 头衔栏
+    border-radius: 30px 30px 30px 30px;
+    position: absolute;
+    overflow: hidden;
+    box-shadow: 8px 7px 2px 0 rgba(0,0,0,0.12), 7px 4px 1px -2px rgba(0,0,0,0.06), 0 1px 5px 0 rgba(0,0,0,0.12);                      // 增加阴影部分
+//    background: rgba(255,255,255,.5);                                                                                                                                         // 增加透明度
+}
+.post-block {                                                                                                                                                                                  // 主文章页面
+    border-radius: 30px 30px 30px 30px;
+    box-shadow: 8px 7px 2px 0 rgba(0,0,0,0.12), 7px 4px 1px -2px rgba(0,0,0,0.06), 0 1px 5px 0 rgba(0,0,0,0.12);                     // 增加阴影部分
+//    background: rgba(255,255,255,.5);                                                                                                                                         // 增加透明度
+}
+#posts > article + article .post-block {                                                                                                                                           // 后面的文章
+    border-radius: 30px 30px 30px 30px;
+    box-shadow: 10px 10px 3px 0 rgba(0,0,0,0.15), 10px 4px 1px -2px rgba(0,0,0,0.06), 0 1px 5px 0 rgba(0,0,0,0.12);               //增加阴影部分
+//    background: rgba(255,255,255,.5);                                                                                                                                         // 增加透明度
+}
+.pagination {                                                                                                                                                                                   // 页面分页
+    border-radius: 30px 80px 30px 80px;                                                                                                                                        // 扁平化,两边非对称
+    box-shadow: 8px 7px 2px 0 rgba(0,0,0,0.12), 7px 4px 1px -2px rgba(0,0,0,0.06), 0 1px 5px 0 rgba(0,0,0,0.12);                      //增加阴影部分
+//    background: rgba(255,255,255,.5);                                                                                                                                         // 增加透明度
+}
+.menu-item-active a, .menu .menu-item a:hover, .menu .menu-item span.exturl:hover {
+    background: #f9f9f99e;                                                                                                                                                             // 首页菜单选中后,变成淡白色.
+}
+*/
+
+// ------------------------------------------------------------------------------------------
+// 二次深度美化
+// ------------------------------------------------------------------------------------------
+// 给文章概述与文章内容添加上一个方框。
+.content .posts-expand .post-block{
+    position: relative;
+    margin-bottom: 30px;
+    padding: 40px 20px;
+    font-size: 14px;
+    box-shadow: rgba(0,0,0,0.1) 0px 15px 35px 0px, rgba(0, 0, 0, 0.31) 6px 6px 10px 0px;
+    border-radius: 16px;
+    background-color: #fff;
+    transition: -webkit-transform .3s;
+    transition: transform .3s;
+    transition: transform .3s,-webkit-transform .3s;
+    transform-style: preserve-3d;
+}
+.post-expand .post-body{
+    position: relative;
+    overflow: visible;
+    padding: 20px;
+    color: #666;
+    font-size: 15px;
+    word-break: break-word;
+}
