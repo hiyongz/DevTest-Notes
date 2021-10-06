@@ -32,3 +32,23 @@
    web/selenium-grid-for-parallel-execute-script.md
    web/selenium-appium-keycode.md
    
+.. toctree::
+   :maxdepth: 2
+   :caption: APP自动化测试
+   
+   app/appium-adb.md
+   app/app-testing-for-stf-platform.md
+   app/appium-install-and-architecture.md
+   app/appium-android-controls.md
+   app/appium-locator.md
+   app/appium-locator-uiautomator.md
+   app/appium-locator-operate.md
+   app/appium-android-webview.md
+   app/appium-automatic-traversal-test-appcrawler.md
+   app/appium-automatic-traversal-test-monkey.md
+   app/app-testing-tools-for-uiautomator2.md
+   app/app-testing-tools-for-airtestproject.md   
+   app/app-testing-for-ios-app-on-windows.md
+   app/app-testing-for-ios-location-with-predicate-locator.md
+   
+   
