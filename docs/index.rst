@@ -70,4 +70,14 @@
    security/api-test-security-testing-nmap-tool.md
    security/api-test-security-testing-hydra-tool.md
    security/api-test-security-testing-netdiscover-tool.md
+
+.. toctree::
+   :maxdepth: 2
+   :caption: 持续集成
    
+   CI/container-docker-for-jenkins-install.md
+   CI/continuous-integration-for-jenkins.md
+   CI/continuous-integration-for-jenkins-example.md
+   CI/continuous-integration-for-jenkins-api.md
+   CI/continuous-integration-for-jenkins-blog-build.md
+   CI/continuous-integration-for-blog-build-with-github-actions.md
