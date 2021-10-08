@@ -1,7 +1,6 @@
-# Python 基础
 Python笔记请参阅：[https://notes-of-python.readthedocs.io](https://notes-of-python.readthedocs.io/)
 
-## Python基础知识
+# Python基础知识
 
 - [Python PEP增强提案](https://notes-of-python.readthedocs.io/zh/latest/python/Python-Enhancement-Proposals.html)
 - [VSCode 配置 Python 环境](https://notes-of-python.readthedocs.io/zh/latest/python/python-vscode-jupyter-notebook.html)
@@ -16,7 +15,7 @@ Python笔记请参阅：[https://notes-of-python.readthedocs.io](https://notes-o
 - [Python中的__new__、__init__以及metaclass](https://notes-of-python.readthedocs.io/zh/latest/python/python-notes-for-new-and-init.html)
 - [Python对象及内存管理机制](https://notes-of-python.readthedocs.io/zh/latest/python/python-notes-for-object-and-copy.html)
 
-## Python进阶
+# Python进阶
 
 - [lambda匿名函数](https://notes-of-python.readthedocs.io/zh/latest/python/python-notes-for-anonymous-function.html)
 - [Python装饰器](https://notes-of-python.readthedocs.io/zh/latest/python/python-notes-for-decorator.html)
@@ -28,7 +27,7 @@ Python笔记请参阅：[https://notes-of-python.readthedocs.io](https://notes-o
 - [Python yaml文件读写](https://notes-of-python.readthedocs.io/zh/latest/python/python-library-for-pyyaml.html)
 - [Python Scapy 报文构造和解析](https://notes-of-python.readthedocs.io/zh/latest/python/python-scapy-for-packet-build-and-parser.html)
 
-## 数据结构与算法
+# 数据结构与算法
 
 - [时间复杂度和空间复杂度](https://notes-of-python.readthedocs.io/zh/latest/algorithm/algorithm-notes-for-algorithmic-complexity.html)
 - [数组、链表、栈和队列](https://notes-of-python.readthedocs.io/zh/latest/algorithm/algorithm-notes-for-linear-list.html)
