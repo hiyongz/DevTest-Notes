@@ -28,7 +28,69 @@ Linux笔记：[hiyongz/ShellNotes](https://github.com/hiyongz/ShellNotes) 。
 
 Golang笔记：[hiyongz/GolangNotes](https://github.com/hiyongz/GolangNotes) 。
 
+Web自动化测试
 
+- [Selenium自动化测试框架介绍](https://devtest-notes.readthedocs.io/zh/latest/web/selenium-architecture-introduce.html)
+- [Web元素定位方法](https://devtest-notes.readthedocs.io/zh/latest/web/selenium_webelement_locator.html)
+- [selenium 元素操作](https://devtest-notes.readthedocs.io/zh/latest/web/selenium-webelement-operate.html)
+- [xpath & CSS Selector定位](https://devtest-notes.readthedocs.io/zh/latest/web/selenium-xpath-and-CSS-Selector-locator.html)
+- [Selenium ActionChains、TouchAction方法](https://devtest-notes.readthedocs.io/zh/latest/web/selenium-actionchains-touchaction.html)
+- [Selenium switch_to方法](https://devtest-notes.readthedocs.io/zh/latest/web/selenium-switch_to.html)
+- [Select下拉框](https://devtest-notes.readthedocs.io/zh/latest/web/selenium-select.html)
+- [Selenium 不同浏览器测试](https://devtest-notes.readthedocs.io/zh/latest/web/selenium-browsers.html)
+- [selenium 执行JavaScript脚本](https://devtest-notes.readthedocs.io/zh/latest/web/selenium-javascript.html)
+- [selenium/appium 等待方式介绍](https://devtest-notes.readthedocs.io/zh/latest/web/selenium-appium-webdriver-wait.html)
+- [Selenium Grid：在多个主机上并行执行自动化脚本](https://devtest-notes.readthedocs.io/zh/latest/web/selenium-grid-for-parallel-execute-script.html)
+- [键盘输入keycode](https://devtest-notes.readthedocs.io/zh/latest/web/selenium-appium-keycode.html)
+
+APP自动化测试
+
+- [Android ADB原理及常用命令](https://devtest-notes.readthedocs.io/zh/latest/app/appium-adb.html)
+- [Android手机管理平台搭建：STF和atxserver2](https://devtest-notes.readthedocs.io/zh/latest/app/app-testing-for-stf-platform.html)
+- [Appium 介绍及环境安装](https://devtest-notes.readthedocs.io/zh/latest/app/appium-install-and-architecture.html)
+- [App控件定位](https://devtest-notes.readthedocs.io/zh/latest/app/appium-android-controls.html)
+- [Appium元素定位（一）](https://devtest-notes.readthedocs.io/zh/latest/app/appium-locator.html)
+- [Appium元素定位（二）：uiautomator定位](https://devtest-notes.readthedocs.io/zh/latest/app/appium-locator-uiautomator.html)
+- [Appium控件交互](https://devtest-notes.readthedocs.io/zh/latest/app/appium-locator-operate.html)
+- [Android WebView 测试](https://devtest-notes.readthedocs.io/zh/latest/app/appium-android-webview.html)
+- [AppCrawler自动遍历测试](https://devtest-notes.readthedocs.io/zh/latest/app/appium-automatic-traversal-test-appcrawler.html)
+- [自动遍历测试之Monkey工具](https://devtest-notes.readthedocs.io/zh/latest/app/appium-automatic-traversal-test-monkey.html)
+- [App自动化测试工具Uiautomator2](https://devtest-notes.readthedocs.io/zh/latest/app/app-testing-tools-for-uiautomator2.html)
+- [App自动化测试工具Airtest](https://devtest-notes.readthedocs.io/zh/latest/app/app-testing-tools-for-airtestproject.html)
+- [Windows上实现iOS APP自动化测试：tidevice + WDA + facebook-wda / appium](https://devtest-notes.readthedocs.io/zh/latest/app/app-testing-for-ios-app-on-windows.html)
+- [iOS APP自动化：predicate定位](https://devtest-notes.readthedocs.io/zh/latest/app/app-testing-for-ios-location-with-predicate-locator.html)
+
+接口自动化测试
+
+- [接口测试简介及 Web 服务架构](https://devtest-notes.readthedocs.io/zh/latest/api/api-test-and-web-protocol.html)
+- [Postman安装与使用](https://devtest-notes.readthedocs.io/zh/latest/api/api-test-postman-guide.html)
+- [接口测试框架Requests](https://devtest-notes.readthedocs.io/zh/latest/api/api-test-requests.html)
+- [cURL工具介绍及简单使用](https://devtest-notes.readthedocs.io/zh/latest/api/api-test-curl-guide.html)
+- [charles SSL证书安装](https://devtest-notes.readthedocs.io/zh/latest/api/api-test-charles-ca-certificate-install.html)
+- [接口测试代理工具charles mock测试](https://devtest-notes.readthedocs.io/zh/latest/api/api-test-charles-guide.html)
+- [mitmproxy 代理工具介绍：rewrite和map local实现](https://devtest-notes.readthedocs.io/zh/latest/api/api-test-mitmproxy-guide.html)
+
+性能测试
+
+- [JMeter性能测试：JMeter安装及脚本录制回放](https://devtest-notes.readthedocs.io/zh/latest/perf/performance-testing-using-jmeter.html)
+- [JMeter性能测试：JMeter多用户并发模拟及压测结果分析](https://devtest-notes.readthedocs.io/zh/latest/perf/performance-testing-jmeter-concurrency.html)
+- [JMeter性能监控系统：Jmeter + InfluxDB + Grafana](https://devtest-notes.readthedocs.io/zh/latest/perf/performance-testing-for-performance-monitoring-system.html)
+- [系统性能监控：Prometheus + Grafana 监控服务器性能](https://devtest-notes.readthedocs.io/zh/latest/perf/performance-monitoring-for-server-with-prometheus.html)
+
+安全测试
+
+- [Nmap扫描工具介绍](https://devtest-notes.readthedocs.io/zh/latest/security/api-test-security-testing-nmap-tool.html)
+- [hydra暴力破解工具](https://devtest-notes.readthedocs.io/zh/latest/security/api-test-security-testing-hydra-tool.html)
+- [Netdiscover网络扫描工具](https://devtest-notes.readthedocs.io/zh/latest/security/api-test-security-testing-netdiscover-tool.html)
+
+持续集成
+
+- [Docker搭建持续集成平台Jenkins](https://devtest-notes.readthedocs.io/zh/latest/CI/container-docker-for-jenkins-install.html)
+- [持续集成平台Jenkins介绍](https://devtest-notes.readthedocs.io/zh/latest/CI/continuous-integration-for-jenkins.html)
+- [持续集成：jenkins + pytest + selenium + Git + Allure自动化测试](https://devtest-notes.readthedocs.io/zh/latest/CI/continuous-integration-for-jenkins-example.html)
+- [持续集成：Jenkins API简单使用](https://devtest-notes.readthedocs.io/zh/latest/CI/continuous-integration-for-jenkins-api.html)
+- [使用jenkins实现hexo博客自动发布](https://devtest-notes.readthedocs.io/zh/latest/CI/continuous-integration-for-jenkins-blog-build.html)
+- [使用GitHub Actions实现Hexo博客自动发布](https://devtest-notes.readthedocs.io/zh/latest/CI/continuous-integration-for-blog-build-with-github-actions.html)
 
 **下面是我的公众号【测试开发小记】，会不定时发布测试开发相关笔记以及一些读书笔记，欢迎关注。**
 <p align="center">
