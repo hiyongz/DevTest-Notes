@@ -10,7 +10,7 @@
 elem = driver.find_element_by_id("com.xueqiu.android:id/enter_stock_fund")
 elem = driver.find_element(MobileBy.ID,"com.xueqiu.android:id/enter_stock_fund")
 ```
-# Accessibility ID定位
+## Accessibility ID定位
 在写Android和iOS自动化测试用例时，可以使用这种定位方法，使代码可重用， 实现跨平台自动化测试。iOS的Accessibility ID为UI元素的名称， Android的Accessibility ID为“ content-desc”属性值。
 
 ![](appium-locator/locator_accessibility.png)
@@ -46,8 +46,8 @@ elem = driver.find_element_by_xpath('//*[@text="行情"]').click()
 elem.click()
 ```
 
-# Toast定位
-## toast介绍
+## Toast定位
+### toast介绍
 * Toast是手机应用消息提示框，为当前视图显示一个浮动弹出框
 * Toast类的思想：尽可能不引人注意，同时还向用户显示信息，希望他们看到
 * Toast显示的时间有限, Toast会根据用户设置的显示时间后自动消失。
@@ -56,7 +56,7 @@ elem.click()
 * 必须使用 xpath查找
 	* //*[@class='android.widget.Toast']
 	* //*[contains(@text, "xxxxx")]
-## toast定位
+### toast定位
 
 测试步骤：
 
