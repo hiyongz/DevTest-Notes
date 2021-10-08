@@ -62,6 +62,7 @@
    app/app-testing-tools-for-airtestproject.md   
    app/app-testing-for-ios-app-on-windows.md
    app/app-testing-for-ios-location-with-predicate-locator.md
+   app/app-testing-for-ios-location-with-classChain.md
 
 .. toctree::
    :maxdepth: 1
