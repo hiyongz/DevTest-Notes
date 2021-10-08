@@ -10,7 +10,7 @@
 
 ## 前言
 
-在线阅读地址：[https://devtest-notes.readthedocs.io/](https://devtest-notes.readthedocs.io/)
+在线文档地址：[https://devtest-notes.readthedocs.io/](https://devtest-notes.readthedocs.io/)
 
 在工作学习过程中经常发现以前遇到过的问题还要重新借助搜索引擎查找一番，很多知识以前学过，发现再次遇到的时候还是有点陌生，其实我们遇到的很多问题是重复的，根据艾宾浩斯遗忘曲线，随着时间推移，记忆率会下降，所以忘记以前的学过的是合理的。大概是在2018年的时候开始使用印象笔记，记录整理学习笔记。而随着用的时间一长，发现收集了太多文章，很少去消化整理，笔记也很混乱。
 
@@ -20,7 +20,45 @@
 
 此项目主要记录测试相关的代码和笔记，目的是为了构建我在测试方面的知识体系，偶然光临本项目，皆为缘分，希望对你有所帮助，如有错误之处，欢迎指正！
 
-**下面是我的公众号，会不定时发布测试开发相关笔记以及一些读书笔记，欢迎关注。**
+
+## 主要内容
+测试用例主要使用Python语言编写，Python相关笔记在这个项目：[hiyongz/PythonNotes](https://github.com/hiyongz/PythonNotes) 。
+
+Linux笔记：[hiyongz/ShellNotes](https://github.com/hiyongz/ShellNotes) 。
+
+Golang笔记：[hiyongz/GolangNotes](https://github.com/hiyongz/GolangNotes) 。
+
+
+
+**下面是我的公众号【测试开发小记】，会不定时发布测试开发相关笔记以及一些读书笔记，欢迎关注。**
 <p align="center">
   <a><img src="docs\img\wechat.png" alt="微信公众号" width="30%" height="30%" ></a>
 </p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

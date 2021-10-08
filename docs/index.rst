@@ -16,7 +16,7 @@
    linux/ShellNotes.md
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: pytest测试框架
 
    pytest/pytest-install-and-running.md
@@ -28,7 +28,7 @@
 
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: Web自动化测试
    
    web/selenium-architecture-introduce.md
@@ -45,7 +45,7 @@
    web/selenium-appium-keycode.md
    
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: APP自动化测试
    
    app/appium-adb.md
@@ -64,7 +64,7 @@
    app/app-testing-for-ios-location-with-predicate-locator.md
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: 接口自动化测试
    
    api/api-test-and-web-protocol.md
@@ -76,7 +76,7 @@
    api/api-test-mitmproxy-guide.md
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: 性能测试
    
    perf/performance-testing-using-jmeter.md
@@ -85,7 +85,7 @@
    perf/performance-monitoring-for-server-with-prometheus.md
    
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: 安全测试
    
    security/api-test-security-testing-nmap-tool.md
@@ -93,7 +93,7 @@
    security/api-test-security-testing-netdiscover-tool.md
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: 持续集成
    
    CI/container-docker-for-jenkins-install.md
@@ -104,7 +104,7 @@
    CI/continuous-integration-for-blog-build-with-github-actions.md
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: 计算机网络
    
    network/tcp-ip-protocol-architecture-model_link-layer.md
