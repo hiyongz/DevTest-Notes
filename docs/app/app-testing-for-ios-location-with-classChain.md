@@ -1,66 +1,66 @@
-# iOS APP×Ô¶¯»¯£ºclass chain¶¨Î»·½·¨
+# iOS APPè‡ªåŠ¨åŒ–ï¼šclass chainå®šä½æ–¹æ³•
 
-ÔÚ[iOS APP×Ô¶¯»¯£ºpredicate¶¨Î»](https://blog.csdn.net/u010698107/article/details/120318075)ÖĞ½éÉÜÁËiOS APPµÄpredicate¶¨Î»·½·¨£¬±¾ÎÄ½éÉÜÓëXPathÓï·¨±È½ÏÀàËÆµÄclass chain¶¨Î»·½·¨¡£
-
-
-## class chain ¶¨Î»
-class chain ¶¨Î»·½·¨ÓÉ**[mykola-mokhnach](https://github.com/mykola-mokhnach)**¿ª·¢£¬ºÍXPath±È½ÏÀàËÆ£¬¿ÉÒÔÊµÏÖ·Ö²ã²éÑ¯£¬µ«ËüµÄ²éÑ¯ĞÔÄÜ¸ü¸ß£¬Í¨¹ı½«class chain²éÑ¯Ó³Éäµ½Ò»ÏµÁĞµÄXCUITestµ÷ÓÃÖĞ£¬½ö²éÕÒ×Ó½Úµã£¬²»ÏñXPathÄÇÑùµİ¹éµØ²éÑ¯Õû¸öUIÊ÷¡£
-
-class chain Ö§³ÖPredicate×Ö·û´®Æ¥Åä£¬ÏÂÃæ½éÉÜclass chain ¶¨Î»·½·¨¡£
-
-### ¶ù×Ó½ÚµãËÑË÷
-
-Ñ¡Ôñ¶ù×ÓÔªËØ£¬ÀàËÆÓÚXPathÓï·¨ÖĞµÄ·´Ğ±¸Ü`/`¡£
-
-```bash
-XCUIElementTypeWindow[`label BEGINSWITH "text"`][-1] # Ñ¡ÔñlabelÒÔfoo¿ªÍ·µÄ×îºóÒ»¸ö
-XCUIElementTypeWindow/XCUIElementTypeButton[3] # Ñ¡ÔñwindowµÄ¶ù×ÓÔªËØXCUIElementTypeButtonµÄµÚ3¸ö£¨Ë÷Òı´Ó1¿ªÊ¼£©
-XCUIElementTypeWindow/*[3]  # Ñ¡ÔñwindowµÄµÚ3¸ö¶ù×ÓÔªËØ
-XCUIElementTypeWindow # Ñ¡ÔñËùÓĞ×Ó´°¿Ú
-XCUIElementTypeWindow[2] # Ñ¡ÔñµÚ¶ş¸ö´°¿Ú
-XCUIElementTypeWindow[2]/XCUIElementTypeAny # Ñ¡ÔñµÚ¶ş¸ö×Ó´°¿ÚµÄËùÓĞ×ÓÔªËØ
-```
+åœ¨[iOS APPè‡ªåŠ¨åŒ–ï¼špredicateå®šä½](https://blog.csdn.net/u010698107/article/details/120318075)ä¸­ä»‹ç»äº†iOS APPçš„predicateå®šä½æ–¹æ³•ï¼Œæœ¬æ–‡ä»‹ç»ä¸XPathè¯­æ³•æ¯”è¾ƒç±»ä¼¼çš„class chainå®šä½æ–¹æ³•ã€‚
 
 
+## class chain å®šä½
+class chain å®šä½æ–¹æ³•ç”±**[mykola-mokhnach](https://github.com/mykola-mokhnach)**å¼€å‘ï¼Œå’ŒXPathæ¯”è¾ƒç±»ä¼¼ï¼Œå¯ä»¥å®ç°åˆ†å±‚æŸ¥è¯¢ï¼Œä½†å®ƒçš„æŸ¥è¯¢æ€§èƒ½æ›´é«˜ï¼Œé€šè¿‡å°†class chainæŸ¥è¯¢æ˜ å°„åˆ°ä¸€ç³»åˆ—çš„XCUITestè°ƒç”¨ä¸­ï¼Œä»…æŸ¥æ‰¾å­èŠ‚ç‚¹ï¼Œä¸åƒXPathé‚£æ ·é€’å½’åœ°æŸ¥è¯¢æ•´ä¸ªUIæ ‘ã€‚
 
-### ×ÓËï½ÚµãËÑË÷
+class chain æ”¯æŒPredicateå­—ç¬¦ä¸²åŒ¹é…ï¼Œä¸‹é¢ä»‹ç»class chain å®šä½æ–¹æ³•ã€‚
 
-ÀàËÆÓÚXPathÓï·¨ÖĞµÄË«·´Ğ±¸Ü`//`
+### å„¿å­èŠ‚ç‚¹æœç´¢
+
+é€‰æ‹©å„¿å­å…ƒç´ ï¼Œç±»ä¼¼äºXPathè¯­æ³•ä¸­çš„åæ–œæ `/`ã€‚
 
 ```bash
-**/XCUIElementTypeCell[`name BEGINSWITH "A"`][-1]/XCUIElementTypeButton[10] # Ñ¡ÔñnameÒÔA¿ªÍ·µÄ×îºóÒ»¸öCellÔªËØµÄµÚ10¸ö×ÓÔªËØ
-**/XCUIElementTypeCell[`name BEGINSWITH "B"`] # Ñ¡ÔñnameÒÔB¿ªÍ·µÄËùÓĞCellÔªËØ
-**/XCUIElementTypeCell[`name BEGINSWITH "C"`]/XCUIElementTypeButton[10] # Ñ¡ÔñnameÒÔC¿ªÍ·µÄµÚÒ»¸öCellÔªËØµÄµÚ10¸ö×ÓÔªËØ
-**/XCUIElementTypeCell[`name BEGINSWITH "D"`]/**/XCUIElementTypeButton # Ñ¡ÔñnameÒÔD¿ªÍ·µÄµÚÒ»¸öCellÔªËØÏÂËùÓĞºó´úButton
+XCUIElementTypeWindow[`label BEGINSWITH "text"`][-1] # é€‰æ‹©labelä»¥fooå¼€å¤´çš„æœ€åä¸€ä¸ª
+XCUIElementTypeWindow/XCUIElementTypeButton[3] # é€‰æ‹©windowçš„å„¿å­å…ƒç´ XCUIElementTypeButtonçš„ç¬¬3ä¸ªï¼ˆç´¢å¼•ä»1å¼€å§‹ï¼‰
+XCUIElementTypeWindow/*[3]  # é€‰æ‹©windowçš„ç¬¬3ä¸ªå„¿å­å…ƒç´ 
+XCUIElementTypeWindow # é€‰æ‹©æ‰€æœ‰å­çª—å£
+XCUIElementTypeWindow[2] # é€‰æ‹©ç¬¬äºŒä¸ªçª—å£
+XCUIElementTypeWindow[2]/XCUIElementTypeAny # é€‰æ‹©ç¬¬äºŒä¸ªå­çª—å£çš„æ‰€æœ‰å­å…ƒç´ 
 ```
 
-Ê¹ÓÃclass chain¶¨Î»ÊÇĞèÒª×¢ÒâÒÔÏÂ¼¸µã£º
-- Predicate×Ö·û´®ÒªĞ´µ½ÖĞÀ¨ºÅÖĞ£¬²¢ÇÒÊ¹ÓÃ·´ÒıºÅ°ü¹ü¡£
-- Predicate±í´ïÊ½Ó¦¸ÃĞ´ÔÚË÷ÒıÇ°Ãæ
 
-## class chain¶¨Î»Ê¾Àı
-Ê¹ÓÃ[facebook-wda](https://github.com/openatx/facebook-wda)½øĞĞÔªËØµã»÷²Ù×÷£º
 
-```python
-s = c.session('com.apple.Preferences') # ´ò¿ªÉèÖÃ
+### å­å­™èŠ‚ç‚¹æœç´¢
 
-s(classChain='XCUIElementTypeWindow/**/XCUIElementTypeCell[`label BEGINSWITH "ÆÁÄ»"`]').click() # µã»÷¡¾ÆÁÄ»Ê¹ÓÃÊ±¼ä¡¿
-s(classChain='**/XCUIElementTypeCell[`label BEGINSWITH "ÆÁÄ»"`]').click()
-s(classChain='**/XCUIElementTypeTable/*[`name == "Í¨Öª"`]').click() # µã»÷¡¾Í¨Öª¡¿
-s(classChain='**/XCUIElementTypeCell[7]').click() # µã»÷¡¾Í¨Öª¡¿
+ç±»ä¼¼äºXPathè¯­æ³•ä¸­çš„åŒåæ–œæ `//`
+
+```bash
+**/XCUIElementTypeCell[`name BEGINSWITH "A"`][-1]/XCUIElementTypeButton[10] # é€‰æ‹©nameä»¥Aå¼€å¤´çš„æœ€åä¸€ä¸ªCellå…ƒç´ çš„ç¬¬10ä¸ªå­å…ƒç´ 
+**/XCUIElementTypeCell[`name BEGINSWITH "B"`] # é€‰æ‹©nameä»¥Bå¼€å¤´çš„æ‰€æœ‰Cellå…ƒç´ 
+**/XCUIElementTypeCell[`name BEGINSWITH "C"`]/XCUIElementTypeButton[10] # é€‰æ‹©nameä»¥Cå¼€å¤´çš„ç¬¬ä¸€ä¸ªCellå…ƒç´ çš„ç¬¬10ä¸ªå­å…ƒç´ 
+**/XCUIElementTypeCell[`name BEGINSWITH "D"`]/**/XCUIElementTypeButton # é€‰æ‹©nameä»¥Då¼€å¤´çš„ç¬¬ä¸€ä¸ªCellå…ƒç´ ä¸‹æ‰€æœ‰åä»£Button
 ```
 
-ÉÏÃæµÄ¶¨Î»Óï¾äÒ²¿ÉÒÔÊ¹ÓÃXPathÓï·¨£¬¶ÔÓ¦ÈçÏÂ£º
+ä½¿ç”¨class chainå®šä½æ˜¯éœ€è¦æ³¨æ„ä»¥ä¸‹å‡ ç‚¹ï¼š
+- Predicateå­—ç¬¦ä¸²è¦å†™åˆ°ä¸­æ‹¬å·ä¸­ï¼Œå¹¶ä¸”ä½¿ç”¨åå¼•å·åŒ…è£¹ã€‚
+- Predicateè¡¨è¾¾å¼åº”è¯¥å†™åœ¨ç´¢å¼•å‰é¢
+
+## class chainå®šä½ç¤ºä¾‹
+ä½¿ç”¨[facebook-wda](https://github.com/openatx/facebook-wda)è¿›è¡Œå…ƒç´ ç‚¹å‡»æ“ä½œï¼š
+
 ```python
-s(xpath='//XCUIElementTypeWindow//XCUIElementTypeCell[starts-with(@label,"ÆÁÄ»")]').click()
-s(xpath='//XCUIElementTypeCell[starts-with(@label,"ÆÁÄ»")]').click()
-s(xpath='//XCUIElementTypeTable/*[@name="Í¨Öª"]').click()
+s = c.session('com.apple.Preferences') # æ‰“å¼€è®¾ç½®
+
+s(classChain='XCUIElementTypeWindow/**/XCUIElementTypeCell[`label BEGINSWITH "å±å¹•"`]').click() # ç‚¹å‡»ã€å±å¹•ä½¿ç”¨æ—¶é—´ã€‘
+s(classChain='**/XCUIElementTypeCell[`label BEGINSWITH "å±å¹•"`]').click()
+s(classChain='**/XCUIElementTypeTable/*[`name == "é€šçŸ¥"`]').click() # ç‚¹å‡»ã€é€šçŸ¥ã€‘
+s(classChain='**/XCUIElementTypeCell[7]').click() # ç‚¹å‡»ã€é€šçŸ¥ã€‘
+```
+
+ä¸Šé¢çš„å®šä½è¯­å¥ä¹Ÿå¯ä»¥ä½¿ç”¨XPathè¯­æ³•ï¼Œå¯¹åº”å¦‚ä¸‹ï¼š
+```python
+s(xpath='//XCUIElementTypeWindow//XCUIElementTypeCell[starts-with(@label,"å±å¹•")]').click()
+s(xpath='//XCUIElementTypeCell[starts-with(@label,"å±å¹•")]').click()
+s(xpath='//XCUIElementTypeTable/*[@name="é€šçŸ¥"]').click()
 s(xpath='//XCUIElementTypeCell[7]').click()
 ```
 
-XPath¶¨Î»Ğ§ÂÊ±Èclass chainµÍ£¬½¨ÒéÊ¹ÓÃclass chainÀ´½øĞĞ¶¨Î»¡£
+XPathå®šä½æ•ˆç‡æ¯”class chainä½ï¼Œå»ºè®®ä½¿ç”¨class chainæ¥è¿›è¡Œå®šä½ã€‚
 
-**²Î¿¼ÎÄµµ£º**
+**å‚è€ƒæ–‡æ¡£ï¼š**
 
 1. [https://github.com/facebookarchive/WebDriverAgent/wiki/Class-Chain-Queries-Construction-Rules](https://github.com/facebookarchive/WebDriverAgent/wiki/Class-Chain-Queries-Construction-Rules)
 
