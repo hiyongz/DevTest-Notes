@@ -1,0 +1,23 @@
+FROM python:3.7-alpine
+LABEL maintainer="hogwarts"
+ARG kdir=/tmp
+#工作路径设定为
+WORKDIR $kdir
+
+#创建环境变量给Flask使用
+ENV FLASK_APP app.py
+ENV FLASK_RUN_HOST 0.0.0.0
+
+#复制app.py到容器内/code目录
+COPY . .
+
+#安装python的依赖
+RUN pip install flask
+
+#映射端口
+EXPOSE 5000
+
+STOPSIGNAL SIGTERM
+
+#为容器设置默认启动命令
+CMD ["flask", "run"]
