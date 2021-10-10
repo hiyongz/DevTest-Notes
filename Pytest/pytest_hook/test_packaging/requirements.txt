@@ -1,0 +1,14 @@
+atomicwrites==1.4.0
+attrs==20.3.0
+colorama==0.4.4
+importlib-metadata==3.10.0
+iniconfig==1.1.1
+packaging==20.9
+pluggy==0.13.1
+py==1.10.0
+pyparsing==2.4.7
+pytest==6.2.2
+pytest-encode @ file:///D:/ProgramWorkspace/TestingDemo/test_pytest_hook/pytest-encode/dist/pytest_encode-0.0.1-py3-none-any.whl
+toml==0.10.2
+typing-extensions==3.7.4.3
+zipp==3.4.1
