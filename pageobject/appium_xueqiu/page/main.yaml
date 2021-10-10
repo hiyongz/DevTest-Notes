@@ -1,0 +1,3 @@
+- by: xpath
+  locater: '//*[@text="行情"]'
+  action: click

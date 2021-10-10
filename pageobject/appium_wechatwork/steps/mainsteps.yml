@@ -1,0 +1,9 @@
+- by: xpath
+  locator: "//*[@text='通讯录']"
+  action: click
+  page: main
+
+- by: xpath
+  locator: "//*[@text='通讯录']"
+  action: click
+  page: search

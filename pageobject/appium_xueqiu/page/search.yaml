@@ -1,0 +1,4 @@
+- by: id
+  locater: search_input_text
+  action: send
+  value: "{value}"
