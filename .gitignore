@@ -7,3 +7,10 @@ pytest_encode.egg-info
 build
 logs
 resultReport
+conan
+holmes
+special_test
+test_blog
+test_miniprogram
+test_testlink
+test_tftp

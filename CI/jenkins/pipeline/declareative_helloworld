@@ -1,0 +1,37 @@
+pipeline {
+    agent any
+    stages {
+        stage('begin'){
+            steps {
+                echo 'hello pipeline begin'
+                sleep 5
+            }
+        }
+        stage('running''){
+            steps {
+                echo 'hello pipeline running'
+                sleep 5
+            }
+        }
+        stage('finish'){
+            steps {
+                echo 'hello pipeline finish'
+                sleep 5
+                // sh 'exit 0'
+            }
+        }
+    }
+    post {
+        success {
+            echo 'goodbye pipeline success!'
+            sleep 5
+        }
+        failure {
+            echo 'ops!!! pipeline failed...'
+            sleep 5
+        }
+        always {
+            echo 'always say goodbye'
+        }
+    }
+}

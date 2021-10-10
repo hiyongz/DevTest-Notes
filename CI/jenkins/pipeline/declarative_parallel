@@ -1,0 +1,25 @@
+pipeline {
+    agent none
+	stages {
+	    stage('并行执行的 Stage') {
+	        parallel {
+	            stage('Stage2.1') {
+	                agent { label "slave1" }
+	                steps {
+	                    echo "在 agent test1 上执行的并行任务 1."
+	                    sh "ifconfig"
+	                    sh "sleep 10"
+	                }
+	            }
+	            stage('Stage2.2') {
+	                agent { label "master" }
+	                steps {
+	                    echo "在 agent test2 上执行的并行任务 2."
+	                    sh "pwd"
+	                    sh "sleep 8"
+	                }
+	            }
+	        }
+	    }
+	}
+}
