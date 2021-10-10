@@ -1,0 +1,23 @@
+import json
+from pprint import pprint
+import requests
+import yaml
+class TestHttp:
+    def setup(self):
+        pass
+    def test_request(self):
+        r=requests.request(
+            {{method}},
+            url={{url}},
+            params={
+            {{#params}}
+                {{.}}
+            {{/params}}
+            },
+        cookies={
+            {{#cookies}}
+                {{.}}
+            {{/cookies}}
+            }
+        )
+        assert r.status_code == 200
