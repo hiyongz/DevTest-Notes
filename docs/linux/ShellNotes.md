@@ -32,4 +32,5 @@ Linux笔记请参阅：[https://notes-of-shell.readthedocs.io](https://notes-of-
 - [常用Windows cmd命令](https://notes-of-shell.readthedocs.io/zh/latest/windows/windows-shell-command.html)
 - [Windows 网络管理命令](https://notes-of-shell.readthedocs.io/zh/latest/windows/windows-shell-for-networking-management.html)
 - [常用Windows 快捷键](https://notes-of-shell.readthedocs.io/zh/latest/windows/windows-shortcuts.html)
+- [VBSscript实现后台运行Windows bat脚本](https://notes-of-shell.readthedocs.io/zh/latest/windows/windows-notes-for-running-a-bat-file-in-background.html)
 
