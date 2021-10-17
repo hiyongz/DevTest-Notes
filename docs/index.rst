@@ -63,6 +63,7 @@
    app/app-testing-for-ios-app-on-windows.md
    app/app-testing-for-ios-location-with-predicate-locator.md
    app/app-testing-for-ios-location-with-classChain.md
+   app/app-testing-tools-for-facebook-wda.md
 
 .. toctree::
    :maxdepth: 1
