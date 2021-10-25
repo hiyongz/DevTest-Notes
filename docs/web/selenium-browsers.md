@@ -121,4 +121,53 @@ self.driver=webdriver.Chrome(options=option)
 self.driver.get('https://www.baidu.com')
 ```
 
-其它基于chrome内核的浏览器也可以使用这种方法来驱动，基于IE内核开发的浏览器还没办法控制，如果各位看官有好的方法，欢迎后台留言！
+## 浏览器不同语言
+
+### 检查浏览器语言
+可以通过使用selenium执行JavaScript语句来获取浏览器语言
+```python
+lang = self.driver.execute_script("return window.navigator.language;")
+```
+在浏览器的控制台执行：
+```js
+> window.navigator.language;
+'zh-CN'
+```
+
+
+### Chrome浏览器
+可以以不同语言拉起Chrome浏览器，测试产品的语言自适应功能。
+```python
+options = Options()
+lang = "zh-CN"
+options.add_argument("--lang={}".format(lang))
+self.driver = webdriver.Chrome(chrome_options=options)
+self.driver.get('https://www.baidu.com')
+```
+不同国家的语言代码可以参考：https://developers.google.com/admin-sdk/directory/v1/languages
+
+或者
+
+打开火狐浏览器语言设置界面查看各个国家的语言代码：
+![](selenium-browsers/Firefox-language.png)
+### 火狐浏览器
+火狐浏览器也可以实现这个功能，实现方式如下（在我电脑上没有成功，可能版本问题）：
+```python
+profile = webdriver.FirefoxProfile()
+profile.set_preference('intl.accept_languages', 'fr')
+self.driver = webdriver.Firefox(firefox_profile=profile)
+self.driver.get('https://www.baidu.com')
+```
+
+### Opera浏览器
+
+Opera浏览器实现方式：
+```python
+browser_locale = 'en-US'
+options = Options()
+options.add_argument("--lang={}".format(browser_locale))
+self.driver = webdriver.Opera(options=options)
+self.driver.get('https://www.baidu.com')
+```
+IE浏览器语言设置需要设置系统语言，需要系统重启，无法通过设置参数的方式进行自动化设置语言。另外还有一种方案是可以通过自动化安装不同语言版本的浏览器进行测试。
+
