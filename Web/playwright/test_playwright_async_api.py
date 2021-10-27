@@ -5,6 +5,7 @@
 # @File:    test_playwright_async_api.py
 
 import asyncio
+
 from playwright.async_api import async_playwright
 
 async def main():
@@ -16,5 +17,4 @@ async def main():
         await browser.close()
 
 asyncio.run(main())
-
 

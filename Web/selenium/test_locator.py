@@ -31,6 +31,7 @@ class TestLocator():
         assert element.get_attribute("value") == "test"
 
     def test_name(self):
+        self.driver.find_element_by_link_text()
         element = self.driver.find_element_by_name("wd")
         element.send_keys("test")
         assert element.get_attribute("value") == "test"
