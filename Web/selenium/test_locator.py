@@ -69,6 +69,7 @@ class TestLocator():
         self.driver.find_element_by_id("kw").send_keys("test")
         self.driver.find_element_by_id("su").click()
         element = self.driver.find_element_by_css_selector("#s_tab a:nth-child(2) + a")
+        # s_tab a:nth-child(2)
         # element = self.driver.find_element_by_css_selector('#s_tab a:nth-last-child(9)')
         # element = self.driver.find_element_by_xpath('//*[@id="s_tab"]/descendant::a[1]')
         element.click()
