@@ -182,7 +182,7 @@ pre + h2 {
 }
 
 h1 {
-  font-size: 1.4em;
+  font-size: 1em;
   margin: 35px 0;
   border-bottom: 1.2px solid #ddd;
   text-align: center !important;
@@ -190,14 +190,14 @@ h1 {
 }
 
 h2 {
-  font-size: 1.3em;
+  font-size: 0.9em;
   border-left: 4px solid #1fcb27 !important;
   padding-left: 15px;
   color: #070707;;
 }
 
 h3 {
-  font-size: 1.2em;
+  font-size: 0.8em;
   color: #1fcb27;;
   font-weight: bold;  
 }
