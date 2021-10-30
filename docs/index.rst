@@ -61,6 +61,7 @@
    app/app-testing-tools-for-uiautomator2.md
    app/app-testing-tools-for-airtestproject.md   
    app/app-testing-for-ios-app-on-windows.md
+   app/app-testing-for-ios-app-testing-on-windows-with-airtest.md
    app/app-testing-for-ios-location-with-predicate-locator.md
    app/app-testing-for-ios-location-with-classChain.md
    app/app-testing-tools-for-facebook-wda.md
