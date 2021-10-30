@@ -71,7 +71,7 @@ class TestLocator():
         self.page.click('input:right-of(#kw)')
         sleep(5)
 
-    def test_nth_march(self):
+    def test_nth_match(self):
         self.page.goto("https://www.baidu.com/")
         sleep(2)
         self.page.click(':nth-match(#s-top-left > a, 2)')
