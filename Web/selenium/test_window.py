@@ -9,7 +9,7 @@ from selenium import webdriver
 # 多窗口切换
 class Testwindows():
     def setup(self):
-        self.driver = webdriver.Chrome()
+        self.driver = webdriver.Chrome(executable_path="D:/testing_tools/chromedriver95/chromedriver.exe")
         self.driver.implicitly_wait(5)
         self.driver.maximize_window()
     def teardown(self):

@@ -3,25 +3,22 @@
 # @Time:    2021/10/30 9:41
 # @Author:  haiyong
 # @File:    test_element_operate.py
-
+import io
 from time import sleep
 
+from PIL.Image import Image
 from playwright.sync_api import sync_playwright
-from playwright.sync_api import Playwright
-from playwright.sync_api import Page
 
 class TestInput():
     def setup(self):
-        # playwright = sync_playwright().start()
-        # self.browser = playwright.chromium.launch(headless=False)
-        # self.context = self.browser.new_context()
-        # self.page = self.context.new_page()
-        self.page = Page
-
+        playwright = sync_playwright().start()
+        # with sync_playwright() as p:
+        self.browser = playwright.chromium.launch(headless=False)
+        self.context = self.browser.new_context()
+        self.page = self.context.new_page()
 
     def teardown(self):
-        # self.browser.close()
-        pass
+        self.browser.close()
 
     def test_click(self):
         self.page.goto("https://sahitest.com/demo/clicks.htm")
@@ -85,9 +82,42 @@ class TestInput():
         sleep(5)
 
     def test_upload_files(self):
-        # self.page.goto("https://image.baidu.com/")
-        # self.page.click("id=sttb")
-        # self.page.click("id=uploadImg")
-        # self.page.set_input_files('id=stfile', 'd://test.jpg')
+        self.page.goto("https://image.baidu.com/")
+        self.page.click("id=sttb")
+        self.page.click("id=uploadImg")
+        self.page.set_input_files('id=stfile', 'd://test.jpg')
         sleep(5)
 
+    def test_focus(self):
+        self.page.goto("https://www.baidu.com/")
+        self.page.focus("id=su")
+        sleep(5)
+
+    def test_screenshot(self):
+        self.page.goto("https://www.baidu.com/")
+        self.page.screenshot(path="screenshot1.png")
+        self.page.screenshot(path="screenshot2.png", full_page=True)
+        screenshot_bytes = self.page.screenshot()
+        open("screenshot3.png", "wb").write(screenshot_bytes)
+
+        element_handle = self.page.query_selector("id=su")
+        element_handle.screenshot(path="baidu.png")
+
+    def test_get_attribute(self):
+        self.page.goto("https://www.baidu.com/")
+        attr_value = self.page.get_attribute("id=su", "type")
+        assert attr_value == "submit"
+        attr_value = self.page.get_attribute("id=su", "value")
+        assert attr_value == "百度一下"
+
+        visible = self.page.is_visible("id=su")
+        assert visible
+
+        enabled = self.page.is_enabled("id=su")
+        assert enabled
+
+        text = self.page.inner_text('#s-top-left:has(a) > a:nth-child(2)')
+        assert text == "hao123"
+
+        content = self.page.text_content('#s-top-left:has(a) > a:nth-child(2)')
+        assert content == "hao123"
