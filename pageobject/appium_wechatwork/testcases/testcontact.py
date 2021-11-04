@@ -6,7 +6,7 @@
 import pytest
 import yaml
 
-from test_appium_wechatwork.page.app import App
+from pageobject.appium_wechatwork.page.app import App
 
 
 class TestAddContact():
