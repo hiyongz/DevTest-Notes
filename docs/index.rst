@@ -43,6 +43,7 @@
    web/selenium-appium-webdriver-wait.md
    web/selenium-grid-for-parallel-execute-script.md
    web/selenium-appium-keycode.md
+   web/web-testing-with-playwright-introduction.md
    
 .. toctree::
    :maxdepth: 1
