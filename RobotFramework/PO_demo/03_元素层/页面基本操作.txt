@@ -1,0 +1,115 @@
+*** Settings ***
+Library           Selenium2Library
+Library           String
+
+*** Keywords ***
+开启开关
+    [Arguments]    ${locator}    ${attr}
+    ${value}    Selenium2Library.Get Element Attribute    ${locator}@${attr}
+    Run Keyword If    '${value}'=='btn-off'    元素点击    ${locator}
+    Sleep    2
+
+元素点击
+    [Arguments]    ${locator}
+    ${locat}    Split String    ${locator}    =    1
+    Comment    Run Keyword If    '${locat}[0]' == 'href'    Click Link    ${locat}[1]
+    ...    ELSE    Click Element    ${locator}
+    Run Keyword If    '${locat}[0]' == 'href'    Run Keyword    Click Link    ${locat}[1]
+    ...    ELSE    Click Element    ${locator}
+    Comment    Run Keyword If    '${locat}[0]' == 'href'    Run Keywords    Click Link    ${locat}[1]
+    ...    AND    Pass Execution    点击href链接
+    Comment    Wait Until Element Is Visible    ${locator}    5
+    Comment    Click Element    ${locator}
+    Comment    ${locator}    Set Variable if    '${locat}[0]' == 'href'    ${locat}[1]
+
+关闭开关
+    [Arguments]    ${locator}    ${attr}
+    ${value}    Selenium2Library.Get Element Attribute    ${locator}@${attr}
+    Run Keyword If    '${value}'=='btn-on'    元素点击    ${locator}
+    sleep    2
+
+checkbox选择
+    [Arguments]    ${locator}
+    ${status}    ${value}    Run keyword and ignore error    Checkbox Should Be Selected    ${locator}
+    Run Keyword If    '${status}'=='FAIL'    元素点击    ${locator}
+
+checkbox取消选择
+    [Arguments]    ${locator}
+    ${status}    ${value}    Run keyword and ignore error    Checkbox Should Be Selected    ${locator}
+    Run Keyword If    '${status}'=='PASS'    元素点击    ${locator}
+
+iframe切换
+    [Arguments]    ${locator}
+    Wait Until Element Is Visible    ${locator}
+    Select Frame    ${locator}
+
+获取文本
+    [Arguments]    ${locator}
+    Wait Until Element Is Visible    ${locator}
+    ${text}    Get Text    ${locator}
+    [Return]    ${text}
+
+文本输入
+    [Arguments]    ${locator}    ${text}
+    Wait Until Element Is Visible    ${locator}
+    Input Text    ${locator}    ${text}
+
+获取属性值
+    [Arguments]    ${locator}    ${attr}
+    Wait Until Element Is Visible    ${locator}
+    ${value}    Selenium2Library.Get Element Attribute    ${locator}@${attr}
+    [Return]    ${value}
+
+打开浏览器
+    [Arguments]    ${pc[0]}
+    Open Browser    ${pc[0]}    gc
+
+关闭浏览器
+    Close Browser
+
+输入IP地址
+    [Arguments]    ${locator}    ${_ip}
+    @{ip_list}    Split String    ${_ip}    .
+    ${ip_len}    Evaluate    len(@{ip_list})
+    FOR    ${i}    IN RANGE    ${ip_len}
+    ${index}    Evaluate    ${i}+1
+    ${locator_new}    Replace String    ${locator}    input[1]    input[${index}]
+    文本输入    ${locator_new}    @{ip_list}[${i}]
+
+检查文本值Text
+    [Arguments]    ${locator}    ${expe}    ${tsexpe}=TSPASS
+    [Documentation]    检查文本值是否和预期的值一致
+    ...
+    ...    ${locator} \ 文本定位标签
+    ...
+    ...    ${expe} \ \ \ 预期值
+    Sleep    0.2
+    Wait Until Element Is Visible    ${locator}
+    ${res}    ${info_result}    Run keyword and ignore error    Get Text    ${locator}
+    ${stau}    Set Variable If    """${info_result}"""=="""${expe}"""    TSPASS
+    ${stau}    Set Variable If    """${info_result}"""!="""${expe}"""    TSFAIL    ${stau}
+    Run Keyword If    '${stau}'=='${tsexpe}'    log    Pass===> \n预期值：${expe} \n获取值：${info_result}
+    Run Keyword If    '${res}' == 'FAIL' and '${tsexpe}' == 'TSPASS'    fail    获取失败
+    Run Keyword If    '${stau}'!='${tsexpe}'    fail    FAIL===> \n预期值：${expe} \n获取值：${info_result}
+    Sleep    0.1
+
+检查文本值value
+    [Arguments]    ${locator}    ${expe}    ${tsexpe}=TSPASS
+    [Documentation]    检查文本值是否和预期的值一致
+    ...
+    ...    ${locator} \ 文本定位标签
+    ...
+    ...    ${expe} \ \ \ 预期值
+    Sleep    0.2
+    ${res}    ${info_result}    Run keyword and ignore error    Get Value    ${locator}
+    ${stau}    Set Variable If    """${info_result}"""=="""${expe}"""    TSPASS
+    ${stau}    Set Variable If    """${info_result}"""!="""${expe}"""    TSFAIL    ${stau}
+    Run Keyword If    '${stau}'=='${tsexpe}'    log    Pass===> \n预期值：${expe} \n获取值：${info_result}
+    Run Keyword If    '${res}' == 'FAIL' and '${tsexpe}' == 'TSPASS'    fail    获取失败
+    Run Keyword If    '${stau}'!='${tsexpe}'    fail    FAIL===> \n预期值：${expe} \n获取值：${info_result}
+    Sleep    0.1
+
+select选择
+    [Arguments]    ${locator}
+    ${status}    ${value}    Run keyword and ignore error    Checkbox Should Be Selected    ${locator}
+    Run Keyword If    '${status}'=='FAIL'    元素点击    ${locator}
