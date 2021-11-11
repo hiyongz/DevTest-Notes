@@ -44,6 +44,7 @@
    web/selenium-grid-for-parallel-execute-script.md
    web/selenium-appium-keycode.md
    web/web-testing-with-playwright-introduction.md
+   web/web-testing-with-playwright-for-locator.md
    web/web-testing-with-selenium-for-redirect-check.md
    
 .. toctree::
