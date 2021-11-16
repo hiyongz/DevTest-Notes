@@ -43,6 +43,7 @@ class TestBrowserLan():
         # driver_path = 'D:/testing_tools/chromedriver85/operadriver.exe'
         self.driver = webdriver.Opera(executable_path=driver_path,options=options)
         self.driver.get('https://www.baidu.com')
+        sleep(10)
 
     @pytest.mark.skip()
     def test_firefox(self):
