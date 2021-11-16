@@ -120,6 +120,20 @@
    network/network-cookies-session-and-token.md
    network/network-tcpdump-and-wireshark.md
 
+.. toctree::
+   :maxdepth: 1
+   :caption: 其它
+   
+   other/markdown-basic-syntax.md   
+   other/front-end-for-typora-css.md
+   other/git-generate-ssh-public-key-guide.md
+   other/git-install-and-guide.md
+   other/github-skills-for-shields-build.md
+   other/personal-blog-hexo-construction-guide.md
+   other/personal-blog-hexo-construction-guide2.md
+   other/personal-blog-for-sphinx-readthedocs-and-github-guide.md   
+   
+   
 关注公众号【测试开发小记】及时接收最新技术文章！
 
 .. image:: /img/wechat.png
