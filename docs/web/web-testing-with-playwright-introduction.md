@@ -30,7 +30,13 @@ playwright具有以下特点：
 
 ## 安装
 
-Playwright安装简单，不需要单独下载浏览器驱动，pip安装：
+Playwright有Node.js、Python、C# 和 Java语言版本，本文介绍Python版本的Playwright使用方法。
+
+Playwright的Python版本仓库地址：[https://github.com/microsoft/playwright-python](https://github.com/microsoft/playwright-python)
+
+官方文档地址：[https://playwright.dev/python/docs/intro](https://playwright.dev/python/docs/intro)
+
+Playwright安装简单，pip安装时会自动下载浏览器驱动：
 
 ```bash
 pip install playwright
