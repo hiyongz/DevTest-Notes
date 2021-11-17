@@ -109,7 +109,6 @@ class TestInput():
         assert attr_value == "submit"
         attr_value = self.page.get_attribute("id=su", "value")
         assert attr_value == "百度一下"
-
         visible = self.page.is_visible("id=su")
         assert visible
 
