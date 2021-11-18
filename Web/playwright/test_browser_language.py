@@ -22,11 +22,9 @@ class TestBrowser():
         page = context.new_page()
         page.goto("https://www.baidu.com/")
         lan = page.evaluate("window.navigator.language;")
-        page.goto("https://www.ip-com.com.cn/")
-        time.sleep(3)
         print(lan)
         assert lan == "zh-CN"
-        print(page.title())
+
 
     def test_edge(self):
         self.browser = self.playwright.chromium.launch(channel="msedge", headless=False)
@@ -34,11 +32,9 @@ class TestBrowser():
         page = context.new_page()
         page.goto("https://www.baidu.com/")
         lan = page.evaluate("window.navigator.language;")
-        page.goto("https://www.ip-com.com.cn/")
-        time.sleep(3)
         print(lan)
-        assert lan == "zh-CN"
-        print(page.title())
+        assert lan == "de-DE"
+
 
     def test_firefox(self):
         self.browser = self.playwright.firefox.launch(headless=False)
@@ -46,11 +42,9 @@ class TestBrowser():
         page = context.new_page()
         page.goto("https://www.baidu.com/")
         lan = page.evaluate("window.navigator.language;")
-        page.goto("https://www.ip-com.com.cn/")
-        time.sleep(3)
         print(lan)
-        assert lan == "zh-CN"
-        print(page.title())
+        assert lan == "de-DE"
+
 
     def test_webkit(self):
         self.browser = self.playwright.webkit.launch(headless=False)
@@ -58,8 +52,5 @@ class TestBrowser():
         page = context.new_page()
         page.goto("https://www.baidu.com/")
         lan = page.evaluate("window.navigator.language;")
-        page.goto("https://www.ip-com.com.cn/")
-        time.sleep(3)
         print(lan)
-        assert lan == "zh-CN"
-        print(page.title())  
+        assert lan == "de-DE"
