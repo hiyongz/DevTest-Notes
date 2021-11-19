@@ -2,3 +2,4 @@
 Suite Setup
 Suite Teardown
 Test Setup
+Resource          ../04_数据/公共变量.txt

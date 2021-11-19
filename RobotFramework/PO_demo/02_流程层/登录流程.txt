@@ -1,12 +1,13 @@
 *** Settings ***
-Resource          ../03_元素层管理/登录.txt
-Resource          ../03_元素层管理/快速设置.txt
-Resource          ../03_元素层管理/页面元素.txt
-Resource          ../04_测试数据/公共变量.txt
-Resource          ../03_元素层管理/页面基本操作.txt
-Resource          无线设置.txt
+Resource          ../03_元素层/页面元素.txt
+Resource          ../03_元素层/页面基本操作.txt
 
 *** Keywords ***
-登录流程
-    [Arguments]    ${url}=${pc[0]}    ${user}=${pc[1]}    ${pwd}=${pc[2]}
+进入用户登录页面
     [Teardown]
+
+用户登录
+    [Arguments]    ${user}    ${pwd}
+    [Teardown]
+
+退出登录
