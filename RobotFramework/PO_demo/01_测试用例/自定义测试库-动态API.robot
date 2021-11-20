@@ -9,3 +9,6 @@ case_001
 case_002
     ${res}    Test Sub    6    1    results=5
     Should Be True    ${res}
+
+case_003
+    example test2

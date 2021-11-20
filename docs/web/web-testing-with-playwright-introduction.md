@@ -338,5 +338,70 @@ from hamcrest import *
 assert_that(page.title(), equal_to("百度一下，你就知道"))
 ```
 
+# playwright Robot Framework库
+如果你使用robot framework来管理和编写测试用例，可以使用robotframework-browser测试库。
 
+browser测试库的github地址：[https://github.com/MarketSquare/robotframework-browser](https://github.com/MarketSquare/robotframework-browser), 安装方法参考README.md文档。
+
+关键字使用说明文档：[https://marketsquare.github.io/robotframework-browser/Browser.html](https://marketsquare.github.io/robotframework-browser/Browser.html)
+
+
+安装失败：
+[https://github.com/MarketSquare/robotframework-browser/issues/682](https://github.com/MarketSquare/robotframework-browser/issues/682)
+
+可能是node版本太高，可以使用node v12.9.1版本
+
+
+# 常见报错
+## Node版本问题
+
+```cmd
+Node.js is only supported on Windows 8.1, Windows Server 2012 R2, or higher.
+Setting the NODE_SKIP_PLATFORM_CHECK environment variable to 1 skips this
+check, but Node.js might not execute correctly. Any issues encountered on
+unsupported platforms will not be fixed.Traceback (most recent call last):
+  File "test.py", line 112, in <module>
+    p = RobotPlaywright()
+  File "test.py", line 29, in __init__
+    self.playwright = sync_playwright().start()
+  File "D:\attrobot3\lib\site-packages\playwright\sync_api\_context_manager.py",
+ line 76, in start
+    return self.__enter__()
+  File "D:\attrobot3\lib\site-packages\playwright\sync_api\_context_manager.py",
+ line 71, in __enter__
+    playwright = self._playwright
+AttributeError: 'PlaywrightContextManager' object has no attribute '_playwright'
+
+Task was destroyed but it is pending!
+task: <Task pending coro=<Connection.run.<locals>.init() running at D:\attrobot3
+\lib\site-packages\playwright\_impl\_connection.py:175> wait_for=<Future pending
+ cb=[<TaskWakeupMethWrapper object at 0x0000000003199288>()]>>
+```
+如果是windows7系统，错误原因可能是node版本太高，v12.16.2以上版本不支持win7，node历史版本下载地址：[https://nodejs.org/dist/](https://nodejs.org/dist/)。 
+
+卸载安装低版本后再次执行脚本，如果还是报上面的错误，可以尝试设置系统变量 `NODE_SKIP_PLATFORM_CHECK` 绕过校验。
+
+```bash
+set NODE_SKIP_PLATFORM_CHECK=1
+```
+
+## 安装msedge报错
+```bash
+$ playwright install msedge
+无法加载文件 C:\Program Files\Python37\Lib\site-packages\playwright\driver\package\bin\reinstall_msedge_stable_win.ps1，因为在此系统中禁止执行脚本。有关详细信息，请参阅 "get-help about_signing"。
+    + CategoryInfo          : NotSpecified: (:) [], ParentContainsErrorRecordE
+   xception
+    + FullyQualifiedErrorId : RuntimeException
+
+```
+
+解决方案：
+打开 Windows PowerShell，执行如下命令：
+```bash
+set-ExecutionPolicy RemoteSigned
+```
+![img](web-testing-with-playwright-introduction/windows-powershell-set-executionpolicy.png)
+
+
+重新执行 `playwright install msedge` 命令安装。
 
