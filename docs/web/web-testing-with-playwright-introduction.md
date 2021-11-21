@@ -338,7 +338,7 @@ from hamcrest import *
 assert_that(page.title(), equal_to("百度一下，你就知道"))
 ```
 
-# playwright Robot Framework库
+## playwright Robot Framework库
 如果你使用robot framework来管理和编写测试用例，可以使用robotframework-browser测试库。
 
 browser测试库的github地址：[https://github.com/MarketSquare/robotframework-browser](https://github.com/MarketSquare/robotframework-browser), 安装方法参考README.md文档。
@@ -352,8 +352,8 @@ browser测试库的github地址：[https://github.com/MarketSquare/robotframewor
 可能是node版本太高，可以使用node v12.9.1版本
 
 
-# 常见报错
-## Node版本问题
+## 常见报错
+### Node版本问题
 
 ```cmd
 Node.js is only supported on Windows 8.1, Windows Server 2012 R2, or higher.
@@ -385,7 +385,7 @@ task: <Task pending coro=<Connection.run.<locals>.init() running at D:\attrobot3
 set NODE_SKIP_PLATFORM_CHECK=1
 ```
 
-## 安装msedge报错
+### 安装msedge报错
 ```bash
 $ playwright install msedge
 无法加载文件 C:\Program Files\Python37\Lib\site-packages\playwright\driver\package\bin\reinstall_msedge_stable_win.ps1，因为在此系统中禁止执行脚本。有关详细信息，请参阅 "get-help about_signing"。
