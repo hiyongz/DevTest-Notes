@@ -47,6 +47,7 @@
    web/web-testing-with-playwright-for-locator.md
    web/web-testing-with-selenium-for-redirect-check.md
    web/web-testing-with-playwright-for-webelement-operate.md
+   web/web-testing-with-playwright-for-dialogs-page-and-popup.md
    
 .. toctree::
    :maxdepth: 1
