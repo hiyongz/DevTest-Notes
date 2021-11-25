@@ -134,6 +134,7 @@
    other/personal-blog-hexo-construction-guide.md
    other/personal-blog-hexo-construction-guide2.md
    other/personal-blog-for-sphinx-readthedocs-and-github-guide.md   
+   other/typora-picture-host-setting-with-picgo-and-gitee.md
    
    
 关注公众号【测试开发小记】及时接收最新技术文章！
