@@ -104,7 +104,8 @@ ul li {
 
 /* p后面是ul元素的属性设置 */
 p + ul,ol {
-  margin-top: -1.2em; /* 向上移动，也就是重叠的部分，目的是为了设置段落和list之间的间隔 */
+  margin-top: -1em; /* 向上移动，也就是重叠的部分，目的是为了设置段落和list之间的间隔 */
+  margin-left: 3em;
 }
 
 .md-list-item p {
