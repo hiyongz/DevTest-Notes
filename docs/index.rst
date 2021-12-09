@@ -17,14 +17,15 @@
 
 .. toctree::
    :maxdepth: 1
-   :caption: pytest测试框架
+   :caption: 自动化测试框架
 
-   pytest/pytest-install-and-running.md
-   pytest/pytest-xunit-style-of-setup-teardown.md
-   pytest/pytest-fixture.md
-   pytest/pytest-allure-report.md
-   pytest/pytest-parametrize.md
-   pytest/pytest-plugin.md
+   testframework/pytest-install-and-running.md
+   testframework/pytest-xunit-style-of-setup-teardown.md
+   testframework/pytest-fixture.md
+   testframework/pytest-allure-report.md
+   testframework/pytest-parametrize.md
+   testframework/pytest-plugin.md
+   testframework/test-framework-for-robotframework-skills.md
 
 
 .. toctree::
