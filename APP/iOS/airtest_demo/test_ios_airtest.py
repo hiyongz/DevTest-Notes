@@ -22,6 +22,7 @@ touch(Template(r"tpl1632398524727.png", record_pos=(-0.34, 0.236), resolution=(1
 # generate html report
 simple_report(__file__)
 
+keyevent("BACK")
 
 
 
