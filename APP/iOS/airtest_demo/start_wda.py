@@ -30,11 +30,12 @@ class StartWDA():
                     return True
 
     def start_wda(self,udid,wda_id,port):
-        print(f'start_wda.vbs "start_wda.bat" " {udid}" " {wda_id}" " {port}"')
-        print(os.getcwd())
-        print(os.path.realpath(__file__))
-        curr_path = os.getcwd()
-        os.system(f'D:\\pythonproj\\DevTest-Notes\\APP\\iOS\\airtest_demo\\start_wda.vbs "start_wda.bat" " {udid}" " {wda_id}" " {port}"')
+        # print(f'start_wda.vbs "start_wda.bat" " {udid}" " {wda_id}" " {port}"')
+        # print(os.getcwd())
+        # print(os.path.realpath(__file__))
+        # curr_path = os.getcwd()
+        bat_path = "D:\\ProgramWorkspace\\DevTest-Notes\\APP\\iOS\\airtest_demo"
+        os.system(f'{bat_path}\\start_wda.vbs "{bat_path}\\start_wda.bat" " {udid}" " {wda_id}" " {port}"')
         for l in range(3):
             time.sleep(3)
             if self.check_wda_port(port):
@@ -72,8 +73,8 @@ class StartWDA():
                 return True
             return False
 
-if __name__ == '__main__':
-    wda = StartWDA()
-    wda.start_wda("00008101-000255021E08001E", "com.facebook.WebDriverAgent.tendatest6.xctrunner", "8100")
+# if __name__ == '__main__':
+#     wda = StartWDA()
+#     wda.start_wda("00008101-000255021E08001E", "com.facebook.WebDriverAgentRunner.test2.xctrunner", "8100")
     # wda.stop_wda("8100")
 

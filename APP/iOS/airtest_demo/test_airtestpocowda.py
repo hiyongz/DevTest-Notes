@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+# !/usr/bin/python3
 # -*-coding:utf-8-*-
 # @Time:    2021/12/10 16:25
 # @Author:  haiyong
@@ -7,31 +7,39 @@
 """
 airtest、poco、facebook-wda混合使用
 """
-__author__ = "DELL"
+
 from airtest.core.api import *
 from .start_wda import StartWDA
 import wda
 from poco.drivers.android.uiautomation import AndroidUiautomationPoco
 from poco.drivers.ios import iosPoco
 
+
 class TestFacebookWDA():
     def setup(self):
         self.udid = "00008101-000255021E08001E"
-        self.wda_bundle_id = "com.facebook.WebDriverAgent.test2.xctrunner"
+        self.wda_bundle_id = "com.facebook.WebDriverAgentRunner.test2.xctrunner"
         self.port = 8100  # 8100为启动WDA设置的端口号
         self.app_name = "com.apple.Preferences"
 
+        # 启动WDA
         self.wda = StartWDA()
-        self.init_devices(platform="IOS",addr="http://localhost:8100/",	uuid="00008101-000255021E08001E",wdaId="com.facebook.WebDriverAgentRunner.tendatest2.xctrunner", port="8100")
-        self.poco_init_devices("IOS")
+        self.wda.stop_wda(self.port)
+        self.wda.start_wda(self.udid, self.wda_bundle_id, self.port)
 
+        # airtest初始化连接设备
+        init_device(platform="IOS", uuid=f"http://localhost:{self.port}/")
+        # poco初始化
+        self.poco = iosPoco()
+        # facebook-wda连接设备
         self.c = wda.Client(f'http://localhost:{self.port}')
+
         self.c.session().app_activate(self.app_name)  # 打开设置
+        # start_app("com.apple.Preferences")
         self.c.implicitly_wait(3.0)
 
     def teardown(self):
-        self.c.session().app_terminate(self.app_name) # 退出设置
-
+        self.c.session().app_terminate(self.app_name)  # 退出设置
 
     def init_devices(self, platform="Android", addr="http://localhost:8100/", uuid=None, wdaId=None, port="8100",
                      stop_wda=True):
@@ -71,5 +79,11 @@ class TestFacebookWDA():
 
     def test_demo(self):
         self.c.swipe_up()
-        time.sleep(2)
+        time.sleep(1)
         self.c(name="通用").click()
+        time.sleep(1)
+        self.poco("关于本机").click()
+        assert self.poco('软件版本').attr('value') == "14.8"
+
+        ele = self.c(name="型号名称", className="XCUIElementTypeCell").wait(timeout=3.0)
+        assert ele.value == "iPhone 12 mini"
