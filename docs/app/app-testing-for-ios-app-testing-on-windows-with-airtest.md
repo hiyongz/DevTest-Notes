@@ -43,7 +43,7 @@ $ tidevice -u [设备 udid] wdaproxy -B [wda 的 bundle Id] --port 8100
 
 
 
-如果你觉得每次进行自动化测试之前都要手动启动WDA比较麻烦，可以考虑使用vbs+bat的方式后台启动WDA。
+如果你觉得每次进行自动化测试之前都要手动启动WDA比较麻烦，可以考虑使用vbs+bat的方式后台启动WDA，实现方式可参考[VBSscript实现后台运行Windows bat脚本](https://blog.csdn.net/u010698107/article/details/120660950)。
 
 
 ### 2. airtest 连接设备
@@ -146,7 +146,57 @@ simple_report(__file__)
 
 ![](app-testing-for-ios-app-testing-on-windows-with-airtest/airtest-ios-testing-report.png)
 
-另外说明一下，facebook-wda、airtest和poco这3个测试库可以混合使用。
+# 和facebook-wda库一起使用
+
+facebook-wda、airtest和poco这3个测试库可以在一个测试项目中使用，下面结合pytest测试框架，使用这3个库实现APP自动化测试。
+
+```python
+from airtest.core.api import *
+from .start_wda import StartWDA
+import wda
+from poco.drivers.android.uiautomation import AndroidUiautomationPoco
+from poco.drivers.ios import iosPoco
+
+
+class TestFacebookWDA():
+    def setup(self):
+        self.udid = "00008101-000255021E08001E"
+        self.wda_bundle_id = "com.facebook.WebDriverAgentRunner.test1.xctrunner"
+        self.port = 8100  # 8100为启动WDA设置的端口号
+        self.app_name = "com.apple.Preferences"
+
+        # 启动WDA
+        self.wda = StartWDA()
+        self.wda.stop_wda(self.port)
+        self.wda.start_wda(self.udid, self.wda_bundle_id, self.port)
+
+        # airtest初始化连接设备
+        init_device(platform="IOS", uuid=f"http://localhost:{self.port}/")
+        # poco初始化
+        self.poco = iosPoco()
+        # facebook-wda连接设备
+        self.c = wda.Client(f'http://localhost:{self.port}')
+
+        self.c.session().app_activate(self.app_name)  # 打开设置
+        # start_app("com.apple.Preferences")
+        self.c.implicitly_wait(3.0)
+
+    def teardown(self):
+        self.c.session().app_terminate(self.app_name)  # 退出设置
+
+    def test_demo(self):
+        self.c.swipe_up()
+        time.sleep(1)
+        self.c(name="通用").click()
+        time.sleep(1)
+        self.poco("关于本机").click()
+        assert self.poco('软件版本').attr('value') == "14.8"
+
+        ele = self.c(name="型号名称", className="XCUIElementTypeCell").wait(timeout=3.0)
+        assert ele.value == "iPhone 12 mini"
+```
+
+airtest和facebook-wda初始化连接设备（创建session）后，它们向WDA发送命令互不影响。需要注意的是，Android APP自动化测试中，airtest、appium和uiautomator2之间是有冲突的，因为它们安装在手机上的uiautomator server不一样，且不能同时运行。
 
 
 
