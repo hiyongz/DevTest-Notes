@@ -50,6 +50,7 @@
    web/web-testing-with-playwright-for-webelement-operate.md
    web/web-testing-with-playwright-for-dialogs-page-and-popup.md
    web/web-testing-with-playwright-for-javascript-expression.md
+   web/web-testing-with-playwright-for-browser-language.md
    
 .. toctree::
    :maxdepth: 1
