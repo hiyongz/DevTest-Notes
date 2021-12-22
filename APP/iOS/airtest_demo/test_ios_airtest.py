@@ -24,7 +24,7 @@ simple_report(__file__)
 
 keyevent("BACK")
 
-
+stop_app()
 
 
 

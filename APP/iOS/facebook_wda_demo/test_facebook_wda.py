@@ -55,7 +55,14 @@ class TestFacebookWDA():
         self.c.alert.accept()
         s(text='Dashboard').child(className='Cell')
         s(name="屏幕使用时间").swipe("up")
+        s(name="屏幕使用时间").wait(timeout=3.0)  # 等待元素出现
+        s(name="屏幕使用时间").get()
 
+    def test_wda2(self):
+        # s = self.c.session('com.apple.Preferences')
+        # ele1 = s(name="屏幕使用时间")
+        ele2 = self.c(xpath='//Switch').wait(timeout=3.0)
+        ele2.set_text()
 
 
 

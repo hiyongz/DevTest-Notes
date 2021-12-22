@@ -25,10 +25,10 @@ class TestDemo():
 
         self.c(name="搜索").set_text("NFC")  # 搜索 NFC
         self.c(name="NFC").click()  # 点击NFC
-        self.c.click()  # 点击NFC
         time.sleep(1)
 
         ele = self.c(xpath='//Switch').wait(timeout=3.0)
+        ele.set_text()
         sw = ele.value
         if sw == '1':
             ele.click()

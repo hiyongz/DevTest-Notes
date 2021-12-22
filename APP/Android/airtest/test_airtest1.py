@@ -80,10 +80,14 @@ sleep(6)
 
 
 
+keyevent("BACKSPACE")
 
 
-
-
+from airtest.aircv.aircv import *
+from airtest.aircv.template_matching import *
+im_source = d.screenshot(format='opencv')
+im_target = imread("连接设备.png")
+tem = TemplateMatching(im_target, im_source)
 
 
 
