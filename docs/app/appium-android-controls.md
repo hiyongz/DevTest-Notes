@@ -1,4 +1,4 @@
-# App控件定位
+# App控件定位：Android 控件介绍及元素定位方法
 <!--more-->
 
 ## Android基础知识
@@ -82,6 +82,11 @@ $ weditor # 启动server并打开浏览器
 启动后会在浏览器自动访问 [http://localhost:17310](http://localhost:17310)
 
 ![](appium-android-controls/weditor.png)
+
+如果你用appium编写APP自动化用例，而使用weditor来查看页面元素。在运行appium用例脚本时需要停止UiAutomator守护服务，因为UiAutomator相关进程会导致appium依赖的uiautomatorviewer 服务无法运行。
+
+关闭方法参考文档 [https://github.com/openatx/uiautomator2#stop-uiautomator](https://github.com/openatx/uiautomator2#stop-uiautomator) 。
+
 ### Appium inspector工具
 
 打开appium，点击【启动服务器】
