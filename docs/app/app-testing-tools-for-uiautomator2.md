@@ -370,6 +370,28 @@ d.screenshot().save("saved.png")
 cv2.imwrite('saved.jpg', d.screenshot(format='opencv'))
 ```
 
+## 按键操作
+
+uiautomator2支持一些按键事件，比如home、back等
+
+```python
+d.press("home") # 点击home键；也可以使用keycode：d.press(0x03) 效果一样
+d.press("back") # 返回；d.press(0x04)
+```
+
+按键对应的keycode可以到 [https://developer.android.com/reference/android/view/KeyEvent.html](https://developer.android.com/reference/android/view/KeyEvent.html) 查看。
+
+还支持以下按键名：home、back、left、right、up、down、center、menu、search、enter、delete ( or del)、recent (recent apps)、volume_up、volume_down、volume_mute、camera、power。
+
+其它方法：
+
+```python
+d.screen_on() # 点亮屏幕
+d.screen_off() # 关闭屏幕
+d.info.get('screenOn') # 屏幕是否点亮
+d.unlock() # 解锁：点亮屏幕并解锁，需禁用锁屏密码
+```
+
 ## 命令行操作
 
 获取指定设备的当前包名和activity
@@ -410,7 +432,97 @@ $ uiautomator2 stop com.example.app # 停止一个app
 $ uiautomator2 stop --all # 停止所有的app
 ```
 
+## 图像匹配
+uiautomator2提供了图像匹配的方法，使用方法如下：
+
+先安装依赖：
+```bash
+pip3 install -U "uiautomator2[image]" -i https://pypi.doubanio.com/simple
+```
+提供了 match() 和 click() 两个接口：
+```python
+img = "target.png" 
+d.image.match(img) # 图像匹配。返回一个dict, eg: {"similarity": 0.9, "point": [200, 300]}
+d.image.click(imdata, timeout=10) # 点击。轮询查找图片，当similarity>0.9时，执行点击操作
+```
+
+作者说这个功能还在完善中，经测试体验确实不是很好。 click()方法点击速度很慢，平均4s才找到图片并完成点击操作。match() 方法基本不能用，页面中没有此图片内容，而返回的相似度也达到99%。
+
+我在[App自动化测试工具Airtest](https://blog.csdn.net/u010698107/article/details/118468631)中介绍了基于图像识别的自动化测试框架Airtest，它在图片识别上操作效率很高，图像匹配速度很快。而airtest、appium和uiautomator2不能一起使用，因为它们使用的uiautomator server不一样，不能同时运行。因此无法直接使用airtest 弥补uiautomator2在图像识别上的缺陷。
+
+那么是否可以只调用airtest图像匹配相关的方法呢？如果你了解Airtest图像识别原理，就知道这肯定是可行的。这里我就不介绍Airtest图像识别具体是怎么实现的了，下面直接给出uiautomator2如何调用Airtest提供的图像识别方法代码。
+
+```python
+import uiautomator2 as u2
+from airtest.aircv.aircv import *
+from airtest.aircv.template_matching import *
+
+class ImageMatch():
+    def __init__(self):
+        self._device = '127.0.0.1:7555'
+        self._appPackage = 'com.xueqiu.android'
+        self._appActivity = '.common.MainActivity'
+
+    def init_device(self):
+        self.d = u2.connect_usb(self._device)
+        self.d.set_new_command_timeout(300)
+        self.d.app_start(self._appPackage, self._appActivity)
+
+    def match_img(self, img, threshold=0.8):
+        """图片匹配
+        :img: 图片，APP中截取的图片
+        :threshold: 阈值
+        """
+        best_match = self._img_matching(img, threshold=threshold)
+        try:
+            similarity = best_match["confidence"]
+            print("相似度: %s" % similarity)
+            return similarity
+        except Exception as e:
+            raise RuntimeError(e)
+
+    def touch_img(self, img, threshold=0.8):
+        """根据图片点击
+        :img: 图片，APP中截取的图片
+        :threshold: 阈值
+        """
+        best_match = self._img_matching(img, threshold=threshold)
+        try:
+            self.d.click(*best_match['result'])
+        except Exception as e:
+            raise RuntimeError(e)
+
+    def _img_matching(self, img, threshold=0.8):
+        """在当前页面匹配目标图片
+        :img: 目标图片
+        :threshold: 相似度阈值
+        :return 返回相似度大于阈值的图片信息，例如: {'result': (177, 2153), 'rectangle': ((89, 2079), (89, 2227), (265, 2227), (265, 2079)), 'confidence': 0.7662398815155029, 'time': 0.08855342864990234}
+        """
+        im_source = self.d.screenshot(format='opencv')
+        im_target = imread(img)
+        temp = TemplateMatching(im_target, im_source)
+        setattr(temp, 'threshold', threshold)
+        best_match = temp.find_best_result()
+        if best_match is None:
+            raise AssertionError("没有匹配到目标图片")
+        # print("similarity: %s"%best_match["confidence"])
+        return best_match
+
+if __name__ == '__main__':
+    im = ImageMatch()
+    im.init_device()
+    
+    img = "target.png"
+    im.match_img(img)
+    im.touch_img(img)
+```
+
+图像匹配的核心代码是 `_img_matching()` 方法，使用了airtest提供的TemplateMatching类，基于kaze算法进行图像识别。
+
+airtest图像匹配效率很高，它提供的图像匹配方法可以弥补uiautomator2在图像匹配上的缺陷。
+
 ## pytest + Uiautomator2实例
+下面来写一个使用pytest测试框架的小例子。
 
 测试步骤：
 
