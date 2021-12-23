@@ -88,6 +88,8 @@ class TestU2():
         # logger.info("similarity: %s"%best_match["confidence"])
         return best_match
 
-
+    def test_key_event(self):
+        self.d.press("home")  # 点击home键；也可以使用keycode：d.press(0x03) 效果一样
+        self.d.press("back")  # 返回；d.press(0x04)
 
 
