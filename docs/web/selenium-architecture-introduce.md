@@ -1,7 +1,7 @@
-# Selenium自动化测试框架介绍
+# Selenium Webdriver 架构
 <!--more-->
 ## Selenium简介
-Selenium是浏览器的自动化测试工具，与浏览器进行交互，实现对web应用的自动化测试，Selenium包括Selenium IDE, Selenium Webdriver 和 Selenium Grid三个工具。
+[Selenium](https://www.selenium.dev/)是用于浏览器的自动化测试工具，与浏览器进行交互，实现对web应用的自动化测试，Selenium包括Selenium IDE, Selenium Webdriver 和 Selenium Grid三个工具。
 ![](selenium-architecture-introduce/selenium.png)
 Selenium IDE (Integrated Development Environment)是一个浏览器插件，提供脚本录制、脚本生成和回放功能，初次使用selenium的新手可以用它来做一些简单的测试，
 

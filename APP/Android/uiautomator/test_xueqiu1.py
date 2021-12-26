@@ -77,6 +77,7 @@ class TestU2():
         #
         # self.d.click()
         # self.d.long_click()
+        self.d.app_current()
         self.d.swipe()
         self.d.pinch_in()
         # self.d.swipe_ext("right")

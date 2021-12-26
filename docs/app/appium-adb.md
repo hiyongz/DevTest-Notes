@@ -3,7 +3,7 @@ Android调试桥(ADB, Android Debug Bridge)是一个Android命令行工具，包
 <!--more-->
 
 ## 一、ADB运行原理
-adb分为三个部分：PC上的adb client，adb server和手机（也可能是PC上的模拟器）上的adb daemon。这是一个**多多连接**的设计。即一台PC可以连接多个手机，一台手机也可以连接多个PC。
+[adb](https://developer.android.com/studio/command-line/adb)分为三个部分：PC上的adb client，adb server和手机（也可能是PC上的模拟器）上的adb daemon。这是一个**多多连接**的设计。即一台PC可以连接多个手机，一台手机也可以连接多个PC。
 ![](appium-adb/adb.jpg)
 
 1. **Client本质上就是Shell**，用来发送命令给**Server**。发送命令时，首先检测PC上有没有启动Server，如果没有Server，则自动启动一个Server，绑定 TCP 的 5037 端口，然后将命令发送到Server，并不关心命令发送过去以后会怎样。
@@ -17,7 +17,25 @@ Client和Server之间通过**TCP/IP**通信，Server侦听本机的**5037端口*
 netstat -nao | findstr 5037
 ```
 ![](appium-adb/adb2.jpg)
-## 二、ADB常用命令
+
+## 二、ADB安装
+
+`adb` 包含在 Android SDK 平台工具软件包中，有两种方法安装adb工具：
+
+1. 使用SDK Manager安装，会安装到 `platform-tools` 目录下。具体安装方法可参考[Appium 介绍及环境安装](https://blog.csdn.net/u010698107/article/details/111416347)中的**安装Android SDK**部分。
+2. 单独下载平台工具，下载地址：[https://developer.android.com/studio/releases/platform-tools](https://developer.android.com/studio/releases/platform-tools)。下载完成后解压，添加到环境变量即可。
+
+查看是否安装成功：
+
+```bash
+$ adb --version
+Android Debug Bridge version 1.0.40
+Version 4986621
+Installed as D:\android-sdk-windows\platform-tools\adb.exe
+```
+
+
+## 三、ADB常用命令
 ### 1. adb server启动和连接
 * 启动 adb server
 ```shell
@@ -67,28 +85,6 @@ adb devices
 ```shell
 adb reboot
 ```
-查看appPackage和appActivity
-```bash
-# 1
-adb logcat | findstr -i displayed # 打印手机日志
-# 2
-adb shell dumpsys activity
-# 3
-C:\Users\admin> adb shell
-root@shamu:/ # dumpsys activity | grep kaoyan
-# 4
-adb shell dumpsys activity top
-# 5
-adb shell dumpsys activity|findstr mFocusedActivity # 进入APP，得到APP名
-# 6
-adb shell dumpsys window windows|findstr "Current"
-# 7
-adb shell pm list packages #所有应用列表
-adb shell pm list packages -s # 系统应用
-adb shell pm list packages -3 # 第三方应用
-adb shell pm list packages smart # 包名包含smart字符串的应用
-
-```
 安装卸载apk包
 模拟器可以直接把安装包拖入模拟器进行安装
 
@@ -101,7 +97,72 @@ adb install app.apk
 adb install -r app.apk # 强制安装
 ```
 
-### 3. adb 模拟控制手机
+打印手机日志
+```bash
+adb logcat | findstr -i displayed # 打印手机日志
+```
+
+### 3. 查看appPackage和appActivity
+测试某个APP时，通常是先拉起这个APP，需要知道APP包名appPackage，appium启动APP时还需要知道APP某个页面的activity名称appActivity，可以通过adb命令来获取。
+
+获取所有活动
+```bash
+adb shell dumpsys activity | grep tencent # linux
+adb shell dumpsys activity | findstr tencent # windows
+```
+或者先进入shell环境：
+```bash
+$ adb shell
+root@shamu:/ # dumpsys activity | grep tencent
+```
+
+获取当前APP的Package和Activity名：
+```bash
+adb shell dumpsys activity activities | findstr mResumedActivity
+```
+例如，打开微信(android 10)：
+```bash
+$ adb shell dumpsys activity activities | findstr mResumedActivity
+    mResumedActivity: ActivityRecord{3a7bec6 u0 com.tencent.mm/.ui.LauncherUI t50558}
+```
+
+获取最顶层的activity，也可用来获取当前打开应用的Package和Activity名。
+```bash
+adb shell dumpsys activity top 
+```
+上面的命令会打印大量日志信息，需要过滤一下：
+```bash
+adb shell dumpsys activity | findstr mFocusedActivity
+adb shell dumpsys window windows|findstr "mCurrentFocus"
+```
+如果是Android 8.0及以上的版本，上面的命令可能不能获取到任何信息，因为没有 `mFocusedActivity` 和`mCurrentFocus` 字符。可使用如下命令：
+```bash
+adb shell dumpsys activity top | findstr "ACTIVITY"
+```
+返回结果中的最后一行就是当前应用，先打开微信（Android 10），执行如下命令：
+```bash
+adb shell dumpsys activity top | findstr "ACTIVITY"
+  ACTIVITY com.eg.android.AlipayGphone/.AlipayLogin 39a2048 pid=32182
+  ACTIVITY com.tencent.mobileqq/.activity.SplashActivity 3984ac6 pid=(not running)
+  ACTIVITY com.android.contacts/.activities.ContactDetailActivity 393a983 pid=(not running)
+  ACTIVITY tv.danmaku.bili/.MainActivityV2 3a7bf44 pid=19466
+  ACTIVITY com.android.email/.activity.Welcome 3c09b05 pid=29831
+  ACTIVITY com.tencent.mp/.feature.main.ui.MainActivity 39e2448 pid=4217
+  ACTIVITY com.huawei.browser/.BrowserMainActivity 3a13583 pid=15562
+  ACTIVITY com.yinxiang/.main.activity.MainActivity 32faf05 pid=5081
+  ACTIVITY com.huawei.android.launcher/.unihome.UniHomeLauncher 3906ac6 pid=3143
+  ACTIVITY com.tencent.mm/.ui.LauncherUI 3a7bec6 pid=30547
+```
+
+查看应用列表
+```bash
+adb shell pm list packages #所有应用列表
+adb shell pm list packages -s # 系统应用
+adb shell pm list packages -3 # 第三方应用
+adb shell pm list packages smart # 包名包含smart字符串的应用
+```
+
+### 4. adb 模拟控制手机
 #### 拉起、停止Activity
 `adb shell am start [options] <INTENT>` ：调起 Activity
 `adb shell am force-stop <packagename>` ： 强制停止应用
@@ -114,6 +175,7 @@ adb shell am start -a android.intent.action.VIEW -d https://www.baidu.com # 打�
 ```
 
 #### 模拟按键
+
 `adb shell input keyevent <keycode>`： 模拟按键 
 ```bash
 adb shell input keyevent 3 # 按下HOME 键
@@ -145,7 +207,7 @@ adb shell input swipe 700 200 100 200 # 左翻页
 adb shell input swipe 100 200 1000 200 # 右翻页
 ````
 
-### 4. adb文件管理（同Linux）
+### 5. adb文件管理（同Linux）
 #### 目录操作
 ```bash
 C:\Users\DELL>adb shell
@@ -233,7 +295,7 @@ find /data -name "cmcc_sso_config*"
 /data/media/0/cmcc_sso_config111.dat
 ```
 
-### 5. 其它实用功能
+### 6. 其它实用功能
 #### 屏幕截图-截图保存到SD卡里再导出
 ```bash
 D:\>adb shell screencap -p /sdcard/screen.png
@@ -366,7 +428,7 @@ wpa_cli -i wlan0 set_network 0 ssid  "wifi_name" \\配置WiFi热点的名称ssid
 wpa_cli -i wlan0 set_network 0 psk '"12345678"' \\配置WiFi热点的密码psk
 ```
 
-## 三、Python获取ADB返回结果
+## 四、Python获取ADB返回结果
 
 ```python
 cmd = "adb shell pm list packages smarthome"
@@ -389,7 +451,7 @@ def now_time_new(self):
         return (dates,times)
 ```
 
-## 四、常见问题
+## 五、常见问题
 没有运行模拟器，而`adb devices`显示多余的设备emulator-5576
 ```sh
 C:\Users\DELL>adb devices
