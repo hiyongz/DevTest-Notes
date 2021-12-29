@@ -113,6 +113,7 @@
    CI/continuous-integration-for-jenkins-api.md
    CI/continuous-integration-for-jenkins-blog-build.md
    CI/continuous-integration-for-blog-build-with-github-actions.md
+   CI/continuous-integration-skills-for-cron-expression.md
 
 .. toctree::
    :maxdepth: 1
