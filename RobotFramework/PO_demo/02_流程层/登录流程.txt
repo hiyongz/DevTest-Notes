@@ -4,10 +4,14 @@ Resource          ../03_元素层/页面基本操作.txt
 
 *** Keywords ***
 进入用户登录页面
+    log    进入用户登录页面
     [Teardown]
 
 用户登录
     [Arguments]    ${user}    ${pwd}
+    log    ${user}
+    log    ${pwd}
     [Teardown]
 
 退出登录
+    log    退出登录
