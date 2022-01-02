@@ -1,4 +1,5 @@
 *** Settings ***
+Default Tags      login
 Resource          ../02_流程层/登录流程.txt
 
 *** Test Cases ***
