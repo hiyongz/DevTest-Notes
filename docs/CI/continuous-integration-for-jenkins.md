@@ -1,4 +1,4 @@
-# 持续集成平台Jenkins介绍
+# 持续集成平台Jenkins配置方法介绍
 持续集成（Continuous integration，CI）是软件开发和发布流程中最重要的组成部分，有利于加快开发进度。Jenkins是常用的持续集成管理工具，本文将简要介绍Jenkins持续集成工具。
 
 <!--more-->
@@ -28,46 +28,6 @@ Jenkins是免费开源的持续集成管理工具，基于Java开发，可以跨
 
 Docker Jenkins安装和启动方法参考：[Docker搭建持续集成平台Jenkins](https://blog.csdn.net/u010698107/article/details/113819992)
 
-## Jenkins更新
-进入Manage Jenkins，提示新版本，点击下载 jenkins.war 包。
-![](continuous-integration-for-jenkins/jenkins-download.png)
-
-### 1. jenkins.war 位置查看
-**方法1：Manage Jenkins中查看**
-点击进入Manage Jenkins，找到Status Information，点击System Information，可以查看war包位置
-![](continuous-integration-for-jenkins/jenkins-system-information.png)
-** 方法2：find命令查找 **
-使用root账号进入容器中后使用find命令查找
-```sh
-[root@server ~]# docker exec -it -u root jenkins bash
-root@ed883da9faab:/# find / -name jenkins.war
-find: ‘/proc/1/map_files’: Operation not permitted
-find: ‘/proc/7/map_files’: Operation not permitted
-find: ‘/proc/138/map_files’: Operation not permitted
-find: ‘/proc/155/map_files’: Operation not permitted
-/usr/share/jenkins/jenkins.war
-root@ed883da9faab:/# 
-```
-### 2. 更新容器中的war包
-使用root账号进入容器中，备份原来的war包
-```sh
-[root@server ~]# docker exec -it -u root jenkins bash
-root@ed883da9faab:/# cd /usr/share/jenkins
-root@ed883da9faab:/usr/share/jenkins# mv jenkins.war jenkins.war.bak
-```
-将下载的war包复制到容器目录 /usr/share/jenkins 下（注意是在宿主机上操作）
-```sh
-[root@server ~]# docker cp jenkins.war jenkins:/usr/share/jenkins/
-[root@server ~]# docker exec -it -u root jenkins bash
-root@ed883da9faab:/usr/share/jenkins# ls
-jenkins.war  jenkins.war.bak  ref
-```
-### 3. 重启Jenkins
-```sh
-$ docker restart jenkins
-```
-刷新页面，登陆，进入Manage Jenkins，可以看到版本更新成功，可以降回原来的版本。
-![](continuous-integration-for-jenkins/jenkins-download-update.png)
 
 ## Jenkins配置
 ### 系统配置
@@ -78,8 +38,7 @@ $ docker restart jenkins
 - 默认 Shell：bash
 - 等
 
-#### 配置 Shell
-比如在windows代理节点中，默认命令行使用cmd，如果你想使用Git Bash，可以在系统配置中进行配置。进入Manage Jenkins -> System Configuration -> Configure System，下拉到shell，配置Shell executable为你的命令行文件路径，比如我的git bash路径为：`D:/tools/Git/bin/sh.exe`
+在windows代理节点中，默认命令行使用cmd，如果你想使用Git Bash，可以在系统配置中进行配置。进入Manage Jenkins -> System Configuration -> Configure System，下拉到shell，配置Shell executable为你的命令行文件路径，比如我的git bash路径为：`D:/tools/Git/bin/sh.exe`
 ![](continuous-integration-for-jenkins/jenkins-shell-executable.png)
 
 ### 插件管理
@@ -100,18 +59,72 @@ Jenkins推荐插件：
 * Allure
 
 ### 用户权限控制
+
+#### 用户管理
+
 在Jenkins的初始化安装过程中会先注册一个管理员用户，管理员用户可以创建一般用户，管理员用户具有最高权限。
 
 进入Manage Jenkins -> Security -> Configure Global Security进行安全配置
+
 可以勾选允许用户注册，团队人数较少时，一般建议不勾选，由管理员创建
-![](continuous-integration-for-jenkins/jenkins-security.png)
+
+![](continuous-integration-for-jenkins\jenkins-security.png)
 
 进入Manage Jenkins -> Security -> Manage Users进行用户管理，可以进行用户删除、修改和添加操作
-![](continuous-integration-for-jenkins/jenkins-security-manage-user.png)
 
-权限控制在Manage Jenkins -> Security -> Configure Global Security -> Authorization下
-可以选择【安全矩阵】（个人权限）或者【项目矩阵】（项目权限）进行权限管理
-![](continuous-integration-for-jenkins/jenkins-security-matrix.png)
+![](continuous-integration-for-jenkins\jenkins-security-manage-user.png)
+
+
+#### 用户权限管理
+
+可以使用 Matrix Authorization Strategy 插件对用户权限进行管理。
+
+进入Manage Jenkins -> Security -> Configure Global Security -> Authorization
+
+可以选择【安全矩阵】（个人权限）对用户进行权限管理。
+
+![](continuous-integration-for-jenkins\jenkins-security-matrix.png)
+
+#### 项目权限配置
+如果要对项目进行授权管理，让不同的用户管理不同的项目，一种方式是勾选【项目矩阵】：
+![](continuous-integration-for-jenkins\jenkins-job-security-matrix.png)
+
+配置好后，在项目内可以配置用户权限，选择一个job，进入项目配置，可以配置项目权限：
+![](continuous-integration-for-jenkins\jenkins-job-security-matrix2.png)
+
+除了这种方式外，还有一种方式就是对用户进行角色管理，这个功能由Role-based Authorization Strategy插件提供，先安装这个插件。
+![](continuous-integration-for-jenkins\jenkins-security-role-based-authorization-strategy.png)
+
+进入Manage Jenkins -> Security -> Configure Global Security -> Authorization，勾选Role-Based Strategy：
+![](continuous-integration-for-jenkins\jenkins-security-role-based-strategy.png)
+
+在Mange Jenkins -> Security中会出现Manage and Assign Roles，
+![](continuous-integration-for-jenkins\jenkins-security-manage-and-assign-roles.png)
+
+点击Manage and Assign Roles，发现可以管理和分配角色。
+![](continuous-integration-for-jenkins\jenkins-security-manage-and-assign-roles2.png)
+
+先进入【Manage Roles】，添加tester和developer两个Global roles，分配一些权限。
+![](continuous-integration-for-jenkins\jenkins-security-manage-roles.png)
+
+添加Item roles，
+![](continuous-integration-for-jenkins\jenkins-security-manage-roles-item-roles.png)
+
+添加Node roles，
+![](continuous-integration-for-jenkins\jenkins-security-manage-roles-node-roles.png)
+
+配置完成后，添加tester1和developer1两个用户。
+
+进入【Assign Roles】，配置Global roles
+![](continuous-integration-for-jenkins\jenkins-security-assign-roles-global-roles.png)
+
+配置Item roles
+![](continuous-integration-for-jenkins\jenkins-security-assign-roles-item-roles.png)
+
+配置Node roles
+![](continuous-integration-for-jenkins\jenkins-security-assign-roles-node-roles.png)
+
+配置完成后可以登录不同角色用户来测试一下。
 
 ### 关闭跨站请求伪造保护（CSRF）
 
@@ -152,12 +165,11 @@ docker restart jenkins
 
 ![](continuous-integration-for-jenkins/csrf-disabled.png)
 
-##  slave节点管理
-在实际工作中，考虑到宿主机资源限制，可以采用多节点的方式，将任务分配到其他节点执行。通过添加多个Jenkins slave节点来执行Jenkins任务， Jenkins运行的主机称为 master节点：
+##  执行机管理
+在实际工作中，考虑到宿主机资源限制，可以采用多节点的方式，将任务分配到其他节点执行。通过添加多个Jenkins Nodes来执行Jenkins任务， Jenkins运行的主机称为Built-In Node：
 * 节点上需要配置Java运行环境, Java_Version>1.5
 * 节点支持Windows, Linux，Mac系统
 
-### 节点添加方式
 先查看是否配置了Java运行环境：
 ```sh
 [root@server /]# java -version
@@ -169,7 +181,7 @@ OpenJDK 64-Bit Server VM (build 25.252-b09, mixed mode)
 
 进入Manage Jenkins -> System Configuration -> Manage Nodes and Clouds
 
-**1、添加Linux节点**
+### 添加Linux节点
 配置节点（注意我配置的slave节点为宿主机）：
 ![](continuous-integration-for-jenkins/jenkins-slave-node-configure.png)
 发现节点连接不成功
@@ -185,7 +197,7 @@ OpenJDK 64-Bit Server VM (build 25.252-b09, mixed mode)
 上线成功
 ![](continuous-integration-for-jenkins/jenkins-slave-status.png)
 
-**2、添加Windows节点**
+### 添加Windows节点
 windows节点配置
 ![](continuous-integration-for-jenkins/jenkins-windows-node-configure.png)
 
@@ -226,6 +238,67 @@ tcp        0      0 0.0.0.0:50000           0.0.0.0:*               LISTEN      
 [root@haiyong jenkins_home]# 
 ```
 
+### 设置windows节点开机自动启动
+
+下面介绍2种方法。
+
+#### 方法1：添加任务计划程序
+
+https://www.cnblogs.com/landhu/p/6758197.html
+
+进入控制面板 -> 管理工具 -> 任务计划程序
+
+![](continuous-integration-for-jenkins/windows-plan-task.png)
+
+点击操作，创建一个基本任务，设置名称，点击下一步
+
+![](continuous-integration-for-jenkins/windows-plan-task2.png)
+
+设置触发器
+
+![](continuous-integration-for-jenkins/windows-plan-task3.png)
+
+选择启动程序
+
+![](continuous-integration-for-jenkins/windows-plan-task4.png)
+
+设置程序脚本及参数
+
+脚本输入java.exe，参数设置为 `-jar agent.jar -jnlpUrl http://192.168.98.228:8080/computer/windows%2Dslave1/jenkins-agent.jnlp -secret b246b061660b4db4d48a69090705624d19fab65e2f30b53e73c9746309fa2a0c -workDir "D:\jenkins"`
+
+![](continuous-integration-for-jenkins/windows-plan-task5.png)
+
+点击下一步，点击完成
+
+![](continuous-integration-for-jenkins/windows-plan-task6.png)
+
+可以手动运行一下，查看是否可以启动成功。
+
+![](continuous-integration-for-jenkins/windows-plan-task7.png)
+
+
+
+#### 方法2：自动运行启动脚本
+
+编写bat脚本jenkins_agent.bat：
+
+```bat
+@echo off
+java -jar agent.jar -jnlpUrl http://192.168.98.228:8080/computer/windows%2Dslave1/jenkins-agent.jnlp -secret b246b061660b4db4d48a69090705624d19fab65e2f30b53e73c9746309fa2a0c -workDir "D:\jenkins"
+```
+
+如果直接将这个bat脚本放到 `C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp` 路径下，开机启动时会打开一个命令行窗口，如果不想打开命令行窗口，希望它在后台运行，可以使用VBS脚本运行。
+
+编写vbs脚本jenkins_agent.vbs：
+
+```bat
+Set WshShell = CreateObject("WScript.Shell") 
+WshShell.Run chr(34) & "D:/jenkins/jenkins_agent.bat" & Chr(34), 0
+```
+
+将jenkins_agent.vbs放到StartUp目录下即可。
+
+
 ## Jenkins创建项目
 ### 创建项目
 ![](continuous-integration-for-jenkins/jenkins-create-new-item.png)
@@ -248,6 +321,52 @@ tcp        0      0 0.0.0.0:50000           0.0.0.0:*               LISTEN      
 
 ### 查看控制台输出
 ![](continuous-integration-for-jenkins/jenkins-console-output.png)
+
+
+## SVN源码管理报错
+
+配置SVN源码管理时可能报如下错误信息：
+
+```bash
+org.tmatesoft.svn.core.SVNException: svn: E175002: SSL handshake failed: 'The server selected protocol version TLS10 is not accepted by client preferences [TLS12]'
+```
+
+原因是，TLS 1.0易受中间人（man-in-the-middle）攻击，服务器和客户端之间发送数据的完整性和身份验证存在风险。1.0和1.1版本的一些实现也容易受到POODLE(Padding Oracle on Downgraded Legacy Encryption)攻击，因为它们在解密后接受了一个不正确的填充结构。所以TLSv1和TLSv1.1在java安全配置文件中被禁用了。
+
+解决方案：https://asyncstream.com/tutorials/java-tlsv10-not-accepted-by-client-preferences/
+
+1. 编辑 `/opt/java/openjdk/conf/security/java.security` 文件，将 `security.overridePropertiesFile` 设置为 `true` 。
+
+2. 创建名为 `enableLegacyTLS.security` 的文件，将`java.security` 文件中的 `jdk.tls.disabledAlgorithms` 属性和值复制到文件中。
+
+3. 删除 `enableLegacyTLS.security` 的文件中的 `TLSv1` 和  `TLSv1.1`
+
+   ```bash
+   jdk.tls.disabledAlgorithms=SSLv3, TLSv1, TLSv1.1, RC4, DES, MD5withRSA, \
+       DH keySize < 1024, EC keySize < 224, 3DES_EDE_CBC, anon, NULL, \
+       include jdk.disabled.namedCurves
+   ```
+
+4. 添加 `-Djava.security.properties="/opt/java/openjdk/conf/security/enableLegacyTLS.security"` 参数到 `/usr/local/bin/jenkins.sh` 文件
+
+5. 如果是Windows代理机，编辑 `C:\Program Files\Java\jdk1.8.0_311\jre\lib\security\java.security` 文件，删除`jdk.tls.disabledAlgorithms`中的 `TLSv1` 和  `TLSv1.1`，Linux类似。
+
+## Windows节点无法执行bat命令
+
+在Windows执行机上执行bat脚本时，可能报如下错误：
+
+```bash
+[Pipeline] bat
+'cmd' is not recognized as an internal or external command,
+operable program or batch file.
+```
+
+解决方法：在Windows节点配置中添加环境变量
+![](continuous-integration-for-jenkins/windows-node-configure.png)
+
+添加完成后重启Jenkins就可以了。
+
+
 ## Jenkins父子多任务运行
 任务启动的触发条件：其他任务的运行结果
 * 前驱任务成功的条件下被触发
