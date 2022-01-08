@@ -109,6 +109,51 @@ docker exec jenkins cat /var/jenkins_home/secrets/initialAdminPassword
 配置成功后，进入欢迎界面
 ![](container-docker-for-jenkins-install/jenkins-home-page.png)
 
+## Jenkins更新
+进入Manage Jenkins，提示新版本，点击下载 jenkins.war 包。
+![](container-docker-for-jenkins-install/jenkins-download.png)
+
+或者进入官网[https://www.jenkins.io/download/](https://www.jenkins.io/download/)下载指定版本的war 包。
+
+### 1. jenkins.war 位置查看
+**方法1：Manage Jenkins中查看**
+点击进入Manage Jenkins，找到Status Information，点击System Information，可以查看war包位置
+![](container-docker-for-jenkins-install/jenkins-system-information.png)
+
+**方法2：find命令查找**
+使用root账号进入容器中后使用find命令查找
+
+```sh
+[root@server ~]# docker exec -it -u root jenkins bash
+root@ed883da9faab:/# find / -name jenkins.war
+find: ‘/proc/1/map_files’: Operation not permitted
+find: ‘/proc/7/map_files’: Operation not permitted
+find: ‘/proc/138/map_files’: Operation not permitted
+find: ‘/proc/155/map_files’: Operation not permitted
+/usr/share/jenkins/jenkins.war
+root@ed883da9faab:/# 
+```
+### 2. 更新容器中的war包
+使用root账号进入容器中，备份原来的war包
+```sh
+[root@server ~]# docker exec -it -u root jenkins bash
+root@ed883da9faab:/# cd /usr/share/jenkins
+root@ed883da9faab:/usr/share/jenkins# mv jenkins.war jenkins.war.bak
+```
+将下载的war包复制到容器目录 /usr/share/jenkins 下（注意是在宿主机上操作）
+```sh
+[root@server ~]# docker cp jenkins.war jenkins:/usr/share/jenkins/
+[root@server ~]# docker exec -it -u root jenkins bash
+root@ed883da9faab:/usr/share/jenkins# ls
+jenkins.war  jenkins.war.bak  ref
+```
+### 3. 重启Jenkins
+```sh
+$ docker restart jenkins
+```
+刷新页面，登陆，进入Manage Jenkins，可以看到版本更新成功，可以降回原来的版本。
+![](container-docker-for-jenkins-install/jenkins-download-update.png)
+
 ## Windows安装Jenkins
 war文件启动方法
 
