@@ -26,6 +26,7 @@
    testframework/pytest-parametrize.md
    testframework/pytest-plugin.md
    testframework/test-framework-for-robotframework-skills.md
+   testframework/test-framework-for-robotframework-pybot-options.md
    testframework/software-testing-for-auto-test-architecture.md
 
 
