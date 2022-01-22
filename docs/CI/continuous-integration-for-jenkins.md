@@ -341,11 +341,11 @@ org.tmatesoft.svn.core.SVNException: svn: E175002: SSL handshake failed: 'The se
 
 3. 删除 `enableLegacyTLS.security` 的文件中的 `TLSv1` 和  `TLSv1.1`
 
-   ```bash
-   jdk.tls.disabledAlgorithms=SSLv3, TLSv1, TLSv1.1, RC4, DES, MD5withRSA, \
-       DH keySize < 1024, EC keySize < 224, 3DES_EDE_CBC, anon, NULL, \
-       include jdk.disabled.namedCurves
-   ```
+```bash
+jdk.tls.disabledAlgorithms=SSLv3, TLSv1, TLSv1.1, RC4, DES, MD5withRSA, \
+DH keySize < 1024, EC keySize < 224, 3DES_EDE_CBC, anon, NULL, \
+include jdk.disabled.namedCurves
+```
 
 4. 添加 `-Djava.security.properties="/opt/java/openjdk/conf/security/enableLegacyTLS.security"` 参数到 `/usr/local/bin/jenkins.sh` 文件
 
@@ -475,4 +475,35 @@ Default Content
 ![](continuous-integration-for-jenkins/jenkins-email.png)
 
 
+## 其它
 
+### 删除构建历史
+
+介绍两种删除构建历史的方法：
+
+**方法1：项目配置中设置**
+
+进入项目配置，勾选【Discard old builds】进行配置，可以配置保留天数、最多构建数等
+
+![](continuous-integration-for-jenkins/jenkins-discard-old-builds.png)
+
+
+**方法2：执行 Groovy脚本**
+
+可以通过Groovy脚本来删除构建。
+
+点击【Manage Jenkins】-> 【Script Console】
+
+删除所有构建：
+
+```groovy
+def jobName = "test_shell"
+def job = Jenkins.instance.getItem(jobName)
+job.getBuilds().each { 
+    it.delete() 
+}
+job.nextBuildNumber = 1
+job.save()
+```
+
+点击运行，job名为 `test_shell` 的构建历史都会被删除，重新构建时构建序号会从1开始。
