@@ -1,0 +1,274 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+ <html xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+ <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+ <title>CSS_Tab</title> 
+ <style type="text/css"> 
+
+
+div,ul,li,TABLE,{margin:0; padding:0; font-size:12px; color:black; font-family:Verdana,Helvetica,sans serif;} 
+TH{text-align: center; margin:0; padding:2px; font-size:12px; color:black; font-family:Verdana,Helvetica,sans serif;}  
+TD{margin:0; padding:0px; font-size:12px; color:black; font-family:Verdana,Helvetica,sans serif; font-weight: normal;}  
+P{margin:0; padding:2px; font-size:12px; color:black; font-family:Verdana,Helvetica,sans serif; font-weight: normal;}  
+body{margin:0; padding:12px; font-size:12px; color:black; font-family:Verdana,Helvetica,sans serif;}
+.clearFloat{ clear:both; height:0; line-height:0; font-size:0;} 
+h1 { color:black; }
+h2 { color:black; }
+h3 { color:black; }
+TABLE.b1,TD.b1,TR.b1 {border:1px solid #507CD1;border-collapse: collapse;}
+TD.bg1 { color:white; background-color:#0000C0; font-size:120% }
+TD.bg2 { color:white; background-color:#4040FF; font-size:110% }
+TD.bg3 { color:white; background-color:#8080FF; }
+TD.stage_mid { text-align: center; vertical-align:middle; font-weight:bold;}
+TD.stage_pic { text-align: center; vertical-align:middle; color:white; font-weight:bold;}
+TD.STAGE4PL_SUCCESS { text-align: center; vertical-align:middle; color:white; font-weight:bold; background-color:#9BBB59; border-radius:50%;}
+TD.STAGE4PL_FAILURE { text-align: center; vertical-align:middle; color:white; font-weight:bold; background-color:#C00000; border-radius:50%;}
+TD.STAGE4PL_ABORTED { text-align: center; vertical-align:middle; color:white; font-weight:bold; background-color:#A6A6A6; border-radius:50%;}
+TD.STAGE4PL_UNSTABLE { text-align: center; vertical-align:middle; color:white; font-weight:bold; background-color:#FFC000; border-radius:50%;}
+TD.STAGE4PL_NOT_BUILT { text-align: center; vertical-align:middle; color:white; font-weight:bold; background-color:#A6A6A6; border-radius:50%;}
+TD.STAGE4SUM_SUCCESS { padding:2px; font-size:120%; text-align: left; vertical-align:buttom; color:#0000C0; font-weight:bold; background-color:#9BBB59;}
+TD.STAGE4SUM_FAILURE { padding:2px; font-size:120%; text-align: left; vertical-align:buttom; color:white; font-weight:bold; background-color:#C00000;}
+TD.STAGE4SUM_ABORTED { padding:2px; font-size:120%; text-align: left; vertical-align:buttom; color:white; font-weight:bold; background-color:#A6A6A6;}
+TD.STAGE4SUM_UNSTABLE { padding:2px; font-size:120%; text-align: left; vertical-align:buttom; color:#0000C0; font-weight:bold; background-color:#FFC000;}
+TD.STAGE4SUM_NOT_BUILT { padding:2px; font-size:120%; text-align: left; vertical-align:buttom; color:#0000C0; font-weight:bold; background-color:#A6A6A6;}
+TD.STAGE4CLASSIFY_SUCCESS   { font-size:12px; text-align: center; vertical-align:buttom; color:#0000C0; font-weight:bold; background-color:#9BBB59;}
+TD.STAGE4CLASSIFY_FAILURE   { font-size:12px; text-align: center; vertical-align:buttom; color:white; font-weight:bold; background-color:#C00000;}
+TD.STAGE4CLASSIFY_ABORTED   { font-size:12px; text-align: center; vertical-align:buttom; color:white; font-weight:bold; background-color:#A6A6A6;}
+TD.STAGE4CLASSIFY_UNSTABLE  { font-size:12px; text-align: center; vertical-align:buttom; color:#0000C0; font-weight:bold; background-color:#FFC000;}
+TD.STAGE4CLASSIFY_NOT_BUILT { font-size:12px; text-align: center; vertical-align:buttom; color:#0000C0; font-weight:bold; background-color:#A6A6A6;}
+TD.STAGE4CLASSIFY_          { font-size:12px; text-align: center; vertical-align:buttom; color:#0000C0; font-weight:bold; background-color:#A6A6A6;}
+TD.test_passed { color:blue; }
+TD.test_failed { color:red; }
+TD.console { font-family:Courier New; }
+a:link, 
+a:visited {text-decoration:none;}
+a:hover, 
+a:active {text-decoration:underline;}
+
+#stage a:link, 
+#stage a:visited {text-decoration:none; color:white;}
+#stage a:hover, 
+#stage a:active {text-decoration:underline; color:white;}
+
+.ct_info {text-align: center; font-weight: normal;    color: #003366;}
+.ct_info_string {text-align: left; align: left; font-weight: normal;    color: #003366;}
+.ct_info_number {text-align: right; align: right; font-weight: normal;    color: #003366;}
+.ct_error {text-align: center; font-weight: normal;    color: #FF0000;}
+.ct_error_string {text-align: left; align: left; font-weight: normal;    color: #FF0000;}
+.ct_error_number {text-align: right; align: right; font-weight: normal;    color: #FF0000;}
+
+/* lcvo css */
+td.title{  text-align: center;  padding-bottom: 10px;  font-family: sans-serif;  font-size: 20pt;  font-style: italic;  font-weight: bold;}
+td.headerItem{  text-align: right;  padding-right: 6px;  font-family: sans-serif;  font-weight: bold;  vertical-align: top;  white-space: nowrap;}
+td.headerValue{  text-align: left;  color: #284FA8;  font-family: sans-serif;  font-weight: bold;  white-space: nowrap;}
+td.headerCovTableHead{  text-align: center;  padding-right: 6px;  padding-left: 6px;  padding-bottom: 0px;  font-family: sans-serif;  font-size: 80%;  white-space: nowrap;}
+td.headerCovTableEntry{  text-align: right;  color: #284FA8;  font-family: sans-serif;  font-weight: bold;  white-space: nowrap;  padding-left: 12px;  padding-right: 4px;  background-color: #DAE7FE;}
+td.headerCovTableEntryHi{  text-align: right;  color: #000000;  font-family: sans-serif;  font-weight: bold;  white-space: nowrap;  padding-left: 12px;  padding-right: 4px;  background-color: #A7FC9D;}
+td.headerCovTableEntryMed{  text-align: right;  color: #000000;  font-family: sans-serif;  font-weight: bold;  white-space: nowrap;  padding-left: 12px;  padding-right: 4px;  background-color: #FFEA20;}
+td.headerCovTableEntryLo{  text-align: right;  color: #000000;  font-family: sans-serif;  font-weight: bold;  white-space: nowrap;  padding-left: 12px;  padding-right: 4px;  background-color: #FF0000;}
+td.versionInfo{  text-align: center;  padding-top: 2px;  font-family: sans-serif;  font-style: italic;}
+td.tableHead{  text-align: center;  color: #FFFFFF;  background-color: #6688D4;  font-family: sans-serif;  font-size: 120%;  font-weight: bold;  white-space: nowrap;  padding-left: 4px;  padding-right: 4px;}
+td.coverFile{  text-align: left;  padding-left: 10px;  padding-right: 20px;   color: #284FA8;  background-color: #DAE7FE;  font-family: monospace;}
+td.coverBar{  padding-left: 10px;  padding-right: 10px;  background-color: #DAE7FE;}
+td.coverBarOutline{  background-color: #000000;}
+td.coverPerHi{  text-align: right;  padding-left: 10px;  padding-right: 10px;  background-color: #A7FC9D;  font-weight: bold;  font-family: sans-serif;}
+td.coverNumHi{  text-align: right;  padding-left: 10px;  padding-right: 10px;  background-color: #A7FC9D;  white-space: nowrap;  font-family: sans-serif;}
+td.coverPerMed{  text-align: right;  padding-left: 10px;  padding-right: 10px;  background-color: #FFEA20;  font-weight: bold;  font-family: sans-serif;}
+td.coverNumMed{  text-align: right;  padding-left: 10px;  padding-right: 10px;  background-color: #FFEA20;  white-space: nowrap;  font-family: sans-serif;}
+td.coverPerLo{  text-align: right;  padding-left: 10px;  padding-right: 10px;  background-color: #FF0000;  font-weight: bold;  font-family: sans-serif;}
+td.coverNumLo{  text-align: right;  padding-left: 10px;  padding-right: 10px;  background-color: #FF0000;  white-space: nowrap;  font-family: sans-serif;}
+/* lcvo css */
+
+</style>
+
+<!--<link rel="stylesheet" type="text/css" href="report4j.css">-->
+
+<BODY>
+
+<TABLE width="98%">
+<TR><TD align="center">
+
+</TABLE>
+
+<!--tab index--> 
+<!--<ul class="tab_ul">
+<li><a href="#<%=Const.STAGE_Checkout%>">Summary</a></li>
+
+<%for(PipelineXmlUtil build4pipeline in build4pipelines){
+   for(String stageName in build4pipeline.getStageNames()){ 
+     if(stageName!=Const.STAGE_Checkout){
+%>  
+   <li><a href="#${stageName}">${stageName}</a></li>     
+<%}}}%>
+</ul> 
+<div class="tabDiv" > 
+-->
+
+<!--report head-->
+<!--<ul id="<%=Const.STAGE_Checkout%>"> 
+<li><div class="labDiv">Summary</div></li> 
+-->
+<div class="subDiv" > 
+
+<TABLE width="100%">
+	<TR><TD>
+		<TABLE>
+		<%
+		  //JenkinsClient jcBuild = new JenkinsClient();
+			if (jcBuild.hadBuild()) {
+			   def result = jcBuild.getBuildResult();       
+			   %>
+		  <TR><TD align="right"><IMG SRC="${rooturl}static/e59dfe28/images/32x32/<%= result.toString() == 'SUCCESS' ? "blue.gif" : result.toString() == 'FAILURE' ? 'red.gif' : 'yellow.gif' %>" />
+		  </TD><TD valign="center"><B style="font-size: 200%;">BUILD ${result}</B></TD></TR>
+		  <TR><TD>URL:</TD><TD><A href="${jcBuild.getBuildUrl()}" target="_blank">${jcBuild.getBuildUrl()}</A></TD></TR>     
+		  <TR><TD>Date:</TD><TD>${jcBuild.getBuildTime()}</TD></TR>
+		  <TR><TD>Cause:</TD><TD>${jcBuild.getCause()}</TD></TR>
+		  <TR><TD>Duration:</TD><TD>${jcBuild.getBuildDuration()}</TD></TR>		  
+		<%}%>     
+		</TABLE>
+	</TD>
+	<TD align="right">
+		<TABLE>    
+		  <TR height="80px">
+		  <%for(PipelineXmlUtil build4pipeline in build4pipelines){
+		      for(String stageName in build4pipeline.getStageNames()){%>      
+			     <TD class="${build4pipeline.getStageCssState(stageName)}" width="80px"><div id="stage"><a target="_blank" href="<% print "${jcBuild.getBuildUrl()}../../" + stageName.toUpperCase(); %>">${stageName}</a></div></TD>
+			     <TD class="stage_mid" width="20px">>></TD>
+		  <%}}%>  
+		  <TD class="${build4pipelines[0].getStageCssState("report")}" width="80px"><div id="stage"><a href="${build4pipelines[0].getPipelineTreeUrl()}" target="_blank">report</a></div></TD>  
+		  </TR>  
+		</TABLE>
+	</TD>
+    
+    <TD>
+		<TABLE>
+		<%
+		  <TR><TD>URL:</TD><TD><A href="${jcBuild.getBuildUrl()}" target="_blank">${jcBuild.getBuildUrl()}</A></TD></TR>     
+		  <TR><TD>Date:</TD><TD>${jcBuild.getBuildTime()}</TD></TR>
+		  <TR><TD>Cause:</TD><TD>${jcBuild.getCause()}</TD></TR>
+		  <TR><TD>Duration:</TD><TD>${jcBuild.getBuildDuration()}</TD></TR>		  
+		<%}%>     
+		</TABLE>
+	</TD>
+    
+    </TR>
+</TABLE>	
+
+<!--end report head-->
+
+<hr/>  
+
+
+<!--summary-->
+<%
+for(PipelineXmlUtil build4pipeline in build4pipelines){
+def StageNames = build4pipeline.getStageNames('summary');
+for(String stageName in StageNames){     
+%>   
+   <TABLE width="100%" cellpadding="3" cellspacing="0"><TR><TD class="${build4pipeline.getStageCssState4sum(stageName)}">&nbsp;<a target="blank" href="<%   
+    print "${jcBuild.getBuildUrl()}../../" + stageName.toUpperCase(); 
+	%>"><B>${stageName}</B></a><hr/></TD></TR> 
+   <TR><TD class="${build4pipeline.getStageCssState4sum(stageName)}" align="middle" >    
+<%  
+	//checkout表格报表特殊处理(后续考虑修改subversion? 出一个xml?)
+	if(stageName==Const.STAGE_Checkout){
+		%><TABLE width="100%" bgcolor="#507CD1" border="0" cellpadding="3" cellspacing="1">
+		<%for(String jobUrl in build4pipeline.getStageJobUrls(Const.STAGE_Checkout)){     
+			 JenkinsClient jcSCM = new JenkinsClient(jobUrl);			 
+			 
+			 if (!jcSCM.hadBuild()) 
+			 		continue;
+			 if(!jcSCM.isShowSummry()) 
+				   continue;			 
+			 
+			 if (jcSCM.getChangeKind()!=""){%>
+			 <TR><TD bgColor="#FFFFFF" align="center" width="5%"><%=jcSCM.getChangeKind()%>:</TD>
+			 <TD bgColor="#FFFFFF">  
+			 <%print StringUtil.formatHtml(StringUtil.concatString(jcSCM.getChangeModules(), "\n"));%>			 
+			 </TD></TR>
+			 <TR><TD bgColor="#FFFFFF" align="center">Author:</TD><TD bgColor="#FFFFFF">
+			 <%
+			 	print StringUtil.formatHtml(StringUtil.concatString(jcSCM.getAuthorMsgs(), "\n"));
+			 	print StringUtil.formatHtml(StringUtil.concatString(jcSCM.getSyncDesc(), "\n"));		
+			 	//补充每日构建和实时构建合一时,提交信息的缺失问题
+			  def scmCommits = jcSCM.getCommitLogDesc("lasttimerlog.xml");
+			  if (scmCommits.size()>0){			  
+			 		 print StringUtil.formatHtml(StringUtil.concatString(scmCommits, "\n"));			 		 
+			 }	 				 	
+			 %>
+			 </TD></TR>
+			 <%
+			 //当天提交统计
+			 def todayCommits = jcSCM.getCommitLogDesc("svntodaylog.xml");
+			 if (todayCommits.size()>0){
+			    %><TR><TD bgColor="#FFFFFF" align="center">Today Commit:</TD><TD bgColor="#FFFFFF"><%
+			 		print StringUtil.formatHtml(StringUtil.concatString(todayCommits, "\n"));
+			 		%></TD></TR><%
+			 }
+			 %>
+			 
+			 <%} //else { 
+					//代码统计 MO生成等其它框
+					jcSCM.getSummaryXmls().each{
+						//print reportXmlUtil.parseXml2Html(jcSCM,it);
+						reportXmlUtil.appendXml2Cache(jcSCM,it);
+					}
+					print reportXmlUtil.takeCache2Html();					
+			 //}     
+			 if (jcSCM.getChangeKind()=="" && StageNames.length<3 && jcSCM.getBuildResult()=="FAILURE"){%><table bgcolor="#507CD1" border="0" cellpadding="3" cellspacing="1" width="100%"><tr><td bgColor="#FFFFFF"><p class="TD.bg1"><%
+				 print jcSCM.getBuildLog(true);%></p></td></tr></table><%
+			 }
+			 %>
+		<%}%>
+		</TABLE> 
+		<%
+	} else {    
+    reportXmlUtil.init();	
+	ReportConfigUtil reportConfigUtil = new ReportConfigUtil();
+	//System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>"+stageName);
+	String stageTable = reportConfigUtil.genStageTable(build4pipeline, stageName);
+	if(stageTable!=null){ 
+		print stageTable;  //责任矩阵表特殊处理
+	} else {    
+		for(def jobNode in build4pipeline.getStageJobs(stageName)){
+		  //System.out.println(jobNode.attribute('url')+"::::::::::"+jobNode.attribute('owner'));
+		  JenkinsClient jc = new JenkinsClient(jobNode.attribute('url'), jobNode.attribute('owner'));      
+		  if(!jc.isShowSummry()) 
+				continue;
+		  if (jc.isPipelineJob()){  //支持二级的pipeline,仅一层
+				//print jc.getJobType();
+				PipelineXmlUtil pipeline2 = new PipelineXmlUtil(jc.getLocalBuildPath());
+				for(String stageName2 in pipeline2.getStageNames()){ 
+					for(def jobNode2 in pipeline2.getStageJobs(stageName2)){
+						//System.out.println(jobNode2.attribute('url')+"#################"+jobNode2.attribute('owner'));
+						JenkinsClient jc2 = new JenkinsClient(jobNode2.attribute('url'), jobNode2.attribute('owner'));
+						if(!jc2.isShowSummry()) 
+						   continue;
+						jc2.getSummaryXmls().each{
+							//print reportXmlUtil.parseXml2Html(jc2,it);
+							reportXmlUtil.appendXml2Cache(jc2,it);
+						}
+					}
+				}
+		  } else {          
+				jc.getSummaryXmls().each{      		  
+				//print reportXmlUtil.parseXml2Html(jc,it);           	       
+				reportXmlUtil.appendXml2Cache(jc,it);
+			  }         
+		  }
+		}
+		print reportXmlUtil.takeCache2Html();
+	}
+ }
+%>
+</TD></TR>
+</TABLE> <hr/>
+<%}}%>
+<!--end summary-->
+
+<p>如需取消/订阅邮件，请点击：<a href="<%=build4pipelines[0].getMainRootUrl(false)%>:8090/index?url=emailbooking" target="_blank">链接</a> | 如需进行本地构建，请点击：<a href="http://192.168.154.200:8090/localbuild" target="_blank">链接</a></p>
+
+</BODY>
+
+    
