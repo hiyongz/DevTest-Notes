@@ -12,15 +12,14 @@ def call(stageName, job, owner) {
 	if(job instanceof String) {
 		saveToXml(stageName, job, owner);
 		return;
-	}		
-	def jobVariables = job.getBuildVariables();
-    println "jobVariables:${jobVariables}";	
-    def getResults = job.getResult();
-    println "getResults:${getResults}";    
-    def getBuildVariables = job.getBuildVariables();
-    println "getBuildVariables:${getBuildVariables}";
-	//设置stage结果
-	saveToXml(stageName, job.absoluteUrl, job.result, owner);
+	}    
+    
+    if (stageName=="autotest") {
+        saveRFResultsToXml(stageName, job, owner)
+    } else {
+        //设置stage结果
+        saveToXml(stageName, job.absoluteUrl, job.result, owner);
+    }	
 	
 	//刷新流水线结果
 	if(job.result!='ABORTED'){
@@ -119,7 +118,6 @@ def saveToXml(stageName, jobResult, jobOwner){
 			//atts.put('jobnum', (atts.get('jobnum').toInteger()+1) as String);
 			if(jobResult=='FAILURE' || jobResult=='UNSTABLE' && atts.get('result') != 'FAILURE' || atts.get('result') == '' || atts.get('result') == 'ABORTED'){
 				atts.put('result', jobResult);  
-                println "1111111111111111"
 				println "[${stageName}] set result: ${jobResult}";
 			}
 			bAdded = true;
@@ -127,8 +125,7 @@ def saveToXml(stageName, jobResult, jobOwner){
 		}
 	}
 	if(!bAdded){
-		def stage = pipeline.appendNode("stage", ['name':(stageName), 'jobnum':'0', 'result':(jobResult)]);		
-		println "22222222222222222222222"
+		def stage = pipeline.appendNode("stage", ['name':(stageName), 'jobnum':'0', 'result':(jobResult)]);
         println "[${stageName}] set result: ${jobResult}";
 	}
 	def fileWriter = new FileWriter(xmlFile);	
@@ -148,17 +145,15 @@ def saveToXml(stageName, jobUrl, jobResult, jobOwner){
     println "[${stageName}] xmlFile: ${xmlFile}";    
 	def pipeline = new XmlParser().parse(xmlFile);
 	def bAdded = false;
-    println "[55555555555: ${pipeline.stage}]"
 	for(stage in pipeline.stage){
         def aaa = stage.attribute("name");
-        println "[6666666666666: ${aaa}]"
-		if(stage.attribute("name")==stageName){		
+		if(stage.attribute("name")==stageName){
+            println "[33333333333333333: ${aaa}]"
 			stage.appendNode("job", ['url':(jobUrl), 'result':(jobResult), 'classify':(getClassifyByUrl(jobUrl)), 'owner':(jobOwner)]);	
 			def atts = stage.attributes();			
 			atts.put('jobnum', (atts.get('jobnum').toInteger()+1) as String);
 			if(jobResult=='FAILURE' || jobResult=='UNSTABLE' && atts.get('result') != 'FAILURE' || atts.get('result') == '' || atts.get('result') == 'ABORTED'){
 				atts.put('result', jobResult); 
-                println "333333333333333333"
 				println "[${stageName}] set result: ${jobResult}";
 			}
 			bAdded = true;
@@ -168,7 +163,6 @@ def saveToXml(stageName, jobUrl, jobResult, jobOwner){
 	if(!bAdded){
 		def stage = pipeline.appendNode("stage", ['name':(stageName), 'jobnum':'1', 'result':(jobResult)]);
 		stage.appendNode("job", ['url':(jobUrl), 'result':(jobResult), 'classify':(getClassifyByUrl(jobUrl)), 'owner':(jobOwner)]);		
-		println "4444444444444444444"
         println "[${stageName}] set result: ${jobResult}";
 	}
 	def fileWriter = new FileWriter(xmlFile);	
@@ -179,6 +173,55 @@ def saveToXml(stageName, jobUrl, jobResult, jobOwner){
 	//return true;
 }
 
+
+def saveRFResultsToXml(stageName, job, owner){    
+
+    def jobVariables = job.getBuildVariables();
+    // println "ROBOT_FAILEDCASES:${jobVariables.ROBOT_FAILEDCASES}";        
+    // println "ROBOT_PASSPERCENTAGE:${jobVariables.ROBOT_PASSPERCENTAGE}";        
+    // println "ROBOT_PASSRATIO:${jobVariables.ROBOT_PASSRATIO}";        
+    // println "ROBOT_REPORTLINK:${jobVariables.ROBOT_REPORTLINK}";
+  	
+    String robot_pass = 0;
+    String robot_total = 0;    
+    
+    // if(jobVariables.ROBOT_PASSRATIO!=null) {
+    if(jobVariables.ROBOT_PASSRATIO?.trim()) {  // null和empty("")判断 https://www.cnblogs.com/guofu-angela/p/9294329.html
+        String robot_ratio = jobVariables.ROBOT_PASSRATIO;
+        String[] ratio;
+        ratio = robot_ratio.split(' / ');
+        robot_pass = "${ratio[0]}"
+        robot_total = "${ratio[1]}"
+    }
+    
+	def xmlFile = getXmlFile();  
+    println "[${stageName}] xmlFile: ${xmlFile}";    
+	def pipeline = new XmlParser().parse(xmlFile);
+	def bAdded = false;
+	for(stage in pipeline.stage){
+		if(stage.attribute("name")==stageName){
+			// stage.appendNode("job", ['url':(job.absoluteUrl), 'result':(job.result), 'classify':(getClassifyByUrl(job.absoluteUrl)), 'owner':(owner)]);	
+			stage.appendNode("job", ['url':(job.absoluteUrl), 'result':(job.result), 'classify':(getClassifyByUrl(job.absoluteUrl)), 'owner':(owner),"robot_failedcases":jobVariables.ROBOT_FAILEDCASES, "robot_passpercentage":jobVariables.ROBOT_PASSPERCENTAGE, "robot_passratio":jobVariables.ROBOT_PASSRATIO, "robot_pass":robot_pass, "robot_total":robot_total, "robot_reportlink":jobVariables.ROBOT_REPORTLINK]);
+			def atts = stage.attributes();			
+			atts.put('jobnum', (atts.get('jobnum').toInteger()+1) as String);
+			if(job.result=='FAILURE' || job.result=='UNSTABLE' && atts.get('result') != 'FAILURE' || atts.get('result') == '' || atts.get('result') == 'ABORTED'){
+				atts.put('result', job.result);
+				println "[${stageName}] set result: ${job.result}";
+			}
+			bAdded = true;
+			break;
+		}
+	}
+	if(!bAdded){
+		def stage = pipeline.appendNode("stage", ['name':(stageName), 'jobnum':'1', 'result':(job.result)]);
+        stage.appendNode("job", ['url':(job.absoluteUrl), 'result':(job.result), 'classify':(getClassifyByUrl(job.absoluteUrl)), 'owner':(owner),"robot_failedcases":jobVariables.ROBOT_FAILEDCASES, "robot_passpercentage":jobVariables.ROBOT_PASSPERCENTAGE, "robot_passratio":jobVariables.ROBOT_PASSRATIO, "robot_pass":robot_pass, "robot_total":robot_total, "robot_reportlink":jobVariables.ROBOT_REPORTLINK]);		
+        println "[${stageName}] set result: ${job.result}";
+	}
+	def fileWriter = new FileWriter(xmlFile);	
+	fileWriter.write(groovy.xml.XmlUtil.serialize(pipeline));
+	fileWriter.close();		
+
+}
 
 
 def getSignalFile() {
