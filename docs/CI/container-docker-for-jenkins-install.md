@@ -154,7 +154,50 @@ $ docker restart jenkins
 刷新页面，登陆，进入Manage Jenkins，可以看到版本更新成功，可以降回原来的版本。
 ![](container-docker-for-jenkins-install/jenkins-download-update.png)
 
+注意：可能会启动不成功，报如下错误：
+
+```bash
+$  docker logs --tail="10" jenkins
+.......
+Error: Unable to access jarfile /usr/share/jenkins/jenkins.war
+```
+
+可能原因是jenkins.war只有只读权限，需要给它添加权限。而此时jenkins容器没有启动成功，我们是无法使用命令 `docker exec -it -u root jenkins bash` 进入容器内进行操作的。
+
+docker容器其实是由容器镜像组成的（参考[容器技术介绍之docker核心技术概述](https://blog.csdn.net/u010698107/article/details/122641323)）我们可以直接在`/var/lib/docker/overlay2/` 目录下找到对应镜像层下的jenkins.war文件。
+
+直接使用 `find` 命令查找：
+
+```bash
+$ find / -name jenkins.war
+/var/lib/docker/overlay2/b82c33119417876cd306731155202416c5930b096ddae74c240bbdbe0a3a6d22/diff/usr/share/jenkins/jenkins.war
+/var/lib/docker/overlay2/fd53382dc318381b812fc76d22635f0e8244f1ff586c31681acd88bf81a2c40b/diff/usr/share/jenkins/jenkins.war
+```
+
+有两个镜像层都有jenkins.war文件，可以都进去看一下。
+
+进入对应镜像层目录下：
+
+```bash
+$ cd /var/lib/docker/overlay2/fd53382dc318381b812fc76d22635f0e8244f1ff586c31681acd88bf81a2c40b/diff/usr/share/jenkins/
+$ ll
+-rw-r--r-- 1 root root 72122649 8月  31 23:05 jenkins-228.war
+-rw-r--r-- 1 root root 72247484 1月   6 10:38 jenkins-319.war
+-rw-r--r-- 1 root root 73712089 2月   9 08:45 jenkins-326.war
+-rw-r--r-- 1 root root 73713768 1月   6 09:21 jenkins-327.war
+-r-------- 1 root root 72248203 2月   9 08:42 jenkins.war
+```
+
+发现jenkins.war文件只有只读权限，添加权限：
+
+```bash
+$ chmod 777 jenkins.war 
+```
+
+权限设置完成后就可以启动成功了。
+
 ## Windows安装Jenkins
+
 war文件启动方法
 
 下载地址：[https://www.jenkins.io/download/](https://www.jenkins.io/download/)
