@@ -238,6 +238,16 @@ tcp        0      0 0.0.0.0:50000           0.0.0.0:*               LISTEN      
 [root@haiyong jenkins_home]# 
 ```
 
+启动windows节点时可能会报如下错误：
+
+```bash
+java.lang.Exception: The server rejected the connection: None of the protocols were accepted"
+```
+
+解决方案：进入Manage Jenkins -> Configure Global Security -> Agents -> Agent protocols，勾选Inbound TCP Agent Protocol/4 (TLS encryption)
+
+![](continuous-integration-for-jenkins/inbound-tcp-agent-protocol.png)
+
 ### 设置windows节点开机自动启动
 
 下面介绍2种方法。

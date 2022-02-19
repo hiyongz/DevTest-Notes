@@ -1,0 +1,124 @@
+<robot generated="20220102 10:57:35.774" generator="Robot 3.1.1 (Python 3.7.6 on win32)" rpa="false">
+<suite id="s1" name="PO demo" source="D:\ProgramWorkspace\DevTest-Notes\RobotFramework\PO_demo">
+<suite id="s1-s1" name="01 测试用例" source="D:\ProgramWorkspace\DevTest-Notes\RobotFramework\PO_demo\01_测试用例">
+<suite id="s1-s1-s1" name="登录测试-正确用户名密码" source="D:\ProgramWorkspace\DevTest-Notes\RobotFramework\PO_demo\01_测试用例\登录测试-正确用户名密码.robot">
+<test id="s1-s1-s1-t1" name="case_1.1_正确用户名密码登录成功">
+<kw library="登录流程" name="进入用户登录页面" type="setup">
+<kw library="BuiltIn" name="Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>进入用户登录页面</arg>
+</arguments>
+<msg level="INFO" timestamp="20220102 10:57:36.512">进入用户登录页面</msg>
+<status endtime="20220102 10:57:36.512" starttime="20220102 10:57:36.511" status="PASS"/>
+</kw>
+<status endtime="20220102 10:57:36.513" starttime="20220102 10:57:36.511" status="PASS"/>
+</kw>
+<kw library="登录流程" name="用户登录">
+<arguments>
+<arg>username</arg>
+<arg>password</arg>
+</arguments>
+<kw library="BuiltIn" name="Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>${user}</arg>
+</arguments>
+<msg level="INFO" timestamp="20220102 10:57:36.515">username</msg>
+<status endtime="20220102 10:57:36.515" starttime="20220102 10:57:36.514" status="PASS"/>
+</kw>
+<kw library="BuiltIn" name="Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>${pwd}</arg>
+</arguments>
+<msg level="INFO" timestamp="20220102 10:57:36.515">password</msg>
+<status endtime="20220102 10:57:36.515" starttime="20220102 10:57:36.515" status="PASS"/>
+</kw>
+<status endtime="20220102 10:57:36.515" starttime="20220102 10:57:36.513" status="PASS"/>
+</kw>
+<kw library="登录流程" name="退出登录" type="teardown">
+<kw library="BuiltIn" name="Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>退出登录</arg>
+</arguments>
+<msg level="INFO" timestamp="20220102 10:57:36.517">退出登录</msg>
+<status endtime="20220102 10:57:36.517" starttime="20220102 10:57:36.517" status="PASS"/>
+</kw>
+<status endtime="20220102 10:57:36.517" starttime="20220102 10:57:36.516" status="PASS"/>
+</kw>
+<tags>
+<tag>login</tag>
+</tags>
+<status critical="yes" endtime="20220102 10:57:36.517" starttime="20220102 10:57:36.508" status="PASS"/>
+</test>
+<status endtime="20220102 10:57:36.518" starttime="20220102 10:57:35.834" status="PASS"/>
+</suite>
+<suite id="s1-s1-s2" name="登录测试-错误用户名+密码" source="D:\ProgramWorkspace\DevTest-Notes\RobotFramework\PO_demo\01_测试用例\登录测试-错误用户名+密码.robot">
+<test id="s1-s1-s2-t1" name="case_1.1_错误用户名+密码">
+<kw library="BuiltIn" name="Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>错误用户名+密码</arg>
+</arguments>
+<msg level="INFO" timestamp="20220102 10:57:36.540">错误用户名+密码</msg>
+<status endtime="20220102 10:57:36.540" starttime="20220102 10:57:36.540" status="PASS"/>
+</kw>
+<tags>
+<tag>login</tag>
+</tags>
+<status critical="yes" endtime="20220102 10:57:36.540" starttime="20220102 10:57:36.538" status="PASS"/>
+</test>
+<test id="s1-s1-s2-t2" name="case_1.2_错误用户名+正确密码">
+<kw library="BuiltIn" name="Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>错误用户名+正确密码</arg>
+</arguments>
+<msg level="INFO" timestamp="20220102 10:57:36.546">错误用户名+正确密码</msg>
+<status endtime="20220102 10:57:36.546" starttime="20220102 10:57:36.546" status="PASS"/>
+</kw>
+<tags>
+<tag>login</tag>
+</tags>
+<status critical="yes" endtime="20220102 10:57:36.546" starttime="20220102 10:57:36.540" status="PASS"/>
+</test>
+<test id="s1-s1-s2-t3" name="case_1.3_正确用户名+错误密码">
+<kw library="BuiltIn" name="Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>正确用户名+错误密码</arg>
+</arguments>
+<msg level="INFO" timestamp="20220102 10:57:36.549">正确用户名+错误密码</msg>
+<status endtime="20220102 10:57:36.550" starttime="20220102 10:57:36.549" status="PASS"/>
+</kw>
+<tags>
+<tag>login</tag>
+</tags>
+<status critical="yes" endtime="20220102 10:57:36.550" starttime="20220102 10:57:36.547" status="PASS"/>
+</test>
+<status endtime="20220102 10:57:36.551" starttime="20220102 10:57:36.525" status="PASS"/>
+</suite>
+<status endtime="20220102 10:57:36.554" starttime="20220102 10:57:35.829" status="PASS"/>
+</suite>
+<status endtime="20220102 10:57:36.556" starttime="20220102 10:57:35.779" status="PASS"/>
+</suite>
+<statistics>
+<total>
+<stat fail="0" pass="4">Critical Tests</stat>
+<stat fail="0" pass="4">All Tests</stat>
+</total>
+<tag>
+<stat fail="0" pass="4">login</stat>
+</tag>
+<suite>
+<stat fail="0" id="s1" name="PO demo" pass="4">PO demo</stat>
+<stat fail="0" id="s1-s1" name="01 测试用例" pass="4">PO demo.01 测试用例</stat>
+<stat fail="0" id="s1-s1-s1" name="登录测试-正确用户名密码" pass="1">PO demo.01 测试用例.登录测试-正确用户名密码</stat>
+<stat fail="0" id="s1-s1-s2" name="登录测试-错误用户名+密码" pass="3">PO demo.01 测试用例.登录测试-错误用户名+密码</stat>
+</suite>
+</statistics>
+<errors>
+</errors>
+</robot>
