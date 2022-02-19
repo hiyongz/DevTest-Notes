@@ -1,0 +1,8 @@
+open 172.16.30.75 
+user pingtai pingtai 
+cd /release/ugw6.0/ugw6.0_dailybuild/dev_ugw6.0_main/latest_version/RX27pro/ 
+lcd D:\pythonproj\DevTest-Notes\CI\jenkins 
+prompt off 
+bin 
+mget *.bin 
+bye 

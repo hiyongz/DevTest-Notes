@@ -1,0 +1,1788 @@
+<%
+/****************************************************************
+功能说明: 完成Jenkins流水线各个Job报告的整合
+作者: 
+部署：1.模板放在JENKINS_HOME/email-templates目录
+      2.报告图片资源放在/var/cache/jenkins/war/images/report目录
+        windows放在JENKINS_HOME/war/images/report
+说明：
+     1.checkout的成功失败以取svn最新版本号为准!
+		 2.compile 生成的文件，保存到jobs,生成下载链接，保留版本
+		 3.Log日志支持取最后300行,减少邮件的大小
+		 4.支持两层的pipeline.xml,直接平铺(将第二层的pipeline阶段名作为编译器的名称? )
+		 5.去掉详细报告,只保留Summary报告
+		 6.在html5的基础上修改编译的样式为简洁式的责任矩阵表,增加自定义的stage顺序
+		 
+问题:
+     1.pclint/sourcemonitor按job汇总报告
+     2.pipeline UT失败的话在jenkins的显示各阶段都是红的？
+     3.email的邮件接收人能否支持groovy模板获取？        
+*****************************************************************/
+
+import java.io.File;
+import java.io.StringWriter;
+import java.net.InetAddress;
+
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+
+import java.text.SimpleDateFormat;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpException;
+import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.httpclient.params.HttpMethodParams;
+
+//import com.jenkins.XmlTransformer
+
+class Const{
+    public static String STAGE_Checkout = "checkout"; //特殊处理
+    public static String STAGE_Compile = "compile";
+    public static String STAGE_Autotest = "autotest";
+    //String STAGE_CodeCheck = "codecheck";
+    //String STAGE_UT = "ut";
+    //String STAGE_Smoke = "smoke";
+    //String STAGE_Test = "test";
+	
+	//替换端口为新的流水线树url
+	public static String PIPELINE_TREE_RLC = "8090/pipeline?url=";
+	
+	//过滤掉自动提交的记录
+	public static String FILTER_COMMIT_LOG = "[\\s\\S]*@jenkins[\\s\\S]*";
+}  
+
+class StringUtil{
+  	
+    public static String concatString(args, split) {       
+       StringBuilder buf = new StringBuilder();
+       int i = 0;
+       for (arg in args) {         
+           if(buf.length() > 0 && ++i < arg.length())  
+        	   buf.append(split);
+           buf.append(arg);
+       }
+       return buf.toString();  
+    }
+   
+    public static String formatHtml(String content) {		
+		//格式化<>
+		content = content.replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+		
+		//替换换行
+		content = "<p>" + content + "</p>";		
+		content = content.replaceAll("\r", "").replaceAll("\n", "<BR/>");				
+		
+		//替换空格
+		content = content.replaceAll(" ", "&nbsp;&nbsp;");
+		
+		return content;
+	}
+	
+	//对齐 mode:left/right
+	public static String alignSpace(String content, String mode, int maxSpan) {		
+		String newContent = '';
+		if(mode=='left'){
+			newContent += content;
+			//System.out.println(content + "->" + content.length());
+			for(int i=0; i<maxSpan-content.length(); i++){
+				newContent += ' ';
+			}			
+		} else {
+			for(int i=0; i<maxSpan-content.length(); i++){
+				newContent += ' ';
+			}
+			newContent += content;
+		}		
+		return newContent;
+	}
+	
+	public static String findFirstSubStrByRegex(String src, String pattern, int id){	   
+	   
+	   Pattern ptn = Pattern.compile(pattern, Pattern.DOTALL); 
+	   Matcher matcher = ptn.matcher(src);	    	
+	   if(matcher.find()){			
+		   //System.out.println(matcher.groupCount());			
+		   if(id <= matcher.groupCount()){
+			   return matcher.group(id);
+		   }
+	   }
+	   return null;	   			
+   }
+   
+   public static String[] findSubStrByRegex(String src, String pattern, int id){	   
+   
+	   Pattern ptn = Pattern.compile(pattern, Pattern.DOTALL);
+	   Matcher matcher = ptn.matcher(src);
+	   List<String> alist = new ArrayList<String>(); 	
+	   while(matcher.find()){			
+		   //System.out.println(matcher.groupCount());			
+		   if(id <= matcher.groupCount()){
+			   alist.add(matcher.group(id));
+		   }
+	   }	   
+	   return alist.toArray(new String[alist.size()]);			
+   }
+}
+
+class ReportXmlUtil{
+    
+    private String lastReportName;
+    private Map<String, List<groovy.util.Node>> cacheMap; //缓存用于排序
+    
+    ReportXmlUtil(){
+    	 init();
+    }
+    
+    //重新初始化,清空缓存cacheMap
+    //一般来说同一个stage进行排序,方便报告查看
+    public void init(){
+    	 lastReportName = "";
+    	 cacheMap = new TreeMap<String, List<groovy.util.Node>>();
+    }
+    
+  	//读取xml的标记，转换为html
+	  //1.转换xml+xslt的内容
+	  //2.加载txt操作
+    public String parseXml2Html(JenkinsClient jc, String parseXmlFile) {
+        String content = "";
+        File baseDir = new File(parseXmlFile).getParentFile();
+    	  def root = new XmlParser().parse(parseXmlFile);    
+    	  for(e in root.children()){
+            
+            if(parseXmlFile.contains("detail4e.xml"))
+            	  content += "<hr/>";
+            	  
+            //转换单个节点
+            e.attributes().put('baseDir', baseDir.getAbsolutePath());
+            e.attributes().put('buildUrl', jc.getBuildUrl());
+            e.attributes().put('buildOwner', jc.getBuildOwner());
+            e.attributes().put('buildResult', jc.getBuildResult());
+            content += parseSubXml2Html(e);
+        }
+        if(content==""){
+        	//content = "parse Xml:${parseXmlFile} fail!";
+        	  System.out.println("parse Xml:${parseXmlFile} fail!");
+        }
+        return content;
+    }
+    
+    //读取xml的标记，转换为html,保存到缓存中(仅针对summry,把里面的子xml拆出来排序,detail里面定制了body head txt2html标签,可能会乱了)    
+    public void appendXml2Cache(JenkinsClient jc, String parseXmlFile) {
+        
+        if(cacheMap==null) 
+        	cacheMap = new TreeMap<String, List<groovy.util.Node>>();
+        
+        File baseDir = new File(parseXmlFile).getParentFile();
+    	  def root = new XmlParser().parse(parseXmlFile);
+    	  for(e in root.children()){
+    	  	
+        	  //String content = "";            
+            //if(parseXmlFile.contains("detail4e.xml"))
+            //	  content = "<hr/>";
+            	  
+            //转换单个节点            
+            e.attributes().put('baseDir', baseDir.getAbsolutePath());
+            e.attributes().put('buildUrl', jc.getBuildUrl());
+            e.attributes().put('buildOwner', jc.getBuildOwner());
+            e.attributes().put('buildResult', jc.getBuildResult());
+            //content += parseSubXml2Html(e);
+            
+            String xmlKey = e.attribute("name")==null ? "":e.attribute("name");
+            if(!cacheMap.containsKey(xmlKey)){
+							List<groovy.util.Node> newList = new ArrayList<groovy.util.Node>();
+							newList.add(e);
+							cacheMap.put(xmlKey, newList);
+							//System.out.println("@@@@@@@@@@@@@@@@@@new key:"+xmlKey+"->"+newList.size() +" & " + baseDir.getAbsolutePath());
+						} else {
+							cacheMap.get(xmlKey).add(e);
+							//System.out.println("##################add key:"+xmlKey+"->"+cacheMap.get(xmlKey).size()+" & " + baseDir.getAbsolutePath());
+						}            
+        }        
+    }
+    //提取Cache内空,并清空Cache
+    public String takeCache2Html() {
+        
+        if(cacheMap==null) 
+        	return "";
+        
+        String content = ""; 
+        for(List<groovy.util.Node> list : cacheMap.values()){
+					for(groovy.util.Node n : list){
+						content += parseSubXml2Html(n);
+					}
+				}
+				cacheMap = null;				
+				return content;				      
+    }
+    
+    //转换summary4e.xml文件定义的各节点(xml+xsl)为html内容字符串
+    private String parseSubXml2Html(def xmlNode) {
+        
+        String content = "";
+        File baseDir = new File(xmlNode.attribute("baseDir"));    
+        String buildUrl = xmlNode.attribute("buildUrl");
+        String buildOwner = xmlNode.attribute("buildOwner")==null ? "":xmlNode.attribute("buildOwner");   
+        String buildResult = xmlNode.attribute("buildResult");
+        
+        //System.out.println(xmlNode.name());
+        if(xmlNode.name() == "head" || xmlNode.name() == "body"){                        
+            content += xmlNode.text();
+        } else if(xmlNode.name() == "xml2html"){                                    	                  	  
+            File xmlFile = new File(baseDir, xmlNode.attribute("xml"));
+						File xslFile = new File(baseDir, xmlNode.attribute("xsl"));									
+						if(!xmlFile.exists())
+							return "";								
+						if(!xslFile.exists())
+							return "";
+						
+						boolean showHead = (lastReportName != xmlNode.attribute("name"));
+						//System.out.println("@@@@@@lastReportName="+lastReportName+", this.name=" + xmlNode.attribute("name") + ", showHead="+showHead + ", buildUrl=" + buildUrl);
+						lastReportName = xmlNode.attribute("name");								
+						content += transXml2Html(xmlFile.getAbsolutePath(), xslFile.getAbsolutePath(), buildUrl, buildOwner, showHead) // + "<BR/>";
+        } else if(xmlNode.name().equals("txt2html") || xmlNode.name().equals("buildlog")){                        
+						File txtFile = new File(baseDir, xmlNode.attribute("txt"));
+						def encode = xmlNode.attribute("encode"); 
+						if(encode==null) encode = "UTF-8";
+						def t1 = xmlNode.attribute("firstlines");
+						def t2 = xmlNode.attribute("lastlines");
+						int firstlines = (t1!=null && t1.isInteger()) ? t1.toInteger() : -1;
+						int lastlines = (t2!=null && t2.isInteger()) ? t2.toInteger() : -1;								
+						//System.out.println(txtFile.getAbsolutePath() + ",[" + firstlines + "," + lastlines +"]");
+						if(!txtFile.exists())
+							return "";
+						
+						//增加标题
+						String desc="all";
+						if(firstlines>0)
+							desc = "first " + firstlines.toString() + " line";
+						else if(lastlines>0)
+						  desc = "last " + lastlines.toString() + " line";
+						content += "<TABLE width=\"98%\"><TR><TD class=\"#CSS_STAGE#\"><B>&nbsp;Log&nbsp;(${desc})</B></TD></TR></TABLE>";
+						
+						content += transTxt2Html(txtFile.getAbsolutePath(), encode, firstlines, lastlines) // + "<BR/>";
+			  } else if(xmlNode.name().equals("html2html")){
+			  	  File txtFile = new File(baseDir, xmlNode.attribute("html"));
+						def encode = xmlNode.attribute("encode"); 
+						if(encode==null) encode = "UTF-8";
+						if(!txtFile.exists())
+							return "";
+						//content += getHtmlBody(transTxt2Html(txtFile.getAbsolutePath(), encode, -1, -1)) //+ "<BR/>";
+						def curHtml = new File(txtFile.getAbsolutePath()).getText();
+						content += getHtmlBody(curHtml);
+			  }
+        return replaceTagVar(buildResult, content);
+    }
+    
+    //替换特殊字符:##
+    private String replaceTagVar(/*JenkinsClient jc*/String buildResult, String content) {
+        //System.out.println(content);        
+        //content = content.replaceAll("#CSS_STAGE#", jc.getBuildCssState());        
+        content = content.replaceAll("#CSS_STAGE#", "STAGE4SUM_${buildResult}");
+        
+        return content;
+    }
+    
+    
+    //转换xml为html格式
+    String transXml2Html(xmlFileName, xslFileName, buildUrl, buildOwner, boolean showHead) {            
+        TransformerFactory tFac = TransformerFactory.newInstance();        
+        StreamSource xslSource = new StreamSource(xslFileName);  
+        Transformer tformer = tFac.newTransformer(xslSource);  
+        File xmlFile = new File(xmlFileName);  
+        //File htmlFile = new File(htmlFileName);  
+        StreamSource source = new StreamSource(xmlFile);
+        StringWriter strWriter = new StringWriter();
+        StreamResult result = new StreamResult(strWriter);  
+        //System.out.println(result.toString());                  
+		//System.out.println(buildUrl);    
+        tformer.setParameter("buildUrl", buildUrl==null?'':buildUrl);
+        tformer.setParameter("buildOwner", buildOwner==null?'':buildOwner);        
+        tformer.setParameter("showHead", String.valueOf(showHead));
+        tformer.transform(source, result);          
+        //println strWriter.getBuffer().toString();        
+        return strWriter.getBuffer().toString();
+    }
+    
+    String getHtmlBody(String htmlTxt) {
+        htmlTxt = htmlTxt.replaceAll("^[\\s\\S]*?<(BODY|body)[^>]*>", "");
+        htmlTxt = htmlTxt.replaceAll("</(BODY|body)>[\\s\\S]*", "");
+        return htmlTxt;
+    }
+    
+    private String transTxt2Html(String txtFile, String encode, int firstlines, int lastlines) {		
+
+			String content = "";
+			/*
+			if(firstlines < 0 && lastlines < 0){									   						
+					content = new String((new File(txtFile)).getText().getBytes(encode));
+			} else if (firstlines < 0) {//读取最后x行									
+					def lines = new File(txtFile).readLines();						
+					int startline = lastlines > lines.size() ? 0 : lines.size() - lastlines; 
+					for(int i= startline; i < lines.size() && i< startline + lastlines ; i++) {
+						content += new String(lines.get(i).getBytes(encode)) + "\r\n";
+					}
+				
+			} else if (lastlines < 0) {				   
+			   new File(txtFile).eachLine { 	
+				  //System.out.println(new String(it.getBytes("GB2312")));					  						  						  
+						if(firstlines-- > 0)												
+						   content += new String(it.getBytes(encode)) + "\r\n";							   
+					  }
+			}*/
+			
+				
+			BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(txtFile), encode));						
+			String line;				
+			if(firstlines < 0 && lastlines < 0){
+				while( (line = br.readLine()) != null ){
+				  content += line + "\r\n";						
+				}
+			} else if (firstlines < 0) {//读取最后x行					
+				List<String> lines = new ArrayList<String>();
+				while( (line = br.readLine()) != null ){
+					lines.add(line);				
+				}
+				int startline = lastlines > lines.size() ? 0 : lines.size() - lastlines; 
+				for(int i= startline; i < lines.size() && i< startline + lastlines ; i++) {
+					content += lines.get(i) + "\r\n";
+				}
+				
+			} else if (lastlines < 0) {				
+				while((line = br.readLine()) != null && firstlines > 0){
+					content += line + "\r\n";
+					firstlines --;
+				}
+			}				
+			br.close();
+			
+			return StringUtil.formatHtml(content); 
+	}	
+			
+}
+
+class FileUtil{
+    static def boolean isExists(String sPath) {    
+        return new File(sPath).exists();
+    }
+    //查找以leftName的子目录，只找一层
+    static def String[] findSubDir(String sDir, String leftName) {
+      //List<String> slist = new ArrayList<String>();
+      def slist = [];
+        File root = new File(sDir);    
+        if(!root.exists()){
+           return slist;//.toArray();
+        }
+        for(File subDir in root.listFiles()){
+            if(subDir.isDirectory() && subDir.length() > leftName.length() && subDir.getName().substring(0, leftName.length()).equals(leftName)){
+                //System.out.println(subDir.getName());
+                slist.add(sDir + "/" + subDir.getName());
+            }
+        }
+        return slist;//.toArray();
+    }
+    
+    //查找文件名，最多只找2层, -1表示所有的层, 1指定1层, 2指定第2层...
+    static def String[] findFiles(String sDir, String fileName) {      
+    	return findFiles(sDir, fileName, -1);
+    }
+    static def String[] findFiles(String sDir, String fileName, int level) {      
+      def slist = [];
+        File root = new File(sDir);    
+        if(!root.exists()){
+           return slist;
+        }
+        for(File f in root.listFiles()){
+            if((level==2||level<0) && f.isDirectory() ){
+                //System.out.println(f.getName());
+                for(File f2 in f.listFiles()){
+                    if(f2.getName().equals(fileName)) {
+                	  	  slist.add(f2.getAbsolutePath());
+                		}
+                }                
+            } else {
+                if(level<=1 && f.getName().equals(fileName)) {
+                	  slist.add(f.getAbsolutePath());
+                }               
+            }
+        }
+        return slist;
+    }
+    
+    static def String readText(String sPath) {    
+        return new File(sPath).getText();
+    }
+}
+
+
+class BuildConfigUtil{
+    def project = null;
+    def build = null;
+    BuildConfigUtil(project, build){
+        this.project = project;
+        this.build = build;
+    }
+    static def String getEnv(name) {
+        def map = System.getenv();
+        return map.get(name);
+    }
+    static def String getJenkinsHome() {
+        return getEnv("JENKINS_HOME");
+    }
+	
+	//ipMatch = "^192.*"
+	static def String getHostIp(ipMatch) {
+        //return InetAddress.getLocalHost().getHostAddress();
+		try{  
+	    	java.util.Enumeration<java.net.NetworkInterface> allNetInterfaces = java.net.NetworkInterface.getNetworkInterfaces();  
+	        while (allNetInterfaces.hasMoreElements()){  
+	        	java.net.NetworkInterface netInterface = (java.net.NetworkInterface) allNetInterfaces.nextElement();  
+	        	java.util.Enumeration<InetAddress> addresses = netInterface.getInetAddresses();  
+	            while (addresses.hasMoreElements()){  
+	                InetAddress ip = (InetAddress) addresses.nextElement();  
+	                if (ip != null   
+	                        && ip instanceof InetAddress  
+	                        && !ip.isLoopbackAddress()   
+	                        && ip.getHostAddress().indexOf(":")==-1
+	                        && ip.getHostAddress().matches(ipMatch)){
+	                    return ip.getHostAddress();  
+	                }   
+	            }  
+	        }  
+	    }catch(Exception e){  
+	        //e.printStackTrace();  
+	    }  	    
+	    return "127.0.0.1";
+    }
+    
+    static def String getGroovyPath() {            
+      return BuildConfigUtil.getJenkinsHome() + "/email-templates";
+    }
+    
+    //2层: http://xx.xx.xx.xx:8080/job/OAM_V20/job/mml_build_on_v20/149/
+    //3层: http://xx.xx.xx.xx:8080/job/BWT-3800_eNB_V2.0/job/MCB/job/oam_compile/6/ 
+    static def String getLocalJobPathByUrl(jobUrl, jobName){    	  
+			String[] urlSplits = jobUrl.split("/");  
+			def jobPath = getJenkinsHome();
+			int jobNum = 0;
+			//for(subDir in urlSplits){
+			for(int i=0;i<urlSplits.size();i++){
+			  def subDir = urlSplits[i];
+				if(subDir == "job"){
+					subDir = "jobs"; 
+					jobNum++;
+					//if(jobNum>1)
+					//   continue;
+				}
+				if(jobNum > 0){
+					jobPath += "/${subDir}";
+					if(subDir == jobName)
+					break;
+				}
+			}
+			//System.out.println(jobPath);
+			return jobPath;    	  
+		}
+    
+    //2层及以上folder测试OK /var/lib/jenkins/jobs/BWT-3800_eNB_V2.0/jobs/MCB/jobs/cspl_codecheck
+    def String getJobPath() {        
+        //System.out.println("project.name=${project.name}"); //project.name只有最后一层...
+    	  return getLocalJobPathByUrl(build.url, project.name);    	  
+        //return getJenkinsHome() + "/jobs/${project.name}";
+    }
+    def String getBuildPath(){
+        return getJobPath() + "/builds/${build.number}"
+    }
+        
+    def String getBuildUrl(){    	  
+        return "${build.absoluteUrl}";//"${rooturl}${build.url}"
+    }
+	    
+    def String getBuildResult(){
+        return build.result.toString(); //SUCCESS/FAILURE/
+    }
+    
+    //返回root url，例如: http://192.168.154.200:8080 不带/结束
+    def String getRootUrl(boolean withPort){    	
+    		String url = "${build.absoluteUrl}";
+    		if(withPort){
+    			 return StringUtil.findFirstSubStrByRegex(url, "((http|https)://[^:/]+[:]*[\\d]*)/", 1);
+    		} else {
+    		   return StringUtil.findFirstSubStrByRegex(url, "((http|https)://[^:/]+)[:]*[\\d]*/", 1);
+    		}        
+    }
+    
+}
+
+//读取报告生成配置
+class ReportConfigUtil{
+	  def root = null;
+	  
+	  //默认使用/var/lib/jenkins/email-templates/ReportConfig_本机IP.xml配置文件
+		ReportConfigUtil(){
+		    //File xmlFile = new File(xmlPath);
+		    //System.out.println("**************" + xmlFile.getAbsolutePath());
+		    def xmlPath = BuildConfigUtil.getGroovyPath() + "/ReportConfig_"+BuildConfigUtil.getHostIp("^192.*")+".xml";		    
+			//System.out.println("**************" + xmlPath);
+        if(!(new File(xmlPath)).exists())
+        	return;
+        root = new XmlParser().parse(xmlPath);
+    }
+    
+    //groovy不支持相对目录
+    ReportConfigUtil(xmlPath){
+        if(!(new File(xmlPath)).exists())
+        	return;
+        root = new XmlParser().parse(xmlPath);
+    }
+    
+    //配置是否在汇总显示,默认不配置为显示
+    def boolean isShowSummry(url) {        
+        def showflag = getBuildConfig(url, "summary", "show");
+        return showflag.toLowerCase()!="false";
+    }
+    
+    def boolean isShowDetail(url) {        
+        def showflag = getBuildConfig(url, "detail", "show");
+        return showflag.toLowerCase()!="false";
+    }
+    
+    def String getBuildConfig(url, key, attName){
+		if(root==null)
+    		return "";
+    	def node = getFirstNodeByUrl(root._XSLT_XML_[0], url);
+    	if(node==null)
+    		return "";
+    	def keys = node.get(key);
+    	if(keys.size()==0)
+    		 return "";
+    	if(keys[0].attribute(attName)==null)
+    	   return "";
+    	return keys[0].attribute(attName);
+    }
+    
+    //查找xml node通过job url,快速匹配上对应的配置
+    def groovy.util.Node getBuildNodeByUrl(url) {
+    		if(root==null)
+    			return null;
+    		
+    		String[] jobSplits = url.split("/job/");
+    		def node = root;
+    		for(int i=1; i<jobSplits.length;i++){
+    		  def nodeName = jobSplits[i];
+    			if(i == jobSplits.length-1)
+    				nodeName = nodeName.substring(0, nodeName.indexOf("/"));
+    			//System.out.println(nodeName);	
+    			def nodes = node.get(nodeName);    			
+    			if(nodes.size()==0){
+    				//System.out.println("Can't not find url:" + url + " 's configuration! skiped!");
+    				return null;
+    			}
+    			node = nodes[0];    			
+    		}    		
+    		return node;
+    }
+	
+	//参数1:pipelineUrl,取流水线工程url build4pipeline.getPipelineUrl(), 注意,如果主工程不带Folder,ReportConfig.xml节点配置为job名,否则为Folder+job一级一级的配置名称
+	def groovy.util.Node getTableStageNode(pipelineUrl, stageName){
+    	
+		if(root==null)
+			return null;
+		
+		def pipelineNode = getFirstNodeByUrl(root._MATRIX_TABLE_[0], pipelineUrl);		
+		if(pipelineNode==null)
+			return null;
+		def stageNode = pipelineNode.stage.find{node->node.@name==stageName};		
+		return stageNode;
+    }
+	
+	//获取显示配置表列名
+	def String[] getTableColNames(groovy.util.Node stageNode){
+		def colNodes = stageNode.row[0].col.@name;
+		return colNodes;
+	}
+	
+	//生成特定的二级部门的责任矩阵表格,如果不存在配置,则返回 null
+	def String genStageTable(PipelineXmlUtil build4pipeline, String stageName){
+		String tableHtml = "<TABLE width=\"100%\" bgcolor=\"#507CD1\" border=\"0\" cellpadding=\"3\" cellspacing=\"1\">";
+		tableHtml += "<TR><TD bgColor=\"#EAEAEA\"></TD>";
+		
+		//流水线无此stage,不生成表
+		if(build4pipeline.getStageJobUrls(stageName).size()==0) {
+			return null;
+		}
+		
+		//找不到配置,不生成表
+		def stageNode = getTableStageNode(build4pipeline.getPipelineUrl(), stageName);
+		if(stageNode==null){
+			return null;
+		}				
+		for(def colName in getTableColNames(stageNode)){
+			tableHtml += "<TH bgColor=\"#DAE7FE\">${colName}</TH>";
+		}
+		tableHtml += "</TR>";
+		
+		for(def row in stageNode.row){
+			tableHtml += "<TR><TD bgColor=\"#DAE7FE\" class=\"ct_info\">${row.@name}</TD>";
+			for(def col in row.col){
+				//取出行row.@name+列col.@name 对应的job列表,并判断构建结果(是否把这个分类的结果整到流水线中,待处理)		
+				def jobNodes = build4pipeline.getClassifyJobs(stageName, row.@match, row.@name, col.@match, col.@name);				
+				//if(jobNodes==null) //已考虑空,返回空集,表格还要打完整,不能退出...
+				//	continue;				
+				def linker = build4pipeline.getClassifyJobsLinker(col.text(), jobNodes);											
+				tableHtml += "<TD class=\"${build4pipeline.getClassifyJobsCssState(jobNodes)}\">${linker}</TD>";
+			}
+		}
+		tableHtml += "</TR></TABLE>";	
+		return tableHtml;
+    }
+	
+	private def getFirstNodeByUrl(root, url){		
+		if(root==null)
+			return null;
+		
+		String[] jobSplits = url.split("/job/");
+		//System.out.println(jobSplits);
+		def node = root;
+		for(int i=1; i<jobSplits.length;i++){
+		  def nodeName = jobSplits[i];
+			if(i == jobSplits.length-1)
+				nodeName = nodeName.substring(0, nodeName.indexOf("/"));			
+			//System.out.println(nodeName);
+			def nodes = node.get(nodeName);    			
+			//System.out.println(nodes);
+			if(nodes.size()==0){
+				//System.out.println("Can't not find url:" + url + " 's configuration! skiped!");
+				return null;
+			}
+			node = nodes[0];
+		}
+		return node;
+	}
+	
+	//获取配置的stage顺序列表
+	//参数1:pipelineUrl,取流水线工程url build4pipeline.getPipelineUrl(), 注意,如果主工程不带Folder,ReportConfig.xml节点配置为job名,否则为Folder+job一级一级的配置名称
+	def String[] getStageSorts(pipelineUrl, sortName){    	
+		
+		def e = [];
+		if(root==null)
+			return e;		
+		
+		def pipelineNode = getFirstNodeByUrl(root._STAGE_SORT_[0], pipelineUrl);		
+		if(pipelineNode==null)
+			return e;
+		def slist = pipelineNode.sort.find{node->node.@name==sortName}.stage.@name;
+		if(slist!=null){
+			return slist;
+		}		
+		return e;
+    }
+	
+}
+
+class PipelineXmlUtil{ 
+	  
+	  def pipeXmlRoot = null;
+	  BuildConfigUtil mainBuildConfig = null;
+	  
+	  //传入调用的pipeline的job build信息,获取到流水线的本地xml路径
+    static List<PipelineXmlUtil> getPipelines(project, build){
+        List<PipelineXmlUtil> pipelineXmlUtils = new ArrayList<PipelineXmlUtil>(); 
+        
+        String[] pipelineBuildPaths = getPipelineBuildPath(new BuildConfigUtil(project, build));
+        for(String bp in pipelineBuildPaths){       
+           PipelineXmlUtil pipelineXmlUtil = new PipelineXmlUtil(bp);
+           pipelineXmlUtil.setMainBuildConfig(project, build);
+       		 pipelineXmlUtils.add(pipelineXmlUtil);
+       	}
+       	//主Build没有调起流水线就失败了.增加一个空的,出报告
+       	if(pipelineXmlUtils.size() == 0){
+       		 PipelineXmlUtil pipelineXmlUtil = new PipelineXmlUtil("");
+           pipelineXmlUtil.setMainBuildConfig(project, build);
+       		 pipelineXmlUtils.add(pipelineXmlUtil);
+       	}
+       	
+        return pipelineXmlUtils;
+    }
+    
+    //通过主工程的获取流水线的build路径,可能会调多个流水线
+    static def String[] getPipelineBuildPath(BuildConfigUtil buildConfig){
+        List<String> paths = new ArrayList<String>();
+        //打开TriggerBuild.xml,获取插件调用信息
+        // def buildXml = buildConfig.getBuildPath() + "/TriggerBuild.xml";
+        def pipelineXml = buildConfig.getBuildPath();// + "/pipeline.xml";
+        paths.add(pipelineXml);    
+         
+         System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+         return paths.toArray(new String[paths.size()]);
+    }      
+    
+    //传入pipeline所在的build本地目录
+    PipelineXmlUtil(String pipelineBuildPath){
+        //super(null, null);
+                
+        def xmlPath = getPipelineXmlPath(pipelineBuildPath);        
+        if(xmlPath==""){
+        		pipeXmlRoot = null;
+        		return;
+       	}
+        pipeXmlRoot = new XmlParser().parse(xmlPath);
+    }      
+    
+    def void setMainBuildConfig(project, build) {
+    		mainBuildConfig = new BuildConfigUtil(project, build);
+    }
+    
+    def String getPipelineXmlPath(String localPath){        
+        if(localPath==null || localPath=="")
+        	return "";
+        return localPath + "/pipeline.xml";
+    }
+    
+    //返回主工程的Url
+    def String getMainBuildUrl(){
+    	  if(mainBuildConfig == null)
+    	      return "";
+    	  return mainBuildConfig.getBuildUrl();
+    }
+    
+    def String getMainRootUrl(boolean withPort){
+    		if(mainBuildConfig == null)
+    	      return "";
+    	  return mainBuildConfig.getRootUrl(withPort);
+    }
+    
+    /************以下仅从pipeline.xml获取流水线的信息*******************/
+    def String getPipelineUrl(){
+    	  if(pipeXmlRoot==null)
+    	      return "";
+    	  return pipeXmlRoot.attribute("url");
+    }
+	
+	//获取流水线树链接
+	public String getPipelineTreeUrl(){
+	    String url = getPipelineUrl();
+	    Matcher matcher = Pattern.compile("http[s]*://[\\d\\.]+:([\\d]+/).*", Pattern.DOTALL).matcher(url);	    
+	    if(matcher.find()){			
+		    //System.out.println(matcher.group(1));
+		    url = url.replace(matcher.group(1), Const.PIPELINE_TREE_RLC);
+	    }	   
+	    return url;
+	}	
+    
+	//默认顺序
+    def String[] getStageNames(){
+    	
+		return getStageNames("default");
+		/*
+		def slist = [];    	  
+    	//直接增加checkout
+    	//slist << STAGE_Checkout;    	   	  
+    	if(pipeXmlRoot==null){
+    	    slist << Const.STAGE_Checkout;  //目前无pipeline.xml是由于checkout异常没有跑pipeline引起的
+    	    return slist;
+    	}    	  
+        for(stage in pipeXmlRoot.stage){     
+            slist << stage.attribute("name");
+        }
+        return slist;
+		*/
+    }
+	
+	//优先顺序(用于特殊的需求,在配置指定)
+	def String[] getStageNames(String sortName){    	  
+		def slist = [];
+    	  
+    	//直接增加checkout
+    	//slist << STAGE_Checkout;
+    	   	  
+    	if(pipeXmlRoot==null){
+    	    slist << Const.STAGE_Checkout;  //目前无pipeline.xml是由于checkout异常没有跑pipeline引起的
+    	    return slist;
+    	}
+		
+		ReportConfigUtil reportConfigUtil = new ReportConfigUtil();		
+		
+		def sorts = reportConfigUtil.getStageSorts(getPipelineUrl(), sortName);		
+		//System.out.println(getPipelineUrl() + ">>>>>>>>>>>>>>>>>>>:"+sorts);
+		if(sorts.length == 0){
+			sorts = reportConfigUtil.getStageSorts(getPipelineUrl(), "default");			
+		}
+		for(def sort in sorts){
+			slist << sort;
+		}		
+    	  
+        for(stage in pipeXmlRoot.stage){     
+			if(sorts.length == 0 || !sorts.contains(stage.attribute("name")))
+				slist << stage.attribute("name");
+        }
+        return slist;
+    }
+    
+    
+    def String[] getStageJobUrls(stageName){
+    	
+		def slist = []; 		
+		for(def job in getStageJobs(stageName)){  
+			//System.out.println("::::::::::" + job.attribute('url') + job);
+			slist << job.attribute("url");
+		}
+		return slist;
+		
+		/*
+		def slist = [];    	  
+    	  if(pipeXmlRoot!=null){
+	        for(stage in pipeXmlRoot.stage){     
+	            if(stage.attribute("name") == stageName){
+	                for(job in stage.job){
+	                   slist << job.attribute("url");
+	                }
+	            }
+	        }
+        }
+        
+        //Checkout处理:使用本build job进行
+        if(stageName==Const.STAGE_Checkout){
+            if(slist.size()==0){
+                System.out.println("checkout using:" + getMainBuildUrl());
+                slist << getMainBuildUrl();       //调用BuildConfigUtil.getBuildUrl(),取当前build的链接
+            } else {  
+                def hasSCM = false;   
+                for(url in slist){
+            			JenkinsClient jcSCM = new JenkinsClient(url);
+	     						if (jcSCM.hadBuild() && jcSCM.getChangeKind()!="")
+	     						    hasSCM = true;	     						
+        				}
+        				if(!hasSCM){
+        					  System.out.println("checkout adding:" + getMainBuildUrl());
+                	  //slist << getMainBuildUrl();  //调用BuildConfigUtil.getBuildUrl(),取当前build的链接
+                	  def slist1 = [];
+                	  slist1 << getMainBuildUrl();
+                	  for(url in slist) slist1 << url;
+                	  return slist1;
+        				}               
+            }
+        }  
+        
+        return slist;
+		
+		*/
+    }
+    
+	//根据stage的名称,返回job的节点列表
+    def List<groovy.util.Node> getStageJobs(String stageName){
+    	
+		List<groovy.util.Node> jobNodes = new ArrayList<groovy.util.Node>();		
+		if(pipeXmlRoot!=null){
+	        for(stage in pipeXmlRoot.stage){     
+	            if(stage.attribute("name") == stageName){
+	                for(job in stage.job){
+	                   //jobNodes.add(job.clone());
+					   jobNodes.add(job);
+	                }
+	            }
+	        }
+        }
+		
+        //Checkout处理:使用本build job进行
+        if(stageName==Const.STAGE_Checkout){
+		    def hasSCM = false;           
+			//无checkout_job或job里面无SCM信息
+			for(def job in jobNodes){  
+				JenkinsClient jcSCM = new JenkinsClient(job.attribute('url'));
+				if (jcSCM.hadBuild() && jcSCM.getChangeKind()!="")
+					hasSCM = true;
+			}
+			//不管checkout子job有没有scm的信息,强制增加主工程作为checkout的一部分
+			//if(!hasSCM){
+				System.out.println("checkout adding:" + getMainBuildUrl());
+				jobNodes.add(0, new groovy.util.Node(null,'job',['url':(getMainBuildUrl()), 'result':(''), 'owner':(''), , 'classify':('')]));       //调用BuildConfigUtil.getBuildUrl(),取当前build的链接                				
+			//}                           
+        }
+		return jobNodes;
+    }
+	
+	//根据stage的名称+分类名+owner,返回job的节点列表
+	def List<groovy.util.Node> getClassifyJobs(String stageName, String attName1, String attValue1, String attName2, String attValue2){
+		List<groovy.util.Node> jobNodes = new ArrayList<groovy.util.Node>();		
+		if(pipeXmlRoot!=null){
+			def stageNode = pipeXmlRoot.stage.find{node-> node.@name==stageName};
+			if(stageNode!=null)
+				jobNodes = stageNode.job.findAll{node-> node['@'+attName1]==attValue1 && node['@'+attName2]==attValue2 };
+		}
+		return jobNodes;
+	}
+	
+	def boolean isWorseThan(String r1, String r2){
+			if(r2==null || r2=='')
+			   return true;
+			if(r1==null || r1=='')
+			   return false;
+			   
+			if(r1=='FAILURE')
+				 return true;
+			if(r1=='UNSTABLE' && r2!='FAILURE')
+				 return true;			
+			if(r1=='ABORTED' && r2!='FAILURE' && r2!='UNSTABLE')
+				 return true;	 			
+			if(r1=='NOT_BUILT' && r2!='FAILURE' && r2!='UNSTABLE' && r2!='ABORTED')
+				 return true;
+			
+			return false;
+	}
+	
+	//获取分类后的job列表汇总结果 合并结果
+	def String getClassifyJobsResult(List<groovy.util.Node> jobNodes){
+	    String result = '';
+		for(groovy.util.Node jobNode in jobNodes){
+			if(jobNode.@result==null || jobNode.@result =='')
+				continue;
+			//if(result == '' || jobNode.@result=='FAILURE' || jobNode.@result=='UNSTABLE' && result != 'FAILURE')
+			if(result == '' || isWorseThan(jobNode.@result, result))
+				result = jobNode.@result; 
+		}
+		return result;
+	}
+	//获取分类后的job列表链接
+	def String getClassifyJobsLinker(String configUrl, List<groovy.util.Node> jobNodes) {		
+		String result = getClassifyJobsResult(jobNodes);
+		String url = configUrl!=null ? configUrl : ''; //优先取配置的url
+		if(url==''){  //取最近一个失败的job url		    
+			for(groovy.util.Node jobNode in jobNodes){
+				if(jobNode.@result==null || jobNode.@result =='')
+					continue;
+				if(jobNode.@result=='FAILURE'){
+					url = jobNode.@url; 
+					break;
+				}				
+				if(jobNode.@result=='UNSTABLE' || url=='')
+					url = jobNode.@url; 													
+			}
+		} else if(!url.contains("http") && jobNodes.size()>0){
+			//使用相对的linker,补充			
+			url = jobNodes[0].@url.split('/job/')[0] + url;
+		}
+		return "<a href=\"${url}\" target=\"_blank\">${result}</a>";		
+	}
+	
+	
+	def String getClassifyJobsCssState(List<groovy.util.Node> jobNodes) {
+         String result = getClassifyJobsResult(jobNodes);
+         return "STAGE4CLASSIFY_${result}";
+	}
+	    
+    def String getStageResult(stageName){    	  
+    	  if(pipeXmlRoot!=null){
+	        for(stage in pipeXmlRoot.stage){     
+	            if(stage.attribute("name") == stageName){
+	                return stage.attribute("result");
+	            }
+	        }
+        }
+        
+        //未定义单独的Checkout stage处理:使用本job判断(如果不存在pipeline.xml,未跑流水线,则本job的状态即Checkout状态,否则是成功,走到了pipeline,checkout肯定完成了)
+        if(stageName==Const.STAGE_Checkout){        		
+            return pipeXmlRoot==null ? getBuildResult() : "SUCCESS";
+        }               
+        return "";
+    }
+    
+    //首行阶段的css
+    def String getStageCssState(stageName) {    		 
+         String result = getStageResult(stageName);
+         if(stageName=="report")
+         	  result = "SUCCESS";
+         if(result=="")
+         	  result = "NOT_BUILT";
+         return "STAGE4PL_${result}";
+         /*
+         if(result=="SUCCESS") 
+            return "stage_succ";
+         else if(result=="FAILURE") 
+            return "stage_fail";
+         else if(result=="UNSTABLE") 
+            return "stage_warn";
+         else //(result=="") 
+            return "stage_none";            
+         */
+    }
+    
+    //Summary阶段的css
+    def String getStageCssState4sum(stageName) {
+    		 String result = getStageResult(stageName);
+         if(stageName=="report")
+         	  result = "SUCCESS";
+         if(result=="")
+         	  result = "NOT_BUILT";
+         return "STAGE4SUM_${result}";
+         /*
+         if(result=="SUCCESS") 
+            return "stage_succ4sum";
+         else if(result=="FAILURE") 
+            return "stage_fail4sum";
+         else if(result=="UNSTABLE") 
+            return "stage_warn4sum";
+         else //(result=="") 
+            return "stage_none4sum";            
+         */
+    }
+    
+    //动态stage
+    
+}
+
+//class LogFileUtil extends FileUtil{        
+//}
+
+//class
+public class JenkinsClient extends ReportConfigUtil {
+  def jobUrl = ""; //url需要包含最后一个/
+  def jobName = "";
+  def jobOwner = "";
+  def xmlRoot = null;
+  
+  JenkinsClient(String jobNameOrUrl){
+     if(jobNameOrUrl.indexOf("http:")>=0){  
+        loadBuildByUrl(jobNameOrUrl);  //url
+     }else{  
+        loadLastBuildByName(jobNameOrUrl);  //name
+     }
+  }
+  JenkinsClient(String jobNameOrUrl, String jobOwner){
+     this(jobNameOrUrl);
+	 this.jobOwner = jobOwner;
+  }  
+  
+    //有点岐义,job url一般不带buildid
+    //def String getJobUrl() {
+    //	  return jobUrl;
+    //}
+  
+    def String getRspString(String url) {                            
+        HttpClient httpClient = new HttpClient();
+        GetMethod httpGet = new GetMethod(url);
+        String rspMsg = "";                
+        httpGet.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,new DefaultHttpMethodRetryHandler());
+        try {            
+            int statusCode = httpClient.executeMethod(httpGet);            
+            if(statusCode==200){
+                InputStream is1 = httpGet.getResponseBodyAsStream();
+                BufferedReader br = new BufferedReader(new InputStreamReader(is1,"UTF-8"));                
+                String line = null;                
+                while((line=br.readLine())!=null){
+                    rspMsg = rspMsg.concat(line + "\n");
+                }
+            }            
+        } catch (HttpException e) {
+            e.printStackTrace();            
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {            
+            httpGet.releaseConnection();
+        }
+        if(rspMsg=="") {
+            System.err.println("Http get url:" + url + " return null!");
+        }        
+        return rspMsg;
+    }
+    
+    //存在folder有问题,待处理
+    def boolean loadLastBuildByName(String jobName) {
+       if(jobName==""){
+          System.err.println("loadLastBuild error!jobName is null!");          
+               return false;
+       }
+       this.jobUrl = "http://localhost:8080/job/" + jobName+ "/lastBuild/";
+       return loadBuildByUrl(jobUrl);
+    }
+    
+    def boolean loadBuildByUrl(String jobFullUrl) {             
+       
+       //System.out.println("JenkinsClient.loadBuild:"+jobFullUrl);
+       this.xmlRoot = null;       
+       this.jobUrl = jobFullUrl;
+       String[] tWords = jobFullUrl.split("/");
+       this.jobName = tWords.size()>2 ? tWords.getAt(tWords.size()-2) : "";
+       
+       if(jobUrl == null || jobUrl==""){
+          System.err.println("loadBuild error!jobUrl is null!");          
+               return false;
+       }       
+       String xmlStr = getRspString(jobUrl + "api/xml");                        
+       if(xmlStr == ""){          
+          System.err.println("loadBuild error!");
+             return false;
+       }
+       xmlRoot = new XmlParser().parseText(xmlStr);     
+       return xmlRoot!=null;  
+    }
+    
+    def boolean hadBuild() {         
+         return xmlRoot!=null;
+    }
+    
+    def String getBuildCssState() {
+         String result = getBuildResult();
+         return "STAGE4SUM_${result}";
+         /*if(result=="SUCCESS") 
+             return "stage_succ";
+         else if(result=="FAILURE") 
+            return "stage_fail";
+         else if(result=="UNSTABLE") 
+            return "stage_warn";
+         else //(result=="") 
+            return "stage_none";            
+        */          
+    }
+    
+    def String getBuildFullDisplayName() {
+        if(xmlRoot == null) return "";
+        return xmlRoot.fullDisplayName[0].text();        
+    }
+    
+    
+    def String getBuildNumber() {
+        if(xmlRoot == null) return "";
+        return xmlRoot.number[0].text();
+    }
+    
+    def String getBuildResult() {
+        if(xmlRoot == null) return "";
+        return xmlRoot.result[0].text();
+    }
+    
+    def String getBuildTime() {
+        if(xmlRoot == null) return "";
+        
+        return tsToString(xmlRoot.timestamp[0].text());
+        
+        //def ts = xmlRoot.timestamp[0].text();
+        //if(ts.isLong()) {
+        //     return (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(ts.toLong());
+        //}
+        //return ts;
+    }
+    
+    def String getBuildUrl() {
+         if(xmlRoot == null) return "";
+         return xmlRoot.url[0].text();
+    }
+	
+	def String getBuildOwner(){    	  
+        return jobOwner;
+    }
+    
+    def String getBuildDuration() {
+         if(xmlRoot == null) return "";
+         def val = xmlRoot.duration[0].text();
+         if(val.isInteger()){
+             //return val.toInteger()/1000 + "s";
+             def ts=(val.toInteger()/1000).toInteger();
+             return (ts/3600).toInteger() + ":" + ((ts % 3600)/60).toInteger() + ":"+ ((ts % 3600)%60).toInteger();
+         }
+         return val;
+    }
+    
+    def boolean isPipelineJob() {
+         return getJobType() == "workflowRun";         
+    }
+    
+    //取根节点
+    //freeStyleBuild
+    //workflowRun
+    def String getJobType() {         
+         if(xmlRoot == null){
+         	   return "";
+         } 
+         return xmlRoot.name();
+    }
+    
+    def String getCause() {         
+         if(xmlRoot == null){
+                return "";
+         } 
+         return xmlRoot.action.cause.shortDescription.text();
+    }  
+        
+    def String getChangeKind() {         
+         if(xmlRoot == null){
+                return "";
+         } 
+         return xmlRoot.changeSet.kind.text();
+    }    
+    
+    def String[] getChangeModules() {
+         //List<String> slist = new ArrayList<String>();           
+         def slist = [];
+         if(xmlRoot != null){
+                for(revision in xmlRoot.changeSet.revision){                   
+                   slist << "version:" + StringUtil.alignSpace(revision.revision.text(),'right',5) + " @ " + revision.module.text();
+                 }    
+         } 
+         return slist;//.toArray();         
+    }
+        
+    def String[] getAuthors() {
+         
+         def slist = [];
+         if(xmlRoot != null){
+             for(item in xmlRoot.changeSet.item){
+			    //过滤掉自动提交的记录
+				if(item.msg!=null && item.msg.text().matches(Const.FILTER_COMMIT_LOG)){
+					continue;
+				}
+                for(author in item.author){				   
+                   slist << author.fullName.text();
+                }
+             }    
+         } 
+         return slist;//.toArray();         
+    }
+	
+	  def String[] getAuthorMsgs() {
+         
+       def slist = [];
+       if(xmlRoot != null){
+          for(item in xmlRoot.changeSet.item){		
+                //过滤掉自动提交的记录
+				if(item.msg!=null && item.msg.text().matches(Const.FILTER_COMMIT_LOG)){
+					continue;
+				}
+				def line = (item.author !=null)?item.author.fullName.text():"Unknown";	
+				line = StringUtil.alignSpace(line,'left',18);
+				line += ":";
+				line += (item.commitId !=null)?item.commitId.text():"";				
+				line += " @ ";
+				//System.out.println(line);
+				def msg = (item.msg !=null)?item.msg.text():"";
+				
+				//正常的日志(git同步的日志，不去掉换行)
+				if(!msg.matches("[\\s\\S]*[\\w]+[ ]+\\d+:[\\s\\S]*"))
+					msg = msg.replaceAll('\n','').replaceAll('<br>',''); //去掉换行
+								
+                line += msg;
+				slist << line;
+         } 
+       } 
+       return slist;
+    }
+    
+    def String getSyncDesc() {
+								
+				def xmlPath = getLocalBuildPath() + "/svnsynclog.xml";		    
+        if(!(new File(xmlPath)).exists())
+        	return "";
+        	
+        def syncRoot = new XmlParser().parse(xmlPath);
+        def time = syncRoot.changelog.time;
+        if(time == null)
+          return "";
+        //def commitId = syncRoot.changelog.commitId;  
+        //if(commitId == null)
+        //  return "";
+          
+        return "最近一次Trunk同步 @ "+ time.text();
+    }
+    
+    def String[] getCommitLogDesc(logXml) {
+								
+				def slist = [];
+				def xmlPath = getLocalBuildPath() + "/" + logXml;		    
+        if(!(new File(xmlPath)).exists())
+        	return slist;
+        	
+        def todayRoot = new XmlParser().parse(xmlPath);        
+        for(item in todayRoot.changelog){
+						def line = (item.user !=null)?item.user.text():"Unknown";	
+						line = StringUtil.alignSpace(line,'left',18);
+						line += ":";
+						line += (item.commitId !=null)?item.commitId.text():"";				
+						line += " @ ";
+						//System.out.println(line);
+						def msg = (item.msg !=null)?item.msg.text():"";
+						msg = msg.replaceAll('\n','').replaceAll('<br>',''); //去掉换行
+            line += msg;
+						slist << line;
+        } 
+        return slist;
+    }
+    
+	
+    
+    
+    def String tsToString(String ts) {    
+        if(ts.isLong()) {
+             return (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(ts.toLong());
+        }
+        return ts;
+    }
+    
+    def String[] getChangeItems() {
+         //List<String> slist = new ArrayList<String>();
+         def slist = [];
+         if(xmlRoot != null){
+                for(item in xmlRoot.changeSet.item){
+                   String version = (item.commitId.text()!="") ? item.commitId.text() : (item.revision.text()!="")? item.revision.text() : (item.changeNumber.text()!="")? item.changeNumber.text():"";
+                   String itemInfo = "author:" + item.user.text() + " version:" + version + " @(" + tsToString(item.timestamp.text()) + ") : " + item.msg.text() + "<BR/>";
+                        for(path in item.path){
+                             itemInfo += "|--" + path.editType.text() + " : " + path.file.text() + "<BR/>";
+                        }   
+                   slist.add(itemInfo);                    
+                 }
+         }
+         //return slist.toArray();         
+         return slist;         
+    }
+    
+    //map
+    def getBuildArtifacts() {
+       def map1 = [:];
+         if(xmlRoot == null) 
+                 return map1;
+         
+         for(artifact in xmlRoot.artifact){           
+           map1.put(artifact.displayPath[0].text(), this.jobUrl + "artifact/" + artifact.relativePath[0].text());
+         }                      
+         return map1;
+    }
+    
+    def String getBuildParam(String name) {
+         if(xmlRoot == null) return "";
+         for(action in xmlRoot.action){
+           for(parameter in action.parameter){
+               if(parameter.name[0].text()==name){
+                  return parameter.value[0].text();
+                    }
+           }
+         }
+         return "";
+    }
+    
+    def String getBuildLog(boolean formatHtml) {
+         //String logStr = getRspString(jobUrl + "console"); //连其它jenkins html框架一并取出来了
+         String logStr = ""; 
+         if(formatHtml) {
+                 logStr = getRspString(jobUrl + "logText/progressiveHtml?start=0");                           
+                 //增加<BR/>
+                 logStr = logStr.replace("\n", "<BR/>");
+         } else {
+            logStr = getRspString(jobUrl + "logText/progressiveText?start=0"); 
+         }
+       if(logStr == ""){
+          System.err.println("getBuildLog Log error!");
+       }
+       //print logStr; 
+       return logStr;
+    }
+    
+    static def String getJenkinsHome() {            
+      return System.getenv().get("JENKINS_HOME");
+    }
+    
+    def String getLocalJobPath() {
+    	return BuildConfigUtil.getLocalJobPathByUrl(this.jobUrl, this.jobName);
+      //return getJenkinsHome() + "/jobs/" + this.jobName; 
+    }
+    
+    def String getLocalBuildPath(){
+        String path = getLocalJobPath() + "/builds/" + getBuildNumber();
+        //println path;
+        return path;
+    }
+    
+    /****************业务报告******************/
+    def String[] getSummaryXmls(){
+    		String[] xmls = FileUtil.findFiles(getLocalBuildPath(), "summary4e.xml", 1);
+    		if(xmls.length>0){  //根目录存在,不找2层目录.
+    			 return xmls;
+    		}    		
+    		return FileUtil.findFiles(getLocalBuildPath(), "summary4e.xml", 2);          				
+    }
+    
+    def String[] getDetailXmls(){
+    		String[] xmls = FileUtil.findFiles(getLocalBuildPath(), "detail4e.xml", 1);
+    		if(xmls.length>0){  //根目录存在,不找2层目录.
+    			 return xmls;
+    		}    		
+    		return FileUtil.findFiles(getLocalBuildPath(), "detail4e.xml", 2);          				
+    }
+          				
+    /*********重写基类的方法***********/
+    def boolean isShowSummry() {
+        def bshow = isShowSummry(jobUrl);
+        String result = getBuildResult();
+        if(!bshow && result!="SUCCESS" && result!="UNSTABLE")
+        	return true; //失败时,开关不生效,强制打开
+        return bshow;
+    }
+    
+    def boolean isShowDetail() {
+        def bshow = isShowDetail(jobUrl);
+        String result = getBuildResult();
+        if(!bshow && result!="SUCCESS" && result!="UNSTABLE")
+        	return true; //失败时,开关不生效,强制打开
+        return bshow;
+    }
+    
+}
+%>
+
+<!--Param-->
+<%    
+  System.out.println "----------current param:------------"; 
+  List<PipelineXmlUtil> build4pipelines = PipelineXmlUtil.getPipelines(project,build);  
+  System.out.println "root url :${rooturl}";  
+  //System.out.println "build url :${BUILD_URL}";  //NO!
+  //System.out.println "build number :${BUILD_NUMBER}";  //NO!
+    
+  System.out.println "----------input param:------------"; 
+  String jobbuild        = build4pipelines[0].getMainBuildUrl();
+  String jobpipeline     = build4pipelines[0].getPipelineUrl();  
+  System.out.println "build  :" + jobbuild.toString();
+  System.out.println "pipeline  :" + jobpipeline.toString();
+  for(PipelineXmlUtil build4pipeline in build4pipelines){
+	  for(String stageName in build4pipeline.getStageNames()){
+	     System.out.println "stageName:" + stageName;
+	     for(String jobUrl in build4pipeline.getStageJobUrls(stageName)){
+	        System.out.println "|--jobUrl:" + jobUrl;
+	     }
+	  }
+  }
+    
+  //String[] jobCheckouts  = build4pipeline.getStageJobUrls(STAGE_Checkout);
+  //String[] jobCompiles   = build4pipeline.getStageJobUrls(STAGE_Compile);
+  //String[] jobUTs        = build4pipeline.getStageJobUrls(STAGE_UT);
+  //String[] jobCodeChecks = build4pipeline.getStageJobUrls(STAGE_CodeCheck);
+  //String[] jobSmokes     = build4pipeline.getStageJobUrls(STAGE_Smoke);
+  //String[] jobTests      = build4pipeline.getStageJobUrls(STAGE_Test);
+  
+  
+  //System.out.println "checkout  :" + jobCheckouts.toString();
+  //System.out.println "compile   :" + jobCompiles.toString();
+  //System.out.println "ut        :" + jobUTs.toString();
+  //System.out.println "codecheck :" + jobCodeChecks.toString();
+  //System.out.println "smoke     :" + jobSmokes.toString();
+  //System.out.println "test      :" + jobTests.toString();  
+  
+  //JenkinsClient jcBuild = new JenkinsClient(jobpipeline);  
+  JenkinsClient jcBuild = new JenkinsClient(jobbuild); //使用整体job   
+  
+  
+  ReportXmlUtil reportXmlUtil = new ReportXmlUtil();
+  
+  System.out.println "----------end param:------------";
+  
+%>
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+ <html xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+ <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+ <title>CSS_Tab</title> 
+ <style type="text/css"> 
+
+
+div,ul,li,TABLE,{margin:0; padding:0; font-size:12px; color:black; font-family:Verdana,Helvetica,sans serif;} 
+TH{text-align: center; margin:0; padding:2px; font-size:12px; color:black; font-family:Verdana,Helvetica,sans serif;}  
+TD{margin:0; padding:0px; font-size:12px; color:black; font-family:Verdana,Helvetica,sans serif; font-weight: normal;}  
+P{margin:0; padding:2px; font-size:12px; color:black; font-family:Verdana,Helvetica,sans serif; font-weight: normal;}  
+body{margin:0; padding:12px; font-size:12px; color:black; font-family:Verdana,Helvetica,sans serif;}
+.clearFloat{ clear:both; height:0; line-height:0; font-size:0;} 
+h1 { color:black; }
+h2 { color:black; }
+h3 { color:black; }
+TABLE.b1,TD.b1,TR.b1 {border:1px solid #507CD1;border-collapse: collapse;}
+TD.bg1 { color:white; background-color:#0000C0; font-size:120% }
+TD.bg2 { color:white; background-color:#4040FF; font-size:110% }
+TD.bg3 { color:white; background-color:#8080FF; }
+TD.stage_mid { text-align: center; vertical-align:middle; font-weight:bold;}
+TD.stage_pic { text-align: center; vertical-align:middle; color:white; font-weight:bold;}
+TD.STAGE4PL_SUCCESS { text-align: center; vertical-align:middle; color:white; font-weight:bold; background-color:#9BBB59; border-radius:50%;}
+TD.STAGE4PL_FAILURE { text-align: center; vertical-align:middle; color:white; font-weight:bold; background-color:#C00000; border-radius:50%;}
+TD.STAGE4PL_ABORTED { text-align: center; vertical-align:middle; color:white; font-weight:bold; background-color:#A6A6A6; border-radius:50%;}
+TD.STAGE4PL_UNSTABLE { text-align: center; vertical-align:middle; color:white; font-weight:bold; background-color:#FFC000; border-radius:50%;}
+TD.STAGE4PL_NOT_BUILT { text-align: center; vertical-align:middle; color:white; font-weight:bold; background-color:#A6A6A6; border-radius:50%;}
+TD.STAGE4SUM_SUCCESS { padding:2px; font-size:120%; text-align: left; vertical-align:buttom; color:#0000C0; font-weight:bold; background-color:#9BBB59;}
+TD.STAGE4SUM_FAILURE { padding:2px; font-size:120%; text-align: left; vertical-align:buttom; color:white; font-weight:bold; background-color:#C00000;}
+TD.STAGE4SUM_ABORTED { padding:2px; font-size:120%; text-align: left; vertical-align:buttom; color:white; font-weight:bold; background-color:#A6A6A6;}
+TD.STAGE4SUM_UNSTABLE { padding:2px; font-size:120%; text-align: left; vertical-align:buttom; color:#0000C0; font-weight:bold; background-color:#FFC000;}
+TD.STAGE4SUM_NOT_BUILT { padding:2px; font-size:120%; text-align: left; vertical-align:buttom; color:#0000C0; font-weight:bold; background-color:#A6A6A6;}
+TD.STAGE4CLASSIFY_SUCCESS   { font-size:12px; text-align: center; vertical-align:buttom; color:#0000C0; font-weight:bold; background-color:#9BBB59;}
+TD.STAGE4CLASSIFY_FAILURE   { font-size:12px; text-align: center; vertical-align:buttom; color:white; font-weight:bold; background-color:#C00000;}
+TD.STAGE4CLASSIFY_ABORTED   { font-size:12px; text-align: center; vertical-align:buttom; color:white; font-weight:bold; background-color:#A6A6A6;}
+TD.STAGE4CLASSIFY_UNSTABLE  { font-size:12px; text-align: center; vertical-align:buttom; color:#0000C0; font-weight:bold; background-color:#FFC000;}
+TD.STAGE4CLASSIFY_NOT_BUILT { font-size:12px; text-align: center; vertical-align:buttom; color:#0000C0; font-weight:bold; background-color:#A6A6A6;}
+TD.STAGE4CLASSIFY_          { font-size:12px; text-align: center; vertical-align:buttom; color:#0000C0; font-weight:bold; background-color:#A6A6A6;}
+TD.test_passed { color:blue; }
+TD.test_failed { color:red; }
+TD.console { font-family:Courier New; }
+a:link, 
+a:visited {text-decoration:none;}
+a:hover, 
+a:active {text-decoration:underline;}
+
+#stage a:link, 
+#stage a:visited {text-decoration:none; color:white;}
+#stage a:hover, 
+#stage a:active {text-decoration:underline; color:white;}
+
+.ct_info {text-align: center; font-weight: normal;    color: #003366;}
+.ct_info_string {text-align: left; align: left; font-weight: normal;    color: #003366;}
+.ct_info_number {text-align: right; align: right; font-weight: normal;    color: #003366;}
+.ct_error {text-align: center; font-weight: normal;    color: #FF0000;}
+.ct_error_string {text-align: left; align: left; font-weight: normal;    color: #FF0000;}
+.ct_error_number {text-align: right; align: right; font-weight: normal;    color: #FF0000;}
+
+/* lcvo css */
+td.title{  text-align: center;  padding-bottom: 10px;  font-family: sans-serif;  font-size: 20pt;  font-style: italic;  font-weight: bold;}
+td.headerItem{  text-align: right;  padding-right: 6px;  font-family: sans-serif;  font-weight: bold;  vertical-align: top;  white-space: nowrap;}
+td.headerValue{  text-align: left;  color: #284FA8;  font-family: sans-serif;  font-weight: bold;  white-space: nowrap;}
+td.headerCovTableHead{  text-align: center;  padding-right: 6px;  padding-left: 6px;  padding-bottom: 0px;  font-family: sans-serif;  font-size: 80%;  white-space: nowrap;}
+td.headerCovTableEntry{  text-align: right;  color: #284FA8;  font-family: sans-serif;  font-weight: bold;  white-space: nowrap;  padding-left: 12px;  padding-right: 4px;  background-color: #DAE7FE;}
+td.headerCovTableEntryHi{  text-align: right;  color: #000000;  font-family: sans-serif;  font-weight: bold;  white-space: nowrap;  padding-left: 12px;  padding-right: 4px;  background-color: #A7FC9D;}
+td.headerCovTableEntryMed{  text-align: right;  color: #000000;  font-family: sans-serif;  font-weight: bold;  white-space: nowrap;  padding-left: 12px;  padding-right: 4px;  background-color: #FFEA20;}
+td.headerCovTableEntryLo{  text-align: right;  color: #000000;  font-family: sans-serif;  font-weight: bold;  white-space: nowrap;  padding-left: 12px;  padding-right: 4px;  background-color: #FF0000;}
+td.versionInfo{  text-align: center;  padding-top: 2px;  font-family: sans-serif;  font-style: italic;}
+td.tableHead{  text-align: center;  color: #FFFFFF;  background-color: #6688D4;  font-family: sans-serif;  font-size: 120%;  font-weight: bold;  white-space: nowrap;  padding-left: 4px;  padding-right: 4px;}
+td.coverFile{  text-align: left;  padding-left: 10px;  padding-right: 20px;   color: #284FA8;  background-color: #DAE7FE;  font-family: monospace;}
+td.coverBar{  padding-left: 10px;  padding-right: 10px;  background-color: #DAE7FE;}
+td.coverBarOutline{  background-color: #000000;}
+td.coverPerHi{  text-align: right;  padding-left: 10px;  padding-right: 10px;  background-color: #A7FC9D;  font-weight: bold;  font-family: sans-serif;}
+td.coverNumHi{  text-align: right;  padding-left: 10px;  padding-right: 10px;  background-color: #A7FC9D;  white-space: nowrap;  font-family: sans-serif;}
+td.coverPerMed{  text-align: right;  padding-left: 10px;  padding-right: 10px;  background-color: #FFEA20;  font-weight: bold;  font-family: sans-serif;}
+td.coverNumMed{  text-align: right;  padding-left: 10px;  padding-right: 10px;  background-color: #FFEA20;  white-space: nowrap;  font-family: sans-serif;}
+td.coverPerLo{  text-align: right;  padding-left: 10px;  padding-right: 10px;  background-color: #FF0000;  font-weight: bold;  font-family: sans-serif;}
+td.coverNumLo{  text-align: right;  padding-left: 10px;  padding-right: 10px;  background-color: #FF0000;  white-space: nowrap;  font-family: sans-serif;}
+/* lcvo css */
+
+</style>
+
+<!--<link rel="stylesheet" type="text/css" href="report4j.css">-->
+
+<BODY>
+
+<TABLE width="98%">
+<TR><TD align="center">
+
+</TABLE>
+
+<!--tab index--> 
+<!--<ul class="tab_ul">
+<li><a href="#<%=Const.STAGE_Checkout%>">Summary</a></li>
+
+<%for(PipelineXmlUtil build4pipeline in build4pipelines){
+   for(String stageName in build4pipeline.getStageNames()){ 
+     if(stageName!=Const.STAGE_Checkout){
+%>  
+   <li><a href="#${stageName}">${stageName}</a></li>     
+<%}}}%>
+</ul> 
+<div class="tabDiv" > 
+-->
+
+<!--report head-->
+<!--<ul id="<%=Const.STAGE_Checkout%>"> 
+<li><div class="labDiv">Summary</div></li> 
+-->
+<div class="subDiv" > 
+
+<TABLE width="100%">
+	<TR><TD>
+		<TABLE>
+		<%
+		  //JenkinsClient jcBuild = new JenkinsClient();
+			if (jcBuild.hadBuild()) {
+			   def result = jcBuild.getBuildResult();       
+			   %>
+		  <TR><TD align="right"><IMG SRC="${rooturl}static/e59dfe28/images/32x32/<%= result.toString() == 'SUCCESS' ? "blue.gif" : result.toString() == 'FAILURE' ? 'red.gif' : 'yellow.gif' %>" />
+		  </TD><TD valign="center"><B style="font-size: 200%;">BUILD ${result}</B></TD></TR>
+		  <TR><TD>URL:</TD><TD><A href="${jcBuild.getBuildUrl()}" target="_blank">${jcBuild.getBuildUrl()}</A></TD></TR>     
+		  <TR><TD>Date:</TD><TD>${jcBuild.getBuildTime()}</TD></TR>
+		  <TR><TD>Cause:</TD><TD>${jcBuild.getCause()}</TD></TR>
+		  <TR><TD>Duration:</TD><TD>${jcBuild.getBuildDuration()}</TD></TR>		  
+		<%}%>     
+		</TABLE>
+	</TD>
+	<TD align="right">
+		<TABLE>    
+		  <TR height="80px">
+		  <%for(PipelineXmlUtil build4pipeline in build4pipelines){
+		      for(String stageName in build4pipeline.getStageNames()){%>      
+			     <TD class="${build4pipeline.getStageCssState(stageName)}" width="80px"><div id="stage"><a target="_blank" href="<% print "${jcBuild.getBuildUrl()}../../" + stageName.toUpperCase(); %>">${stageName}</a></div></TD>
+			     <TD class="stage_mid" width="20px">>></TD>
+		  <%}}%>  
+		  <TD class="${build4pipelines[0].getStageCssState("report")}" width="80px"><div id="stage"><a href="${build4pipelines[0].getPipelineTreeUrl()}" target="_blank">report</a></div></TD>  
+		  </TR>  
+		</TABLE>
+	</TD></TR>
+</TABLE>	
+
+<!--end report head-->
+
+<hr/>  
+
+
+<!--summary-->
+<%
+for(PipelineXmlUtil build4pipeline in build4pipelines){
+def StageNames = build4pipeline.getStageNames('summary');
+for(String stageName in StageNames){     
+%>   
+   <TABLE width="100%" cellpadding="3" cellspacing="0"><TR><TD class="${build4pipeline.getStageCssState4sum(stageName)}">&nbsp;<a target="blank" href="<%   
+    print "${jcBuild.getBuildUrl()}../../" + stageName.toUpperCase(); 
+	%>"><B>${stageName}</B></a><hr/></TD></TR> 
+   <TR><TD class="${build4pipeline.getStageCssState4sum(stageName)}" align="middle" >    
+<%  
+	//checkout表格报表特殊处理(后续考虑修改subversion? 出一个xml?)
+	if(stageName==Const.STAGE_Checkout){
+		%><TABLE width="100%" bgcolor="#507CD1" border="0" cellpadding="3" cellspacing="1">
+		<%for(String jobUrl in build4pipeline.getStageJobUrls(Const.STAGE_Checkout)){     
+			 JenkinsClient jcSCM = new JenkinsClient(jobUrl);			 
+			 
+			 if (!jcSCM.hadBuild()) 
+			 		continue;
+			 if(!jcSCM.isShowSummry()) 
+				   continue;			 
+			 
+			 if (jcSCM.getChangeKind()!=""){%>
+			 <TR><TD bgColor="#FFFFFF" align="center" width="5%"><%=jcSCM.getChangeKind()%>:</TD>
+			 <TD bgColor="#FFFFFF">  
+			 <%print StringUtil.formatHtml(StringUtil.concatString(jcSCM.getChangeModules(), "\n"));%>			 
+			 </TD></TR>
+			 <TR><TD bgColor="#FFFFFF" align="center">Author:</TD><TD bgColor="#FFFFFF">
+			 <%
+			 	print StringUtil.formatHtml(StringUtil.concatString(jcSCM.getAuthorMsgs(), "\n"));
+			 	print StringUtil.formatHtml(StringUtil.concatString(jcSCM.getSyncDesc(), "\n"));		
+			 	//补充每日构建和实时构建合一时,提交信息的缺失问题
+			  def scmCommits = jcSCM.getCommitLogDesc("lasttimerlog.xml");
+			  if (scmCommits.size()>0){			  
+			 		 print StringUtil.formatHtml(StringUtil.concatString(scmCommits, "\n"));			 		 
+			 }	 				 	
+			 %>
+			 </TD></TR>
+			 <%
+			 //当天提交统计
+			 def todayCommits = jcSCM.getCommitLogDesc("svntodaylog.xml");
+			 if (todayCommits.size()>0){
+			    %><TR><TD bgColor="#FFFFFF" align="center">Today Commit:</TD><TD bgColor="#FFFFFF"><%
+			 		print StringUtil.formatHtml(StringUtil.concatString(todayCommits, "\n"));
+			 		%></TD></TR><%
+			 }
+			 %>
+			 
+			 <%} //else { 
+					//代码统计 MO生成等其它框
+					jcSCM.getSummaryXmls().each{
+						//print reportXmlUtil.parseXml2Html(jcSCM,it);
+						reportXmlUtil.appendXml2Cache(jcSCM,it);
+					}
+					print reportXmlUtil.takeCache2Html();					
+			 //}     
+			 if (jcSCM.getChangeKind()=="" && StageNames.length<3 && jcSCM.getBuildResult()=="FAILURE"){%><table bgcolor="#507CD1" border="0" cellpadding="3" cellspacing="1" width="100%"><tr><td bgColor="#FFFFFF"><p class="TD.bg1"><%
+				 print jcSCM.getBuildLog(true);%></p></td></tr></table><%
+			 }
+			 %>
+		<%}%>
+		</TABLE> 
+		<%
+	} else if (stageName!=Const.STAGE_Checkout && stageName!=Const.STAGE_Autotest) {    
+        reportXmlUtil.init();	
+        ReportConfigUtil reportConfigUtil = new ReportConfigUtil();
+        //System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>"+stageName);
+        String stageTable = reportConfigUtil.genStageTable(build4pipeline, stageName);
+        if(stageTable!=null){ 
+            print stageTable;  //责任矩阵表特殊处理
+        } else {    
+            for(def jobNode in build4pipeline.getStageJobs(stageName)){
+              //System.out.println(jobNode.attribute('url')+"::::::::::"+jobNode.attribute('owner'));
+              JenkinsClient jc = new JenkinsClient(jobNode.attribute('url'), jobNode.attribute('owner'));      
+              if(!jc.isShowSummry()) 
+                    continue;
+              if (jc.isPipelineJob()){  //支持二级的pipeline,仅一层
+                    //print jc.getJobType();
+                    PipelineXmlUtil pipeline2 = new PipelineXmlUtil(jc.getLocalBuildPath());
+                    for(String stageName2 in pipeline2.getStageNames()){ 
+                        for(def jobNode2 in pipeline2.getStageJobs(stageName2)){
+                            //System.out.println(jobNode2.attribute('url')+"#################"+jobNode2.attribute('owner'));
+                            JenkinsClient jc2 = new JenkinsClient(jobNode2.attribute('url'), jobNode2.attribute('owner'));
+                            if(!jc2.isShowSummry()) 
+                               continue;
+                            jc2.getSummaryXmls().each{
+                                //print reportXmlUtil.parseXml2Html(jc2,it);
+                                reportXmlUtil.appendXml2Cache(jc2,it);
+                            }
+                        }
+                    }
+              } else {          
+                    jc.getSummaryXmls().each{      		  
+                    //print reportXmlUtil.parseXml2Html(jc,it);           	       
+                    reportXmlUtil.appendXml2Cache(jc,it);
+                  }         
+              }
+            }
+            print reportXmlUtil.takeCache2Html();
+        }
+    } else if (stageName==Const.STAGE_Autotest){%>
+        
+       <TABLE width="100%" bgcolor="#507CD1" border="0" cellpadding="3" cellspacing="1">
+         <TR>
+            <TD bgColor="#DAE7FE" align="center" width="5%"><strong>自动化测试工程</strong></TD>
+            <TD bgColor="#DAE7FE" align="center" width="5%"><strong>测试结果</strong></TD>
+            <TD bgColor="#DAE7FE" align="center" width="5%"><strong>说明</strong></TD>
+            <TD bgColor="#DAE7FE" align="center" width="5%"><strong>通过率</strong></TD>            
+            <TD bgColor="#DAE7FE" align="center" width="5%"><strong>报告地址</strong></TD>            
+         </TR>
+         <TR>
+            <%def AutotestNode = build4pipeline.getStageJobs(Const.STAGE_Autotest);%>
+            <TD bgColor="#FFFFFF" align="center" width="5%"><a href="${AutotestNode[0].attribute('joburl')}" target="_blank"><%print AutotestNode[0].attribute('jobname');%></a></TD>
+            
+            <%
+            if (AutotestNode[0].attribute('result')=='FAILURE') {%>
+                <TD bgColor="#FFFFFF" style="color:#FF0000" align="center" width="5%"><%print AutotestNode[0].attribute('result');%></TD>
+            <%} else if (AutotestNode[0].attribute('result')=='SUCCESS') {%>            
+                <TD bgColor="#FFFFFF" align="center" width="5%"><%print AutotestNode[0].attribute('result');%></TD>
+            <%}%>
+            
+            <TD bgColor="#FFFFFF" align="center" width="5%"><%print AutotestNode[0].attribute('log');%></TD>
+
+            <%            
+            if (AutotestNode[0].attribute('robot_passpercentage')!="null") {%>
+                <TD bgColor="#FFFFFF" align="center" width="5%"><%print AutotestNode[0].attribute('robot_passpercentage');%>% (<%print AutotestNode[0].attribute('robot_passratio');%>)</TD>
+            <%} else {%>  
+                <TD bgColor="#FFFFFF" align="center" width="5%">/</TD>
+            <%}%>
+            
+            <TD bgColor="#FFFFFF" align="center" width="5%"><a href="${AutotestNode[0].attribute('url')}robot/" target="_blank"><%print AutotestNode[0].attribute('url');%></a></TD> 
+         </TR>         
+       </TABLE>  
+     
+<%}%>
+
+</TD></TR>
+</TABLE> <hr/>
+<%}}%>
+
+
+
+
+<!--end summary-->
+
+<p>如需取消/订阅邮件，请点击：<a href="<%=build4pipelines[0].getMainRootUrl(false)%>:8090/index?url=emailbooking" target="_blank">链接</a> | 如需进行本地构建，请点击：<a href="http://192.168.154.200:8090/localbuild" target="_blank">链接</a></p>
+
+</BODY>
+
+    

@@ -1,0 +1,537 @@
+<%
+/****************************************************************
+功能说明: 完成Jenkins流水线各个Job报告的整合
+作者: 
+部署：1.模板放在JENKINS_HOME/email-templates目录
+      2.报告图片资源放在/var/cache/jenkins/war/images/report目录
+        windows放在JENKINS_HOME/war/images/report
+说明：
+     1.checkout的成功失败以取svn最新版本号为准!
+		 2.compile 生成的文件，保存到jobs,生成下载链接，保留版本
+		 3.Log日志支持取最后300行,减少邮件的大小
+		 4.支持两层的pipeline.xml,直接平铺(将第二层的pipeline阶段名作为编译器的名称? )
+		 5.去掉详细报告,只保留Summary报告
+		 6.在html5的基础上修改编译的样式为简洁式的责任矩阵表,增加自定义的stage顺序
+		 
+问题:
+     1.pclint/sourcemonitor按job汇总报告
+     2.pipeline UT失败的话在jenkins的显示各阶段都是红的？
+     3.email的邮件接收人能否支持groovy模板获取？        
+*****************************************************************/
+
+import java.io.File;
+import java.io.StringWriter;
+import java.net.InetAddress;
+
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+
+import java.text.SimpleDateFormat;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpException;
+import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.httpclient.params.HttpMethodParams;
+
+//import com.jenkins.XmlTransformer
+
+class Const{
+    public static String STAGE_Checkout = "checkout"; //特殊处理
+    public static String STAGE_Compile = "compile";
+    public static String STAGE_Autotest = "autotest";
+    //String STAGE_CodeCheck = "codecheck";
+    //String STAGE_UT = "ut";
+    //String STAGE_Smoke = "smoke";
+    //String STAGE_Test = "test";
+	
+	//替换端口为新的流水线树url
+	public static String PIPELINE_TREE_RLC = "8090/pipeline?url=";
+	
+	//过滤掉自动提交的记录
+	public static String FILTER_COMMIT_LOG = "[\\s\\S]*@jenkins[\\s\\S]*";
+}  
+
+class StringUtil{
+  	
+    public static String concatString(args, split) {       
+       StringBuilder buf = new StringBuilder();
+       int i = 0;
+       for (arg in args) {         
+           if(buf.length() > 0 && ++i < arg.length())  
+        	   buf.append(split);
+           buf.append(arg);
+       }
+       return buf.toString();  
+    }
+   
+    public static String formatHtml(String content) {		
+		//格式化<>
+		content = content.replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+		
+		//替换换行
+		content = "<p>" + content + "</p>";		
+		content = content.replaceAll("\r", "").replaceAll("\n", "<BR/>");				
+		
+		//替换空格
+		content = content.replaceAll(" ", "&nbsp;&nbsp;");
+		
+		return content;
+	}
+	
+	//对齐 mode:left/right
+	public static String alignSpace(String content, String mode, int maxSpan) {		
+		String newContent = '';
+		if(mode=='left'){
+			newContent += content;
+			//System.out.println(content + "->" + content.length());
+			for(int i=0; i<maxSpan-content.length(); i++){
+				newContent += ' ';
+			}			
+		} else {
+			for(int i=0; i<maxSpan-content.length(); i++){
+				newContent += ' ';
+			}
+			newContent += content;
+		}		
+		return newContent;
+	}
+	
+	public static String findFirstSubStrByRegex(String src, String pattern, int id){	   
+	   
+	   Pattern ptn = Pattern.compile(pattern, Pattern.DOTALL); 
+	   Matcher matcher = ptn.matcher(src);	    	
+	   if(matcher.find()){			
+		   //System.out.println(matcher.groupCount());			
+		   if(id <= matcher.groupCount()){
+			   return matcher.group(id);
+		   }
+	   }
+	   return null;	   			
+   }
+   
+   public static String[] findSubStrByRegex(String src, String pattern, int id){	   
+   
+	   Pattern ptn = Pattern.compile(pattern, Pattern.DOTALL);
+	   Matcher matcher = ptn.matcher(src);
+	   List<String> alist = new ArrayList<String>(); 	
+	   while(matcher.find()){			
+		   //System.out.println(matcher.groupCount());			
+		   if(id <= matcher.groupCount()){
+			   alist.add(matcher.group(id));
+		   }
+	   }	   
+	   return alist.toArray(new String[alist.size()]);			
+   }
+}
+
+
+
+
+class BuildConfigUtil{
+    def project = null;
+    def build = null;
+    BuildConfigUtil(project, build){
+        this.project = project;
+        this.build = build;
+    }
+    static def String getEnv(name) {
+        def map = System.getenv();
+        return map.get(name);
+    }
+    static def String getJenkinsHome() {
+        return getEnv("JENKINS_HOME");
+    }
+	
+	//ipMatch = "^192.*"
+	static def String getHostIp(ipMatch) {
+        //return InetAddress.getLocalHost().getHostAddress();
+		try{  
+	    	java.util.Enumeration<java.net.NetworkInterface> allNetInterfaces = java.net.NetworkInterface.getNetworkInterfaces();  
+	        while (allNetInterfaces.hasMoreElements()){  
+	        	java.net.NetworkInterface netInterface = (java.net.NetworkInterface) allNetInterfaces.nextElement();  
+	        	java.util.Enumeration<InetAddress> addresses = netInterface.getInetAddresses();  
+	            while (addresses.hasMoreElements()){  
+	                InetAddress ip = (InetAddress) addresses.nextElement();  
+	                if (ip != null   
+	                        && ip instanceof InetAddress  
+	                        && !ip.isLoopbackAddress()   
+	                        && ip.getHostAddress().indexOf(":")==-1
+	                        && ip.getHostAddress().matches(ipMatch)){
+	                    return ip.getHostAddress();  
+	                }   
+	            }  
+	        }  
+	    }catch(Exception e){  
+	        //e.printStackTrace();  
+	    }  	    
+	    return "127.0.0.1";
+    }
+    
+    static def String getGroovyPath() {            
+      return BuildConfigUtil.getJenkinsHome() + "/email-templates";
+    }
+    
+    //2层: http://xx.xx.xx.xx:8080/job/OAM_V20/job/mml_build_on_v20/149/
+    //3层: http://xx.xx.xx.xx:8080/job/BWT-3800_eNB_V2.0/job/MCB/job/oam_compile/6/ 
+    static def String getLocalJobPathByUrl(jobUrl, jobName){    	  
+			String[] urlSplits = jobUrl.split("/");  
+			def jobPath = getJenkinsHome();
+			int jobNum = 0;
+			//for(subDir in urlSplits){
+			for(int i=0;i<urlSplits.size();i++){
+			  def subDir = urlSplits[i];
+				if(subDir == "job"){
+					subDir = "jobs"; 
+					jobNum++;
+					//if(jobNum>1)
+					//   continue;
+				}
+				if(jobNum > 0){
+					jobPath += "/${subDir}";
+					if(subDir == jobName)
+					break;
+				}
+			}
+			//System.out.println(jobPath);
+			return jobPath;    	  
+		}
+    
+    //2层及以上folder测试OK /var/lib/jenkins/jobs/BWT-3800_eNB_V2.0/jobs/MCB/jobs/cspl_codecheck
+    def String getJobPath() {        
+        //System.out.println("project.name=${project.name}"); //project.name只有最后一层...
+    	  return getLocalJobPathByUrl(build.url, project.name);    	  
+        //return getJenkinsHome() + "/jobs/${project.name}";
+    }
+    def String getBuildPath(){
+        return getJobPath() + "/builds/${build.number}"
+    }
+        
+    def String getBuildUrl(){    	  
+        return "${build.absoluteUrl}";//"${rooturl}${build.url}"
+    }
+	    
+    def String getBuildResult(){
+        return build.result.toString(); //SUCCESS/FAILURE/
+    }
+    
+    //返回root url，例如: http://192.168.154.200:8080 不带/结束
+    def String getRootUrl(boolean withPort){    	
+    		String url = "${build.absoluteUrl}";
+    		if(withPort){
+    			 return StringUtil.findFirstSubStrByRegex(url, "((http|https)://[^:/]+[:]*[\\d]*)/", 1);
+    		} else {
+    		   return StringUtil.findFirstSubStrByRegex(url, "((http|https)://[^:/]+)[:]*[\\d]*/", 1);
+    		}        
+    }
+    
+}
+
+//读取报告生成配置
+class ReportConfigUtil{
+	  def root = null;
+	  
+	  // 默认使用/var/lib/jenkins/email-templates/ReportConfig_本机IP.xml配置文件
+		ReportConfigUtil(){
+
+        	return;
+
+    }
+	private def getFirstNodeByUrl(root, url){		
+		if(root==null)
+			return null;
+		
+		String[] jobSplits = url.split("/job/");
+		//System.out.println(jobSplits);
+		def node = root;
+		for(int i=1; i<jobSplits.length;i++){
+		  def nodeName = jobSplits[i];
+			if(i == jobSplits.length-1)
+				nodeName = nodeName.substring(0, nodeName.indexOf("/"));			
+			//System.out.println(nodeName);
+			def nodes = node.get(nodeName);    			
+			//System.out.println(nodes);
+			if(nodes.size()==0){
+				//System.out.println("Can't not find url:" + url + " 's configuration! skiped!");
+				return null;
+			}
+			node = nodes[0];
+		}
+		return node;
+	}
+	
+	//获取配置的stage顺序列表
+	//参数1:pipelineUrl,取流水线工程url build4pipeline.getPipelineUrl(), 注意,如果主工程不带Folder,ReportConfig.xml节点配置为job名,否则为Folder+job一级一级的配置名称
+	def String[] getStageSorts(pipelineUrl, sortName){    	
+		
+		def e = [];
+		if(root==null)
+			return e;		
+		
+		def pipelineNode = getFirstNodeByUrl(root._STAGE_SORT_[0], pipelineUrl);		
+		if(pipelineNode==null)
+			return e;
+		def slist = pipelineNode.sort.find{node->node.@name==sortName}.stage.@name;
+		if(slist!=null){
+			return slist;
+		}		
+		return e;
+    }
+	
+}
+
+class PipelineXmlUtil{ 
+	  
+	  def pipeXmlRoot = null;
+	  BuildConfigUtil mainBuildConfig = null;
+	  
+	  //传入调用的pipeline的job build信息,获取到流水线的本地xml路径
+    static List<PipelineXmlUtil> getPipelines(project, build){
+        List<PipelineXmlUtil> pipelineXmlUtils = new ArrayList<PipelineXmlUtil>(); 
+        
+        String[] pipelineBuildPaths = getPipelineBuildPath(new BuildConfigUtil(project, build));
+        for(String bp in pipelineBuildPaths){       
+           PipelineXmlUtil pipelineXmlUtil = new PipelineXmlUtil(bp);
+           pipelineXmlUtil.setMainBuildConfig(project, build);
+       		 pipelineXmlUtils.add(pipelineXmlUtil);
+       	}
+       	//主Build没有调起流水线就失败了.增加一个空的,出报告
+       	if(pipelineXmlUtils.size() == 0){
+       		 PipelineXmlUtil pipelineXmlUtil = new PipelineXmlUtil("");
+           pipelineXmlUtil.setMainBuildConfig(project, build);
+       		 pipelineXmlUtils.add(pipelineXmlUtil);
+       	}
+       	
+        return pipelineXmlUtils;
+    }
+    
+    //通过主工程的获取流水线的build路径,可能会调多个流水线
+    static def String[] getPipelineBuildPath(BuildConfigUtil buildConfig){
+        List<String> paths = new ArrayList<String>();
+        //打开TriggerBuild.xml,获取插件调用信息
+        // def buildXml = buildConfig.getBuildPath() + "/TriggerBuild.xml";
+        def pipelineXml = buildConfig.getBuildPath();// + "/pipeline.xml";
+        paths.add(pipelineXml);    
+         
+         System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+         return paths.toArray(new String[paths.size()]);
+    }      
+    
+    //传入pipeline所在的build本地目录
+    PipelineXmlUtil(String pipelineBuildPath){
+        //super(null, null);
+                
+        def xmlPath = getPipelineXmlPath(pipelineBuildPath);        
+        if(xmlPath==""){
+        		pipeXmlRoot = null;
+        		return;
+       	}
+        pipeXmlRoot = new XmlParser().parse(xmlPath);
+    }      
+    
+    def void setMainBuildConfig(project, build) {
+    		mainBuildConfig = new BuildConfigUtil(project, build);
+    }
+    
+    def String getPipelineXmlPath(String localPath){        
+        if(localPath==null || localPath=="")
+        	return "";
+        return localPath + "/pipeline.xml";
+    }
+    
+    //返回主工程的Url
+    def String getMainBuildUrl(){
+    	  if(mainBuildConfig == null)
+    	      return "";
+    	  return mainBuildConfig.getBuildUrl();
+    }
+    
+    def String getMainRootUrl(boolean withPort){
+    		if(mainBuildConfig == null)
+    	      return "";
+    	  return mainBuildConfig.getRootUrl(withPort);
+    }
+    
+    /************以下仅从pipeline.xml获取流水线的信息*******************/
+    def String getPipelineUrl(){
+    	  if(pipeXmlRoot==null)
+    	      return "";
+    	  return pipeXmlRoot.attribute("url");
+    }	
+
+    
+	//默认顺序
+    def String[] getStageNames(){    	
+		return getStageNames("default");
+    }
+	
+	//优先顺序(用于特殊的需求,在配置指定)
+	def String[] getStageNames(String sortName){    	  
+		def slist = [];   	  
+
+		
+		ReportConfigUtil reportConfigUtil = new ReportConfigUtil();		
+		
+		def sorts = reportConfigUtil.getStageSorts(getPipelineUrl(), sortName);		
+		//System.out.println(getPipelineUrl() + ">>>>>>>>>>>>>>>>>>>:"+sorts);
+		if(sorts.length == 0){
+			sorts = reportConfigUtil.getStageSorts(getPipelineUrl(), "default");			
+		}
+		for(def sort in sorts){
+			slist << sort;
+		}		
+    	  
+        for(stage in pipeXmlRoot.stage){     
+			if(sorts.length == 0 || !sorts.contains(stage.attribute("name")))
+				slist << stage.attribute("name");
+        }
+        return slist;
+    }
+    
+    
+    def String[] getStageJobUrls(stageName){
+    	
+		def slist = []; 		
+		for(def job in getStageJobs(stageName)){  
+			//System.out.println("::::::::::" + job.attribute('url') + job);
+			slist << job.attribute("url");
+		}
+		return slist;
+    }
+    
+	//根据stage的名称,返回job的节点列表
+    def List<groovy.util.Node> getStageJobs(String stageName){
+    	
+		List<groovy.util.Node> jobNodes = new ArrayList<groovy.util.Node>();		
+		if(pipeXmlRoot!=null){
+	        for(stage in pipeXmlRoot.stage){     
+	            if(stage.attribute("name") == stageName){
+	                for(job in stage.job){
+	                   //jobNodes.add(job.clone());
+					   jobNodes.add(job);
+	                }
+	            }
+	        }
+        }		
+
+		return jobNodes;
+    }	
+	
+
+	    
+    def String getStageResult(stageName){    	  
+    	  if(pipeXmlRoot!=null){
+	        for(stage in pipeXmlRoot.stage){     
+	            if(stage.attribute("name") == stageName){
+	                return stage.attribute("result");
+	            }
+	        }
+        }
+        
+        //未定义单独的Checkout stage处理:使用本job判断(如果不存在pipeline.xml,未跑流水线,则本job的状态即Checkout状态,否则是成功,走到了pipeline,checkout肯定完成了)
+        if(stageName==Const.STAGE_Checkout){        		
+            return pipeXmlRoot==null ? getBuildResult() : "SUCCESS";
+        }               
+        return "";
+    }    
+    
+}
+%>
+
+<!--Param-->
+<%    
+  System.out.println "----------current param:------------"; 
+  List<PipelineXmlUtil> build4pipelines = PipelineXmlUtil.getPipelines(project,build);  
+  System.out.println "root url :${rooturl}";  
+  //System.out.println "build url :${BUILD_URL}";  //NO!
+  //System.out.println "build number :${BUILD_NUMBER}";  //NO!
+    
+  System.out.println "----------input param:------------"; 
+  String jobbuild        = build4pipelines[0].getMainBuildUrl();
+  String jobpipeline     = build4pipelines[0].getPipelineUrl();  
+  System.out.println "build  :" + jobbuild.toString();
+  System.out.println "pipeline  :" + jobpipeline.toString();
+  for(PipelineXmlUtil build4pipeline in build4pipelines){
+	  for(String stageName in build4pipeline.getStageNames()){
+	     System.out.println "stageName:" + stageName;
+	     for(String jobUrl in build4pipeline.getStageJobUrls(stageName)){
+	        System.out.println "|--jobUrl:" + jobUrl;
+	     }
+	  }
+  }
+  
+%>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+ <html xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+ <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+ <title>CSS_Tab</title> 
+
+<BODY>
+<div class="subDiv" >
+
+<!--summary-->
+<%
+for(PipelineXmlUtil build4pipeline in build4pipelines){
+def StageNames = build4pipeline.getStageNames('summary');
+for(String stageName in StageNames){ 
+    if (stageName==Const.STAGE_Autotest){%>        
+       <TABLE width="100%" bgcolor="#507CD1" border="0" cellpadding="3" cellspacing="1">
+         <TR>
+            <TD bgColor="#DAE7FE" align="center" width="5%"><strong>自动化测试工程</strong></TD>
+            <TD bgColor="#DAE7FE" align="center" width="5%"><strong>测试结果</strong></TD>
+            <TD bgColor="#DAE7FE" align="center" width="5%"><strong>说明</strong></TD>
+            <TD bgColor="#DAE7FE" align="center" width="5%"><strong>通过率</strong></TD>            
+            <TD bgColor="#DAE7FE" align="center" width="5%"><strong>报告地址</strong></TD>            
+         </TR>
+         <TR>
+            <%def AutotestNode = build4pipeline.getStageJobs(Const.STAGE_Autotest);%>
+            <TD bgColor="#FFFFFF" align="center" width="5%"><a href="${AutotestNode[0].attribute('joburl')}" target="_blank"><%print AutotestNode[0].attribute('jobname');%></a></TD>
+            
+            <%
+            if (AutotestNode[0].attribute('result')=='FAILURE') {%>
+                <TD bgColor="#FFFFFF" style="color:#FF0000" align="center" width="5%"><%print AutotestNode[0].attribute('result');%></TD>
+            <%} else if (AutotestNode[0].attribute('result')=='SUCCESS') {%>            
+                <TD bgColor="#FFFFFF" align="center" width="5%"><%print AutotestNode[0].attribute('result');%></TD>
+            <%}%>
+            
+            <TD bgColor="#FFFFFF" align="center" width="5%"><%print AutotestNode[0].attribute('log');%></TD>
+
+            <%            
+            if (AutotestNode[0].attribute('robot_passpercentage')!="null") {%>
+                <TD bgColor="#FFFFFF" align="center" width="5%"><%print AutotestNode[0].attribute('robot_passpercentage');%>% (<%print AutotestNode[0].attribute('robot_passratio');%>)</TD>
+            <%} else {%>  
+                <TD bgColor="#FFFFFF" align="center" width="5%">/</TD>
+            <%}%>
+            
+            <TD bgColor="#FFFFFF" align="center" width="5%"><a href="${AutotestNode[0].attribute('url')}robot/" target="_blank"><%print AutotestNode[0].attribute('url');%></a></TD> 
+         </TR>         
+       </TABLE>  
+     
+    <%}%>
+
+</TD></TR>
+<hr/>
+<%}}%>
+
+<!--end summary-->
+
+<p>如需取消/订阅邮件，请点击：<a href="<%=build4pipelines[0].getMainRootUrl(false)%>:8090/index?url=emailbooking" target="_blank">链接</a> | 如需进行本地构建，请点击：<a href="http://192.168.154.200:8090/localbuild" target="_blank">链接</a></p>
+
+</BODY>
+
+    

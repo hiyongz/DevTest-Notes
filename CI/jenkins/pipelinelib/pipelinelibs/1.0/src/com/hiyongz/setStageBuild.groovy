@@ -173,35 +173,46 @@ def saveToXml(stageName, jobUrl, jobResult, jobOwner){
 	//return true;
 }
 
-
-def saveRFResultsToXml(stageName, job, owner){    
-
-    def jobVariables = job.getBuildVariables();
-    // println "ROBOT_FAILEDCASES:${jobVariables.ROBOT_FAILEDCASES}";        
-    // println "ROBOT_PASSPERCENTAGE:${jobVariables.ROBOT_PASSPERCENTAGE}";        
-    // println "ROBOT_PASSRATIO:${jobVariables.ROBOT_PASSRATIO}";        
-    // println "ROBOT_REPORTLINK:${jobVariables.ROBOT_REPORTLINK}";
-  	
-    String robot_pass = 0;
-    String robot_total = 0;    
+def saveRFResultsToXml(stageName, job, owner){
+    // curl读取测试结果
+    def WORKFLOW_API_JSON = sh ( script: "API_JSON=\$(curl -k --silent -L --user zhanghaiyong:11910f7bc9174575a89aaaa9247b516d21 ${job.absoluteUrl}/api/xml | tr '<' '\n' | egrep '^totalCount>|^failCount>' | sed 's/>/:/g'  | sed -e '1s/\$/,/g' | tr -d '\n'); echo \${API_JSON}", returnStdout: true ).trim();
     
-    // if(jobVariables.ROBOT_PASSRATIO!=null) {
-    if(jobVariables.ROBOT_PASSRATIO?.trim()) {  // null和empty("")判断 https://www.cnblogs.com/guofu-angela/p/9294329.html
-        String robot_ratio = jobVariables.ROBOT_PASSRATIO;
-        String[] ratio;
-        ratio = robot_ratio.split(' / ');
-        robot_pass = "${ratio[0]}"
-        robot_total = "${ratio[1]}"
-    }
+    rf_results = WORKFLOW_API_JSON.split(",");
+    if (rf_results[0]) {
+        for ( res in rf_results ) {
+            if (res.contains("failCount")) {
+                failCount = res.split("failCount:")[1];
+            }
+            if (res.contains("totalCount")) {
+                totalCount = res.split("totalCount:")[1];
+            }
+        }
+        passCount = totalCount.toInteger() - failCount.toInteger();
+        passPercentage = passCount/totalCount.toInteger() * 100;
+        passPercentage = Math.round(passPercentage * 100) / 100;
+        passRatio = passCount + " / " + totalCount;
+        
+    } else {
+        passPercentage = 'null'; 
+        passRatio = 'null'; 
+    }    
+    
+    def currentUrl = currentBuild.absoluteUrl;
+    def currentResult = currentBuild.currentResult;
+    def Causes = currentBuild.getBuildCauses().shortDescription[0];
+    def duration = currentBuild.durationString;
+    def startTimeInMillis = currentBuild.startTimeInMillis;
+    def startTime = new Date( startTimeInMillis ).toString();
+    def jobVariables = job.getBuildVariables();
     
 	def xmlFile = getXmlFile();  
-    println "[${stageName}] xmlFile: ${xmlFile}";    
+    println "[${stageName}] xmlFile: ${xmlFile}";  
+
 	def pipeline = new XmlParser().parse(xmlFile);
 	def bAdded = false;
 	for(stage in pipeline.stage){
 		if(stage.attribute("name")==stageName){
-			// stage.appendNode("job", ['url':(job.absoluteUrl), 'result':(job.result), 'classify':(getClassifyByUrl(job.absoluteUrl)), 'owner':(owner)]);	
-			stage.appendNode("job", ['url':(job.absoluteUrl), 'result':(job.result), 'classify':(getClassifyByUrl(job.absoluteUrl)), 'owner':(owner),"robot_failedcases":jobVariables.ROBOT_FAILEDCASES, "robot_passpercentage":jobVariables.ROBOT_PASSPERCENTAGE, "robot_passratio":jobVariables.ROBOT_PASSRATIO, "robot_pass":robot_pass, "robot_total":robot_total, "robot_reportlink":jobVariables.ROBOT_REPORTLINK]);
+			stage.appendNode("job", ['url':(job.absoluteUrl), 'jobname':(jobVariables.JOB_BASE_NAME), 'joburl':(jobVariables.JOB_URL), 'result':(job.result), 'log':(jobVariables.LOG), 'classify':(getClassifyByUrl(job.absoluteUrl)), 'owner':(owner), "robot_passpercentage":passPercentage, "robot_passratio":passRatio, 'currenturl':(currentUrl), 'currentresult':(currentResult), 'causes':(Causes), 'duration':(duration), 'starttime':startTime]]);
 			def atts = stage.attributes();			
 			atts.put('jobnum', (atts.get('jobnum').toInteger()+1) as String);
 			if(job.result=='FAILURE' || job.result=='UNSTABLE' && atts.get('result') != 'FAILURE' || atts.get('result') == '' || atts.get('result') == 'ABORTED'){
@@ -214,13 +225,12 @@ def saveRFResultsToXml(stageName, job, owner){
 	}
 	if(!bAdded){
 		def stage = pipeline.appendNode("stage", ['name':(stageName), 'jobnum':'1', 'result':(job.result)]);
-        stage.appendNode("job", ['url':(job.absoluteUrl), 'result':(job.result), 'classify':(getClassifyByUrl(job.absoluteUrl)), 'owner':(owner),"robot_failedcases":jobVariables.ROBOT_FAILEDCASES, "robot_passpercentage":jobVariables.ROBOT_PASSPERCENTAGE, "robot_passratio":jobVariables.ROBOT_PASSRATIO, "robot_pass":robot_pass, "robot_total":robot_total, "robot_reportlink":jobVariables.ROBOT_REPORTLINK]);		
+        stage.appendNode("job", ['url':(job.absoluteUrl), 'jobname':(jobVariables.JOB_BASE_NAME), 'joburl':(jobVariables.JOB_URL), 'result':(job.result), 'log':(jobVariables.LOG), 'classify':(getClassifyByUrl(job.absoluteUrl)), 'owner':(owner), "robot_passpercentage":passPercentage, "robot_passratio":passRatio, 'currenturl':(currentUrl), 'currentresult':(currentResult), 'causes':(Causes), 'duration':(duration), 'starttime':startTime]);		
         println "[${stageName}] set result: ${job.result}";
 	}
 	def fileWriter = new FileWriter(xmlFile);	
 	fileWriter.write(groovy.xml.XmlUtil.serialize(pipeline));
-	fileWriter.close();		
-
+	fileWriter.close();
 }
 
 
