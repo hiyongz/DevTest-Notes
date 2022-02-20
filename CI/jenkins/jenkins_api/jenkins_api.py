@@ -11,8 +11,8 @@ import os
 import re
 
 from jenkinsapi.jenkins import Jenkins
-# logging.basicConfig(Level=logging.INFO, format='[%(asctime)s]-[%(name)s]-[%(levelname)s]-%(message)s]')
-# log = logging.getLogger(__name__)
+logging.basicConfig(filename="config.log",filemode="w",format="%(asctime)s-%(name)s-%(levelname)s-%(message)s",level=logging.INFO)
+log = logging.getLogger(__name__)
 
 def get_jk_config(chose):
     config = configparser.ConfigParser()
