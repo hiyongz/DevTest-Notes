@@ -140,6 +140,7 @@
    other/front-end-for-typora-css.md
    other/git-generate-ssh-public-key-guide.md
    other/git-install-and-guide.md
+   other/linux-svn-install-in-centos7.md
    other/github-skills-for-shields-build.md
    other/personal-blog-hexo-construction-guide.md
    other/personal-blog-hexo-construction-guide2.md
