@@ -119,6 +119,7 @@
    CI/continuous-integration-jenkins-plugin-for-robotframework.md
    CI/continuous-integration-for-jenkins-email-ext.md
    CI/continuous-integration-jenkins-for-pipeline-shared-libraries.md
+   CI/continuous-integration-for-jenkins-pipeline.md
 
 .. toctree::
    :maxdepth: 1
