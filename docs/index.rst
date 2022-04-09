@@ -126,6 +126,13 @@
 
 .. toctree::
    :maxdepth: 1
+   :caption: 测试管理平台
+   
+   testplatform/zentao-extension-for-dev-environment-configuration.md
+
+
+.. toctree::
+   :maxdepth: 1
    :caption: 计算机网络
    
    network/tcp-ip-protocol-architecture-model_link-layer.md
