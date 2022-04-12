@@ -5,7 +5,7 @@
 # @File:    ftp_soft_download.py
 
 '''
-FTP批量下载数据 https://www.jianshu.com/p/055bbe9a2e7d
+FTP批量下载数据
 '''
 import os
 import sys
@@ -67,12 +67,27 @@ if __name__ == '__main__':
     # 输入参数
     ftpserver = '172.16.30.75' # ftp主机IP
     port = 21                                  # ftp端口
-    usrname = 'admin'       # 登陆用户名
-    pwd = 'admin'       # 登陆密码    
+    usrname = 'pingtai'       # 登陆用户名
+    pwd = 'pingtai'       # 登陆密码
+    # ftpath = '/release/ugw6.0/ugw6.0_dailybuild/dev_ugw6.0_main/latest_version/RX27pro/'  # 远程文件夹
+    # localpath = 'D:\\pythonproj\\DevTest-Notes\\CI'
     ftpath = sys.argv[1]
     localpath = sys.argv[2]
 
     Ftp = FtpDownloadCls(ftpserver, port, usrname, pwd)
     Ftp.downloadFiles(ftpath, localpath)
     Ftp.ftpDisConnect()
+    os.chdir(localpath) 
+    data=""
+    for k in os.listdir(localpath):
+        if '.bin' in k:
+            data="soft_path=RX27pro"
+            break
+    filename = '../rf_include.ini'
+    if os.path.exists(filename):
+        os.remove(filename)
+    fd = open(filename, 'a+')
+    fd.write(data)
+    fd.flush()
+    fd.close()
     print("\n+-------- OK!!! --------+\n")
