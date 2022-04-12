@@ -117,7 +117,19 @@
    CI/continuous-integration-for-blog-build-with-github-actions.md
    CI/continuous-integration-skills-for-cron-expression.md
    CI/continuous-integration-jenkins-plugin-for-robotframework.md
+   CI/continuous-integration-jenkins-for-robotframework-plugin-variables.md
    CI/continuous-integration-for-jenkins-email-ext.md
+   CI/continuous-integration-jenkins-for-pipeline-shared-libraries.md
+   CI/continuous-integration-for-jenkins-pipeline.md
+   CI/continuous-integration-for-jenkins-api-2.md
+   CI/continuous-integration-for-jenkins-global-variable-reference.md
+
+.. toctree::
+   :maxdepth: 1
+   :caption: 测试管理平台
+   
+   testplatform/zentao-extension-for-dev-environment-configuration.md
+
 
 .. toctree::
    :maxdepth: 1
@@ -138,6 +150,7 @@
    other/front-end-for-typora-css.md
    other/git-generate-ssh-public-key-guide.md
    other/git-install-and-guide.md
+   other/linux-svn-install-in-centos7.md
    other/github-skills-for-shields-build.md
    other/personal-blog-hexo-construction-guide.md
    other/personal-blog-hexo-construction-guide2.md

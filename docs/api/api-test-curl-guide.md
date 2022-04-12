@@ -20,26 +20,28 @@ apt-get install curl # Ubuntu
 - proxy使用：curl -x 'http://127.0.0.1:8080' $url ：指定 HTTP 请求通过http://127.0.0.1:8080 代理发出。
 
 其他参数用法：
-- -H： "Content-type: application/json"  添加 HTTP 请求头 `curl -H 'Content-type: application/json' $url`
-- -G： 把data数据当成get请求的参数发送，用来构造 URL 的查询字符串，与--data-urlencode结合使用
-- -X：指定 HTTP 请求的方法 `curl -X POST $url`
-- -d： 发送post请求数据，@file表示来自于文件
-- --data-urlencode：发送post请求数据，会对内容进行url编码
-- -u： username:password用户认证
-- -o： 写文件，将服务器的响应保存成文件
-- -v： verbose，打印更详细日志 
-- -s： 关闭一些提示输出，不输出错误和进度信息。
-- -S：只输出错误信息
+- `-H`： "Content-type: application/json"  添加 HTTP 请求头 `curl -H 'Content-type: application/json' $url`
+- `-G`： 把data数据当成get请求的参数发送，用来构造 URL 的查询字符串，与--data-urlencode结合使用
+- `-X`：指定 HTTP 请求的方法 `curl -X POST $url`
+- `-d`： 发送post请求数据，@file表示来自于文件
+- `--data-urlencode`：发送post请求数据，会对内容进行url编码
+- `-u`： username:password用户认证
+- `-o`： 写文件，将服务器的响应保存成文件
+- `-v`： verbose，打印更详细日志 
+- `-s, --silent`： 关闭一些提示输出，不输出错误和进度信息。
+- `-S`：只输出错误信息
+- `-k`：使用SSL时允许不安全的服务器连接
+- `-L`：跟随跳转链接
 
 
 ## curl实例
-1. 请求 http://www.baidu.com， 将服务器的响应保存为html文件。
+1、请求 http://www.baidu.com， 将服务器的响应保存为html文件。
 ```bash
 curl -o /tmp/baidu.html http://www.baidu.com
 ```
 ![](api-test-curl-guide/curl-baidu.png)
 
-2. curl设置自定义 header 信息
+2、curl设置自定义 header 信息
 ```bash
 curl -H 'Content-type: application/json' -H 'Accept-Language:US' -H 'Cookie:ID=1234' -v https://www.baidu.com/
 ```

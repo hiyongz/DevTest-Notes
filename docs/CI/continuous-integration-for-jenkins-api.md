@@ -93,7 +93,18 @@ print(ret.text)
 ```
 
 ![](continuous-integration-for-jenkins-api/jenkins_api_build.png)
-Jenkins 跨站请求伪造保护采取 Crumb（碎片生成器），可以使用jenkinsapi库来调用api
+Jenkins 跨站请求伪造保护采取 Crumb（碎片生成器)，可以使用用户的API Token来进行认证：
+
+```python
+import requests
+url = "http://192.168.30.8:8080/job/demo/build"
+username = "admin"
+api_token = "11f8790b23a9983c0a218ba125aa855f61"
+res = requests.post(url, auth=(username, api_token), verify=False)
+```
+
+API Token可以在用户配置中生成。
+
 ## Python jenkinsapi库
 jenkinsapi库封装了Jenkins api 的调用方法
 安装：

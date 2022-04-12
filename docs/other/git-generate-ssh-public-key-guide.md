@@ -91,7 +91,7 @@ IdentityFile ~/.ssh/id_rsa_github
 
 # gitee
 Host gitee.com
-HostiName gitee.com
+HostName gitee.com
 PreferredAuthentications publickey
 IdentityFile ~/.ssh/id_rsa_gitee
 ```
