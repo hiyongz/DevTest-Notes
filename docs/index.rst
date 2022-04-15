@@ -144,6 +144,12 @@
 
 .. toctree::
    :maxdepth: 1
+   :caption: PHP
+   
+   php/php-notes-for-dev-environment-install.md
+   
+.. toctree::
+   :maxdepth: 1
    :caption: 其它
    
    other/markdown-basic-syntax.md   
@@ -156,6 +162,7 @@
    other/personal-blog-hexo-construction-guide2.md
    other/personal-blog-for-sphinx-readthedocs-and-github-guide.md   
    other/typora-picture-host-setting-with-picgo-and-gitee.md
+   
    
    
 关注公众号【测试开发小记】及时接收最新技术文章！
