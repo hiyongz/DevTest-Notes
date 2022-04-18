@@ -1,37 +1,49 @@
 pipeline {
     agent any
     stages {
-        stage('begin'){
-            steps {
-                echo 'hello pipeline begin'
-                sleep 5
-            }
-        }
-        stage('running''){
-            steps {
-                echo 'hello pipeline running'
-                sleep 5
-            }
-        }
-        stage('finish'){
-            steps {
-                echo 'hello pipeline finish'
-                sleep 5
-                // sh 'exit 0'
-            }
-        }
+	stage('begin'){
+		steps {
+			echo 'begin'
+			sleep 2
+		}
+	}
+	stage('running'){
+		steps {
+		   echo 'running'
+		   script {
+			   RUNNING_STATU = sh (
+					script: "echo 'running'",
+					returnStatus: true
+			   ) == 0
+			
+			   if ("${RUNNING_STATU}" == "false") {
+					catchError(stageResult: 'FAILURE') {
+						echo "执行失败"
+					}
+					sh "EXIT 1"
+				}
+			}
+			sleep 2
+		}
+	}
+	stage('finish'){
+		steps {
+			echo 'finish'
+			sleep 2
+		}
+	}
     }
     post {
         success {
-            echo 'goodbye pipeline success!'
-            sleep 5
+            echo 'success!'
+            sleep 2
         }
         failure {
-            echo 'ops!!! pipeline failed...'
-            sleep 5
+            echo 'failed...'
+            sleep 2
         }
         always {
-            echo 'always say goodbye'
+            echo 'goodbye'
         }
     }
 }
