@@ -121,6 +121,7 @@
    CI/continuous-integration-for-jenkins-email-ext.md
    CI/continuous-integration-jenkins-for-pipeline-shared-libraries.md
    CI/continuous-integration-for-jenkins-pipeline.md
+   CI/continuous-integration-for-source-control-jenkinsfile.md
    CI/continuous-integration-for-jenkins-api-2.md
    CI/continuous-integration-for-jenkins-global-variable-reference.md
 
