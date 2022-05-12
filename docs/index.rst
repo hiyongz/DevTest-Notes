@@ -148,6 +148,8 @@
    :caption: PHP
    
    php/php-notes-for-dev-environment-install.md
+   php/php-notes-for-string-and-preg-method.md
+   php/php-notes-for-array-method.md   
    
 .. toctree::
    :maxdepth: 1
