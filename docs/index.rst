@@ -151,6 +151,7 @@
    php/php-notes-for-dev-environment-install.md
    php/php-notes-for-string-and-preg-method.md
    php/php-notes-for-array-method.md   
+   php/php-notes-for-phpspreadsheet.md   
    
 .. toctree::
    :maxdepth: 1
