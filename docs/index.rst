@@ -157,6 +157,7 @@
    :caption: 其它
    
    other/markdown-basic-syntax.md   
+   other/markdown-syntax-for-flowchart2.md
    other/front-end-for-typora-css.md
    other/git-generate-ssh-public-key-guide.md
    other/git-install-and-guide.md
