@@ -131,7 +131,18 @@
    :caption: 测试管理平台
    
    testplatform/zentao-extension-for-dev-environment-configuration.md
+   testplatform/zentao-extension-for-zentao-framework-introduction.md
+   testplatform/zentao-extension-example.md
+   testplatform/zentao-extension-for-phpspreadsheet.md
 
+.. toctree::
+   :maxdepth: 1
+   :caption: 数据库
+   
+   database/database-for-mysql-install-on-linux-and-windows.md
+   database/database-for-mysql-operate.md
+   database/database-for-mysql-architecture-introduction.md
+   database/database-for-mysql-log-system.md
 
 .. toctree::
    :maxdepth: 1
