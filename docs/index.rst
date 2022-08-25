@@ -143,6 +143,7 @@
    database/database-for-mysql-operate.md
    database/database-for-mysql-architecture-introduction.md
    database/database-for-mysql-log-system.md
+   database/database-for-mysql-lock.md
 
 .. toctree::
    :maxdepth: 1
