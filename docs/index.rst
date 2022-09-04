@@ -167,6 +167,12 @@
    
 .. toctree::
    :maxdepth: 1
+   :caption: Java  
+   
+   java/java-install-on-windows-and-centos7.md
+   
+.. toctree::
+   :maxdepth: 1
    :caption: 其它
    
    other/markdown-basic-syntax.md   
