@@ -1,0 +1,56 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<flow-definition plugin="workflow-job@1167.v8fe861b_09ef9">
+  <actions>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@2.2064.v5eef7d0982b_e"/>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@2.2064.v5eef7d0982b_e">
+      <jobProperties/>
+      <triggers/>
+      <parameters/>
+      <options/>
+    </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
+    <hudson.plugins.robot.RobotProjectAction plugin="robot@3.0.1">
+      <project class="flow-definition" reference="../../.."/>
+    </hudson.plugins.robot.RobotProjectAction>
+  </actions>
+  <description>a robot framework demo</description>
+  <keepDependencies>false</keepDependencies>
+  <properties/>
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2648.va9433432b33c">
+    <script>pipeline {
+    environment {TEST_FLAG=&apos;666&apos;}
+    agent {
+      node {
+        label &quot;win_98.178&quot;
+        customWorkspace &quot;D:/jenkins&quot;
+      }
+    }
+  
+    stages {
+        stage(&apos;initialize&apos;) {
+            steps {
+                echo &quot;init&quot;
+                bat &apos;echo hello&apos;
+                script {
+                    echo &quot;${TEST_FLAG}&quot;
+                }
+            }
+        }
+    
+        stage(&apos;Run Tests&apos;) {
+            steps {
+            echo &quot;begin test&quot;
+            echo &quot;${TEST_FLAG}&quot;
+            }
+        }
+    }
+    post {
+        always {
+            echo &quot;end&quot;
+        }
+    }
+}</script>
+    <sandbox>true</sandbox>
+  </definition>
+  <triggers/>
+  <disabled>false</disabled>
+</flow-definition>

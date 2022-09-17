@@ -39,6 +39,7 @@ class JenkinsDemo:
     def __job_build(self, my_job_name):
         if self.jk.has_job(my_job_name):
             my_job = self.jk.get_job(my_job_name)
+            self.jk.create_node(name)
             if not my_job.is_queved_or_running():
                 try:
                     Last_build = my_job.get_last_buildnumber()

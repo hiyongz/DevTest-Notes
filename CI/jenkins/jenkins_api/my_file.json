@@ -1,0 +1,33 @@
+{
+    "name": "win_98.172",
+    "nodeDescription": "192.168.98.172",
+    "numExecutors": "1",
+    "remoteFS": "D:\\jenkins",
+    "labelString": "win_98.172",
+    "mode": "NORMAL",
+    "": [
+        "hudson.slaves.JNLPLauncher",
+        "hudson.slaves.RetentionStrategy$Always"
+    ],
+    "launcher": {
+        "stapler-class": "hudson.slaves.JNLPLauncher",
+        "$class": "hudson.slaves.JNLPLauncher",
+        "workDirSettings": {
+            "disabled": false,
+            "workDirPath": "D:\\jenkins",
+            "internalDir": "remoting",
+            "failIfWorkDirIsMissing": false
+        },
+        "webSocket": false,
+        "tunnel": "",
+        "vmargs": ""
+    },
+    "retentionStrategy": {
+        "stapler-class": "hudson.slaves.RetentionStrategy$Always",
+        "$class": "hudson.slaves.RetentionStrategy$Always"
+    },
+    "nodeProperties": {
+        "stapler-class-bag": "true"
+    },
+    "type": "hudson.slaves.DumbSlave"
+}
