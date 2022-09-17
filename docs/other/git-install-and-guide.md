@@ -4,13 +4,15 @@ Git是一种版本控制器，在项目开发中可以用来托管代码，本�
 
 ## 一、下载安装Git
 
-### 1. Git下载
+### Windows系统
+
+#### 1. Git下载
 
 地址：https://git-scm.com/download/win
 
 ![](git-install-and-guide/1.png)
 
-### 2. 安装
+#### 2. 安装
 
 检验是否安装成功 电脑桌面或者其他任意文件夹下，点击鼠标右键，如果看到Git GUI和Git Bash则表示安装成功
 
@@ -18,10 +20,38 @@ Git是一种版本控制器，在项目开发中可以用来托管代码，本�
 
 Git Bash是为了方便你在windows下使用git命令的模拟终端，我们可以在git bash中执行一些shell命令。
 
-### TortoiseGit安装
+#### 3. TortoiseGit安装
 git GUI客户端有很多种：[https://git-scm.com/downloads/guis/](https://git-scm.com/downloads/guis/)
 
 Windows平台推荐使用TortoiseGit，可以通过图形化界面操作git，下载地址：[https://tortoisegit.org/download/](https://tortoisegit.org/download/)
+
+### Linux系统（Centos7）
+
+安装Git最新版本
+
+查看版本：
+
+```bash
+[root@Server ~]# git --version
+git version 1.8.3.1
+```
+
+删除老版本：
+
+```bash
+sudo yum -y remove git
+sudo yum -y remove git-*
+```
+
+安装：
+
+````bash
+sudo yum -y install https://packages.endpointdev.com/rhel/7/os/x86_64/endpoint-repo.x86_64.rpm
+sudo yum install git
+[root@Server gerritDemo]# git --version
+git version 2.37.1
+
+````
 
 ## 二、Git配置
 

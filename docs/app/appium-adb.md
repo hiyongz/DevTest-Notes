@@ -154,6 +154,24 @@ adb shell dumpsys activity top | findstr "ACTIVITY"
   ACTIVITY com.tencent.mm/.ui.LauncherUI 3a7bec6 pid=30547
 ```
 
+也可以使用aapt2工具来获取APP的包名，它也是Android SDK 平台工具软件包中的工具，是一款Android 资源打包工具，可使用如下命令获取apk文件包名：
+
+```bash
+$ aapt2 dump badging apk文件名.apk
+```
+
+示例(东方财富APP)：
+
+```bash
+$ aapt2 dump badging dfcf_0005564.apk
+package: name='com.eastmoney.android.berlin' versionCode='10003000' versionName='10.3' platformBuildVersionName='' platformBuildVersionCode='' compileSdkVersion='29' compileSdkVersionCodename='10'
+sdkVersion:'16'
+targetSdkVersion:'28'
+.................
+```
+
+
+
 查看应用列表
 ```bash
 adb shell pm list packages #所有应用列表

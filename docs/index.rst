@@ -131,7 +131,19 @@
    :caption: 测试管理平台
    
    testplatform/zentao-extension-for-dev-environment-configuration.md
+   testplatform/zentao-extension-for-zentao-framework-introduction.md
+   testplatform/zentao-extension-example.md
+   testplatform/zentao-extension-for-phpspreadsheet.md
 
+.. toctree::
+   :maxdepth: 1
+   :caption: 数据库
+   
+   database/database-for-mysql-install-on-linux-and-windows.md
+   database/database-for-mysql-operate.md
+   database/database-for-mysql-architecture-introduction.md
+   database/database-for-mysql-log-system.md
+   database/database-for-mysql-lock.md
 
 .. toctree::
    :maxdepth: 1
@@ -151,12 +163,20 @@
    php/php-notes-for-dev-environment-install.md
    php/php-notes-for-string-and-preg-method.md
    php/php-notes-for-array-method.md   
+   php/php-notes-for-phpspreadsheet.md   
+   
+.. toctree::
+   :maxdepth: 1
+   :caption: Java  
+   
+   java/java-install-on-windows-and-centos7.md
    
 .. toctree::
    :maxdepth: 1
    :caption: 其它
    
    other/markdown-basic-syntax.md   
+   other/markdown-syntax-for-flowchart2.md
    other/front-end-for-typora-css.md
    other/git-generate-ssh-public-key-guide.md
    other/git-install-and-guide.md
