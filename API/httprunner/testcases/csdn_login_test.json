@@ -1,0 +1,680 @@
+{
+    "config": {
+        "name": "testcase description"
+    },
+    "teststeps": [
+        {
+            "name": "",
+            "request": {
+                "method": "POST",
+                "url": "https://passport.csdn.net/v1/register/pc/wxapplets/checkLogin",
+                "headers": {
+                    "Accept": "application/json, text/plain, */*",
+                    "Accept-Encoding": "gzip, deflate, br",
+                    "Accept-Language": "zh-CN,zh;q=0.9",
+                    "Connection": "keep-alive",
+                    "Content-Length": "0",
+                    "Host": "passport.csdn.net",
+                    "Origin": "https://passport.csdn.net",
+                    "Referer": "https://passport.csdn.net/login?code=applets",
+                    "Sec-Fetch-Dest": "empty",
+                    "Sec-Fetch-Mode": "cors",
+                    "Sec-Fetch-Site": "same-origin",
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36",
+                    "X-Requested-With": "XMLHttpRequest",
+                    "sec-ch-ua": "\"Chromium\";v=\"104\", \" Not A;Brand\";v=\"99\", \"Google Chrome\";v=\"104\"",
+                    "sec-ch-ua-mobile": "?0",
+                    "sec-ch-ua-platform": "\"Windows\""
+                },
+                "cookies": {
+                    "BT": "1662817083586",
+                    "FCNEC": "%5B%5B%22AKsRol_5UVOdfzcjEXiaKh5mQJ8mMskdPVuvFwrb-PqPh7d2FEbZsKpcaOdAwr4e5UNpXGPcqFruUHnXCKMx8lE4gYvziE7BTFC8iA8Ya7FD8hfR5bzsQNKxLt8hPCnowutkeXEfmVYcmuD4aS1Jyikc5e3-j1QiPA%3D%3D%22%5D%2Cnull%2C%5B%5D%5D",
+                    "Hm_ct_6bcd52f51e9b3dce32bec4a3997715ac": "6525*1*11_20922005770-1643949338491-261219!5744*1*u010698107",
+                    "Hm_lpvt_6bcd52f51e9b3dce32bec4a3997715ac": "1662818238",
+                    "Hm_lvt_6bcd52f51e9b3dce32bec4a3997715ac": "1660481659,1662295247",
+                    "Hm_up_6bcd52f51e9b3dce32bec4a3997715ac": "%7B%22islogin%22%3A%7B%22value%22%3A%221%22%2C%22scope%22%3A1%7D%2C%22isonline%22%3A%7B%22value%22%3A%220%22%2C%22scope%22%3A1%7D%2C%22isvip%22%3A%7B%22value%22%3A%220%22%2C%22scope%22%3A1%7D%2C%22uid_%22%3A%7B%22value%22%3A%22u010698107%22%2C%22scope%22%3A1%7D%7D",
+                    "SESSION": "0587b8a7-4566-4ce5-8e9d-96d789ccdd50",
+                    "UN": "u010698107",
+                    "__gads": "ID=56a65d0766200e69-2249687494d00020:T=1643949553:RT=1644586348:S=ALNI_Mazg4lqQ9hH9HE7PstpnvQDG9Htjg",
+                    "__gpi": "UID=0000047d9670d63f:T=1649122937:RT=1662802741:S=ALNI_MYjA2xGsJECXdVsT_bYdXOG_0wl3g",
+                    "_ga": "GA1.2.2017807950.1643952472",
+                    "_ga_VHSCGE70LW": "GS1.1.1644658762.7.0.1644658762.0",
+                    "acw_sc__v2": "631c933b14a3df4d7838ea1a66f5080633fe3850",
+                    "acw_tc": "276077e216628168577337655ee72007a78297090438695bf6f1038d262501",
+                    "c_dsid": "11_1662818236851.144024",
+                    "c_first_page": "https%3A//www.csdn.net/",
+                    "c_first_ref": "default",
+                    "c_page_id": "default",
+                    "c_pref": "default",
+                    "c_ref": "default",
+                    "c_segment": "3",
+                    "dc_session_id": "11_1662816382976.348388",
+                    "dc_sid": "123583ae4c9bca87b19f6b0b00bc7335",
+                    "dc_tos": "rhzyrg",
+                    "firstDie": "1",
+                    "hide_login": "1",
+                    "log_Id_click": "641",
+                    "log_Id_pv": "1392",
+                    "log_Id_view": "2652",
+                    "p_uid": "U010000",
+                    "ssxmod_itna": "eqAOqjxRxfhxODBDlRQTYgY/DyiSiYIDIh8DGXxIoDZDiqAPGhDC83IY4DIEvZ5Q9PEq3hmUABvfhMiO0oevoiPLTpoDU4i8DCwnwoWDeW=D5xGoDPxDeDADYEUDAqiOD7qDdjpkVUkDm4GW7qGfDDoDY+=uDitD4qDBzOdDKqGg7dw17d268jU3vwmeNG=DjMbD/+xagQRak1vZbmnqeePuDB=1xBjMfwXUfeDHzLNlen54ighrSr+o7iPb9ix49herfBD04xMzQDxrKYYKKOGoSO1DG+mLSODxD===",
+                    "ssxmod_itna2": "eqAOqjxRxfhxODBDlRQTYgY/DyiSiYIDIo4A6uNeD/YM7DFgOdzpPAP4D7+u+o=YyDOmiDWYUwmYDlrU52KnxoLzPTb3F2v3p9wWHfWor8BDk2DpLEF+gt4tE+7B+DCy0zBbBWs14n3ACmx5bAdQ4LuelRrdCz7EmAR0AKev4s0RjfMx0S4=/eQEioRN/funercUTq66l7P6ad63WVCA7SxxKCOIOKixsvPW1vhxuGnBewfvDPFTEluwpsBeDKdNDFqD29rD",
+                    "uuid_tt_dd": "11_20922005770-1643949338491-261219"
+                }
+            },
+            "validate": [
+                {
+                    "check": "status_code",
+                    "assert": "equals",
+                    "expect": 200,
+                    "msg": "assert response status code"
+                },
+                {
+                    "check": "headers.\"Content-Type\"",
+                    "assert": "equals",
+                    "expect": "application/json;charset=utf-8",
+                    "msg": "assert response header Content-Type"
+                },
+                {
+                    "check": "body.code",
+                    "assert": "equals",
+                    "expect": "1070",
+                    "msg": "assert response body code"
+                },
+                {
+                    "check": "body.data",
+                    "assert": "equals",
+                    "expect": null,
+                    "msg": "assert response body data"
+                },
+                {
+                    "check": "body.message",
+                    "assert": "equals",
+                    "expect": "用户未扫码",
+                    "msg": "assert response body message"
+                },
+                {
+                    "check": "body.status",
+                    "assert": "equals",
+                    "expect": false,
+                    "msg": "assert response body status"
+                }
+            ]
+        },
+        {
+            "name": "",
+            "request": {
+                "method": "POST",
+                "url": "https://passport.csdn.net/v1/register/pc/login/doLogin",
+                "headers": {
+                    "Accept": "application/json, text/plain, */*",
+                    "Accept-Encoding": "gzip, deflate, br",
+                    "Accept-Language": "zh-CN,zh;q=0.9",
+                    "Connection": "keep-alive",
+                    "Content-Length": "114",
+                    "Content-Type": "application/json;charset=UTF-8",
+                    "Host": "passport.csdn.net",
+                    "Origin": "https://passport.csdn.net",
+                    "Referer": "https://passport.csdn.net/login?code=applets",
+                    "Sec-Fetch-Dest": "empty",
+                    "Sec-Fetch-Mode": "cors",
+                    "Sec-Fetch-Site": "same-origin",
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36",
+                    "sec-ch-ua": "\"Chromium\";v=\"104\", \" Not A;Brand\";v=\"99\", \"Google Chrome\";v=\"104\"",
+                    "sec-ch-ua-mobile": "?0",
+                    "sec-ch-ua-platform": "\"Windows\""
+                },
+                "cookies": {
+                    "BT": "1662817083586",
+                    "FCNEC": "%5B%5B%22AKsRol_5UVOdfzcjEXiaKh5mQJ8mMskdPVuvFwrb-PqPh7d2FEbZsKpcaOdAwr4e5UNpXGPcqFruUHnXCKMx8lE4gYvziE7BTFC8iA8Ya7FD8hfR5bzsQNKxLt8hPCnowutkeXEfmVYcmuD4aS1Jyikc5e3-j1QiPA%3D%3D%22%5D%2Cnull%2C%5B%5D%5D",
+                    "Hm_ct_6bcd52f51e9b3dce32bec4a3997715ac": "6525*1*11_20922005770-1643949338491-261219!5744*1*u010698107",
+                    "Hm_lpvt_6bcd52f51e9b3dce32bec4a3997715ac": "1662818238",
+                    "Hm_lvt_6bcd52f51e9b3dce32bec4a3997715ac": "1660481659,1662295247",
+                    "Hm_up_6bcd52f51e9b3dce32bec4a3997715ac": "%7B%22islogin%22%3A%7B%22value%22%3A%221%22%2C%22scope%22%3A1%7D%2C%22isonline%22%3A%7B%22value%22%3A%220%22%2C%22scope%22%3A1%7D%2C%22isvip%22%3A%7B%22value%22%3A%220%22%2C%22scope%22%3A1%7D%2C%22uid_%22%3A%7B%22value%22%3A%22u010698107%22%2C%22scope%22%3A1%7D%7D",
+                    "SESSION": "0587b8a7-4566-4ce5-8e9d-96d789ccdd50",
+                    "UN": "u010698107",
+                    "__gads": "ID=56a65d0766200e69-2249687494d00020:T=1643949553:RT=1644586348:S=ALNI_Mazg4lqQ9hH9HE7PstpnvQDG9Htjg",
+                    "__gpi": "UID=0000047d9670d63f:T=1649122937:RT=1662802741:S=ALNI_MYjA2xGsJECXdVsT_bYdXOG_0wl3g",
+                    "_ga": "GA1.2.2017807950.1643952472",
+                    "_ga_VHSCGE70LW": "GS1.1.1644658762.7.0.1644658762.0",
+                    "acw_sc__v2": "631c933b14a3df4d7838ea1a66f5080633fe3850",
+                    "acw_tc": "276077e216628168577337655ee72007a78297090438695bf6f1038d262501",
+                    "c_dsid": "11_1662818236851.144024",
+                    "c_first_page": "https%3A//www.csdn.net/",
+                    "c_first_ref": "default",
+                    "c_page_id": "default",
+                    "c_pref": "default",
+                    "c_ref": "default",
+                    "c_segment": "3",
+                    "dc_session_id": "11_1662816382976.348388",
+                    "dc_sid": "123583ae4c9bca87b19f6b0b00bc7335",
+                    "dc_tos": "rhzyrg",
+                    "firstDie": "1",
+                    "hide_login": "1",
+                    "log_Id_click": "641",
+                    "log_Id_pv": "1392",
+                    "log_Id_view": "2652",
+                    "p_uid": "U010000",
+                    "ssxmod_itna": "eqAOqjxRxfhxODBDlRQTYgY/DyiSiYUK7UDBLC4iNDnD8x7YDvIzo+DGOSoVhoHmtvD47Id3Sp37UTK84EO+TXSWO4GLDmKDy3/74PDx=q0rD74irDDxD3Db+dDSDWKD9D0RSBc6yKGWDmR8DWPDYxDrLaKDRxi7DDHd8x07DQy8Omu8YfPwnrECPhBxLxG1F40HQmSIif3LgA5+wziGvWKDXpdDvO51M2PpDB+kl1HGli0oNQRtbQxqEWnK3iitPobP5laYHXwxYYRDV00YqQ2tfqDWr74PNlGDD===",
+                    "ssxmod_itna2": "eqAOqjxRxfhxODBDlRQTYgY/DyiSiYUK7D8ulqxGNGOS7DFgOdF1PAP4D7+u+k=YHoGYD3ev2FeD/Yyw7qSCCaNOxuc39avow9LayETkc8BDk2DpwE9bgQ4KE+7B+DCy0zBbnWs14n4dCmxvFAdjC3jpM8oNqLMxpi83qh804sBbmn4v5DLdnBTimepAegLUTq6UKOa5lKbaVb=cxrqWOMxxKCOIOKixsrqaCvhxulQIChfvDPFuAluwpZLK0Y7pMSr4sOU8jQt2ziwDPRtaIzD16IW2A8dWO+/9MzGLhIfX+XkGdqpQn37GqoLqi4jb3grKrOA+o=jdixFqb+2L3chWHebwMG7ON4+atTxrBrQ2YkBNqCivj=ouYYSrigsRfC3GK0o=1qb5G3AgWIx=WuwfrtHCDGnAFL8QiYKM=1bIr0H9bYNCINn+aS3aPwWr+VueD7Q52GlQDUcGXiI1W9a0u5m9utPPYjuKPfoPO7uj2TVEN7lPv7yrtwM6p5jey+K4LoOCW/btabw6BGISTowIYADDjKDedNjPxMifkifMBzjYxOMnY96QAqarTDae2IDmUqtO5pi0mQ9MAUnFyQc6BU3p79IgnS96xNxriDD=",
+                    "uuid_tt_dd": "11_20922005770-1643949338491-261219"
+                },
+                "body": {
+                    "loginType": "1",
+                    "pwdOrVerifyCode": "zhy1994317",
+                    "uaToken": "",
+                    "userIdentification": "18883285613",
+                    "webUmidToken": ""
+                }
+            },
+            "validate": [
+                {
+                    "check": "status_code",
+                    "assert": "equals",
+                    "expect": 200,
+                    "msg": "assert response status code"
+                },
+                {
+                    "check": "headers.\"Content-Type\"",
+                    "assert": "equals",
+                    "expect": "application/json;charset=utf-8",
+                    "msg": "assert response header Content-Type"
+                },
+                {
+                    "check": "body.code",
+                    "assert": "equals",
+                    "expect": "0",
+                    "msg": "assert response body code"
+                },
+                {
+                    "check": "body.isCheck",
+                    "assert": "equals",
+                    "expect": 0,
+                    "msg": "assert response body isCheck"
+                },
+                {
+                    "check": "body.message",
+                    "assert": "equals",
+                    "expect": "success",
+                    "msg": "assert response body message"
+                },
+                {
+                    "check": "body.status",
+                    "assert": "equals",
+                    "expect": true,
+                    "msg": "assert response body status"
+                }
+            ]
+        },
+        {
+            "name": "",
+            "request": {
+                "method": "GET",
+                "url": "https://passport.csdn.net/v1/login/exchange/ticket",
+                "headers": {
+                    "Accept": "application/json, text/plain, */*",
+                    "Accept-Encoding": "gzip, deflate, br",
+                    "Accept-Language": "zh-CN,zh;q=0.9",
+                    "Connection": "keep-alive",
+                    "Host": "passport.csdn.net",
+                    "Referer": "https://passport.csdn.net/login?code=applets",
+                    "Sec-Fetch-Dest": "empty",
+                    "Sec-Fetch-Mode": "cors",
+                    "Sec-Fetch-Site": "same-origin",
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36",
+                    "sec-ch-ua": "\"Chromium\";v=\"104\", \" Not A;Brand\";v=\"99\", \"Google Chrome\";v=\"104\"",
+                    "sec-ch-ua-mobile": "?0",
+                    "sec-ch-ua-platform": "\"Windows\""
+                },
+                "cookies": {
+                    "AU": "9C0",
+                    "BT": "1662818290725",
+                    "FCNEC": "%5B%5B%22AKsRol_5UVOdfzcjEXiaKh5mQJ8mMskdPVuvFwrb-PqPh7d2FEbZsKpcaOdAwr4e5UNpXGPcqFruUHnXCKMx8lE4gYvziE7BTFC8iA8Ya7FD8hfR5bzsQNKxLt8hPCnowutkeXEfmVYcmuD4aS1Jyikc5e3-j1QiPA%3D%3D%22%5D%2Cnull%2C%5B%5D%5D",
+                    "Hm_ct_6bcd52f51e9b3dce32bec4a3997715ac": "6525*1*11_20922005770-1643949338491-261219!5744*1*u010698107",
+                    "Hm_lpvt_6bcd52f51e9b3dce32bec4a3997715ac": "1662818238",
+                    "Hm_lvt_6bcd52f51e9b3dce32bec4a3997715ac": "1660481659,1662295247",
+                    "Hm_up_6bcd52f51e9b3dce32bec4a3997715ac": "%7B%22islogin%22%3A%7B%22value%22%3A%221%22%2C%22scope%22%3A1%7D%2C%22isonline%22%3A%7B%22value%22%3A%220%22%2C%22scope%22%3A1%7D%2C%22isvip%22%3A%7B%22value%22%3A%220%22%2C%22scope%22%3A1%7D%2C%22uid_%22%3A%7B%22value%22%3A%22u010698107%22%2C%22scope%22%3A1%7D%7D",
+                    "SESSION": "0587b8a7-4566-4ce5-8e9d-96d789ccdd50",
+                    "UN": "u010698107",
+                    "UserInfo": "b77ccf6ff2f4474ebe233bc89cc3bbdc",
+                    "UserName": "u010698107",
+                    "UserNick": "%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E5%B0%8F%E8%AE%B0",
+                    "UserToken": "b77ccf6ff2f4474ebe233bc89cc3bbdc",
+                    "__gads": "ID=56a65d0766200e69-2249687494d00020:T=1643949553:RT=1644586348:S=ALNI_Mazg4lqQ9hH9HE7PstpnvQDG9Htjg",
+                    "__gpi": "UID=0000047d9670d63f:T=1649122937:RT=1662802741:S=ALNI_MYjA2xGsJECXdVsT_bYdXOG_0wl3g",
+                    "_ga": "GA1.2.2017807950.1643952472",
+                    "_ga_VHSCGE70LW": "GS1.1.1644658762.7.0.1644658762.0",
+                    "acw_sc__v2": "631c933b14a3df4d7838ea1a66f5080633fe3850",
+                    "acw_tc": "276077e216628168577337655ee72007a78297090438695bf6f1038d262501",
+                    "c_dsid": "11_1662818236851.144024",
+                    "c_first_page": "https%3A//www.csdn.net/",
+                    "c_first_ref": "default",
+                    "c_page_id": "default",
+                    "c_pref": "default",
+                    "c_ref": "default",
+                    "c_segment": "3",
+                    "dc_session_id": "11_1662816382976.348388",
+                    "dc_sid": "123583ae4c9bca87b19f6b0b00bc7335",
+                    "dc_tos": "rhzyrg",
+                    "firstDie": "1",
+                    "hide_login": "1",
+                    "log_Id_click": "641",
+                    "log_Id_pv": "1392",
+                    "log_Id_view": "2652",
+                    "p_uid": "U010000",
+                    "ssxmod_itna": "eqAOqjxRxfhxODBDlRQTYgY/DyiSiYUK7UDBLC4iNDnD8x7YDvIzo+DGOSoVhoHmtvD47Id3Sp37UTK84EO+TXSWO4GLDmKDy3/74PDx=q0rD74irDDxD3Db+dDSDWKD9D0RSBc6yKGWDmR8DWPDYxDrLaKDRxi7DDHd8x07DQy8Omu8YfPwnrECPhBxLxG1F40HQmSIif3LgA5+wziGvWKDXpdDvO51M2PpDB+kl1HGli0oNQRtbQxqEWnK3iitPobP5laYHXwxYYRDV00YqQ2tfqDWr74PNlGDD===",
+                    "ssxmod_itna2": "eqAOqjxRxfhxODBDlRQTYgY/DyiSiYUK7D8ulqxGNGOS7DFgOdF1PAP4D7+u+k=YHoGYD3ev2FeD/Yyw7qSCCaNOxuc39avow9LayETkc8BDk2DpwE9bgQ4KE+7B+DCy0zBbnWs14n4dCmxvFAdjC3jpM8oNqLMxpi83qh804sBbmn4v5DLdnBTimepAegLUTq6UKOa5lKbaVb=cxrqWOMxxKCOIOKixsrqaCvhxulQIChfvDPFuAluwpZLK0Y7pMSr4sOU8jQt2ziwDPRtaIzD16IW2A8dWO+/9MzGLhIfX+XkGdqpQn37GqoLqi4jb3grKrOA+o=jdixFqb+2L3chWHebwMG7ON4+atTxrBrQ2YkBNqCivj=ouYYSrigsRfC3GK0o=1qb5G3AgWIx=WuwfrtHCDGnAFL8QiYKM=1bIr0H9bYNCINn+aS3aPwWr+VueD7Q52GlQDUcGXiI1W9a0u5m9utPPYjuKPfoPO7uj2TVEN7lPv7yrtwM6p5jey+K4LoOCW/btabw6BGISTowIYADDjKDedNjPxMifkifMBzjYxOMnY96QAqarTDae2IDmUqtO5pi0mQ9MAUnFyQc6BU3p79IgnS96xNxriDD=",
+                    "uuid_tt_dd": "11_20922005770-1643949338491-261219"
+                }
+            },
+            "validate": [
+                {
+                    "check": "status_code",
+                    "assert": "equals",
+                    "expect": 200,
+                    "msg": "assert response status code"
+                },
+                {
+                    "check": "headers.\"Content-Type\"",
+                    "assert": "equals",
+                    "expect": "application/json;charset=utf-8",
+                    "msg": "assert response header Content-Type"
+                },
+                {
+                    "check": "body.code",
+                    "assert": "equals",
+                    "expect": "0",
+                    "msg": "assert response body code"
+                },
+                {
+                    "check": "body.message",
+                    "assert": "equals",
+                    "expect": "success",
+                    "msg": "assert response body message"
+                },
+                {
+                    "check": "body.status",
+                    "assert": "equals",
+                    "expect": true,
+                    "msg": "assert response body status"
+                }
+            ]
+        },
+        {
+            "name": "",
+            "request": {
+                "method": "GET",
+                "url": "https://g-api.csdn.net/community/toolbar-api/v1/get-user-info",
+                "headers": {
+                    ":authority": "g-api.csdn.net",
+                    ":method": "GET",
+                    ":path": "/community/toolbar-api/v1/get-user-info",
+                    ":scheme": "https",
+                    "accept": "application/json, text/javascript, */*; q=0.01",
+                    "accept-encoding": "gzip, deflate, br",
+                    "accept-language": "zh-CN,zh;q=0.9",
+                    "content-type": "application/x-www-form-urlencoded; charset=utf-8",
+                    "origin": "https://www.csdn.net",
+                    "referer": "https://www.csdn.net/",
+                    "sec-ch-ua": "\"Chromium\";v=\"104\", \" Not A;Brand\";v=\"99\", \"Google Chrome\";v=\"104\"",
+                    "sec-ch-ua-mobile": "?0",
+                    "sec-ch-ua-platform": "\"Windows\"",
+                    "sec-fetch-dest": "empty",
+                    "sec-fetch-mode": "cors",
+                    "sec-fetch-site": "same-site",
+                    "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36"
+                },
+                "cookies": {
+                    "AU": "9C0",
+                    "BT": "1662818290725",
+                    "FCNEC": "%5B%5B%22AKsRol_5UVOdfzcjEXiaKh5mQJ8mMskdPVuvFwrb-PqPh7d2FEbZsKpcaOdAwr4e5UNpXGPcqFruUHnXCKMx8lE4gYvziE7BTFC8iA8Ya7FD8hfR5bzsQNKxLt8hPCnowutkeXEfmVYcmuD4aS1Jyikc5e3-j1QiPA%3D%3D%22%5D%2Cnull%2C%5B%5D%5D",
+                    "Hm_ct_6bcd52f51e9b3dce32bec4a3997715ac": "6525*1*11_20922005770-1643949338491-261219!5744*1*u010698107",
+                    "Hm_lpvt_6bcd52f51e9b3dce32bec4a3997715ac": "1662818293",
+                    "Hm_lvt_6bcd52f51e9b3dce32bec4a3997715ac": "1660481659,1662295247",
+                    "Hm_up_6bcd52f51e9b3dce32bec4a3997715ac": "%7B%22islogin%22%3A%7B%22value%22%3A%221%22%2C%22scope%22%3A1%7D%2C%22isonline%22%3A%7B%22value%22%3A%221%22%2C%22scope%22%3A1%7D%2C%22isvip%22%3A%7B%22value%22%3A%220%22%2C%22scope%22%3A1%7D%2C%22uid_%22%3A%7B%22value%22%3A%22u010698107%22%2C%22scope%22%3A1%7D%7D",
+                    "SESSION": "0587b8a7-4566-4ce5-8e9d-96d789ccdd50",
+                    "UN": "u010698107",
+                    "UserInfo": "b77ccf6ff2f4474ebe233bc89cc3bbdc",
+                    "UserName": "u010698107",
+                    "UserNick": "%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E5%B0%8F%E8%AE%B0",
+                    "UserToken": "b77ccf6ff2f4474ebe233bc89cc3bbdc",
+                    "__gads": "ID=56a65d0766200e69-2249687494d00020:T=1643949553:RT=1644586348:S=ALNI_Mazg4lqQ9hH9HE7PstpnvQDG9Htjg",
+                    "__gpi": "UID=0000047d9670d63f:T=1649122937:RT=1662802741:S=ALNI_MYjA2xGsJECXdVsT_bYdXOG_0wl3g",
+                    "_ga": "GA1.2.2017807950.1643952472",
+                    "_ga_VHSCGE70LW": "GS1.1.1644658762.7.0.1644658762.0",
+                    "acw_sc__v2": "631c933b14a3df4d7838ea1a66f5080633fe3850",
+                    "c_dsid": "11_1662818236851.144024",
+                    "c_first_page": "https%3A//www.csdn.net/",
+                    "c_first_ref": "default",
+                    "c_page_id": "default",
+                    "c_pref": "default",
+                    "c_ref": "default",
+                    "c_segment": "3",
+                    "dc_session_id": "11_1662816382976.348388",
+                    "dc_sid": "123583ae4c9bca87b19f6b0b00bc7335",
+                    "dc_tos": "rhzysz",
+                    "firstDie": "1",
+                    "hide_login": "1",
+                    "log_Id_click": "641",
+                    "log_Id_pv": "1393",
+                    "log_Id_view": "2654",
+                    "p_uid": "U010000",
+                    "ssxmod_itna": "eqAOqjxRxfhxODBDlRQTYgY/DyiSiYUKWUDBkGO4iNDnD8x7YDvIGo+DGOSrVhhUY1tPe0QHWBdpi1vQBe+uevGcEReDHxY=DUOl2e3D4+KGwD0eG+DD4DWDmWHDnxAQDjxGP9R6sy=Dbxi3jxiaDGeDe2IODY5DhxDCUjPDwx0CjphtjpBF=FHpuOW+50KD91oDs2GfCKgf6fuzobSx4z+ODlIUDC91c2HHa4GdXc5z49qxvl0YlY2eQm+rkADxS7mYaCD7hG=NKGGYqDeqwQ0eljtDiPhoWl0q4D==",
+                    "ssxmod_itna2": "eqAOqjxRxfhxODBDlRQTYgY/DyiSiYUKWD8ulqxGNGOS7DFgOdF1PAP4D7+u+k=YyDO6iDWYUw6YDlrU52KnxgfzPT93F2v3p9LaHfWkc8BDk2DpLEF+gt4tE+7B+DCy0zBbBWs14n3ACmxvFAdQ4LLpM8oNqLMhpb+3qw8iC3lhdu3b0S4=/eQEioRN/funercUTq665dccWL4cN53IziGxHIOIbSP6arLv570QC+SFpaM0a9W3VlYHVfxQ4FgU+wAypEzi+ZL5nYixjr6E5tHLoajDHpx8QL27HEfXhXkGdxpQHETtiEoS0zcOoNSYoMWqmsixic33eQrMOWFOr+Mhq++uf5pd4Nfo5OqVEecbm6xO5xrN33=eamTxnDtEr4g0=4TYAraIx=TTwfoGwTiNOCaw8QYvWM=8rhcmEBCPQnNqj=NEb7ofHCirjhrWveY47wO57Pafp17P5YbbgxIDDwgYKmvxWjKlPRjqgI9z8HSbPPAGntUE=POeTjE9Z1N7lpviy7AGMjoODxIjHYdgS=DdVBqGY8jP5mT1FR0GIYADDjKDedNgPxMGkkGkM07jYx7L9NGvQD6SIv+03fT91GAe22sWBMY0B93eovPyg5d6Y0Qcz5gQB75xriDD",
+                    "uuid_tt_dd": "11_20922005770-1643949338491-261219"
+                }
+            },
+            "validate": [
+                {
+                    "check": "status_code",
+                    "assert": "equals",
+                    "expect": 200,
+                    "msg": "assert response status code"
+                },
+                {
+                    "check": "headers.\"Content-Type\"",
+                    "assert": "equals",
+                    "expect": "application/json;charset=utf-8",
+                    "msg": "assert response header Content-Type"
+                },
+                {
+                    "check": "body.code",
+                    "assert": "equals",
+                    "expect": 200,
+                    "msg": "assert response body code"
+                },
+                {
+                    "check": "body.msg",
+                    "assert": "equals",
+                    "expect": "success",
+                    "msg": "assert response body msg"
+                }
+            ]
+        },
+        {
+            "name": "",
+            "request": {
+                "method": "GET",
+                "url": "https://bizapi.csdn.net/blog-console-api/v1/user/info",
+                "headers": {
+                    ":authority": "bizapi.csdn.net",
+                    ":method": "GET",
+                    ":path": "/blog-console-api/v1/user/info",
+                    ":scheme": "https",
+                    "accept": "application/json, text/plain, */*",
+                    "accept-encoding": "gzip, deflate, br",
+                    "accept-language": "zh-CN,zh;q=0.9",
+                    "origin": "https://mp.csdn.net",
+                    "referer": "https://mp.csdn.net/",
+                    "sec-ch-ua": "\"Chromium\";v=\"104\", \" Not A;Brand\";v=\"99\", \"Google Chrome\";v=\"104\"",
+                    "sec-ch-ua-mobile": "?0",
+                    "sec-ch-ua-platform": "\"Windows\"",
+                    "sec-fetch-dest": "empty",
+                    "sec-fetch-mode": "cors",
+                    "sec-fetch-site": "same-site",
+                    "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36",
+                    "x-ca-key": "203803574",
+                    "x-ca-nonce": "c6febb73-c765-44b9-92f4-779c0d75ec7e",
+                    "x-ca-signature": "pt4PUJzwljx7EGT6jHkC58Izy/WkXTwHWDTCpivkQZ8=",
+                    "x-ca-signature-headers": "x-ca-key,x-ca-nonce"
+                },
+                "cookies": {
+                    "AU": "9C0",
+                    "BT": "1662818290725",
+                    "FCNEC": "%5B%5B%22AKsRol_5UVOdfzcjEXiaKh5mQJ8mMskdPVuvFwrb-PqPh7d2FEbZsKpcaOdAwr4e5UNpXGPcqFruUHnXCKMx8lE4gYvziE7BTFC8iA8Ya7FD8hfR5bzsQNKxLt8hPCnowutkeXEfmVYcmuD4aS1Jyikc5e3-j1QiPA%3D%3D%22%5D%2Cnull%2C%5B%5D%5D",
+                    "Hm_ct_6bcd52f51e9b3dce32bec4a3997715ac": "6525*1*11_20922005770-1643949338491-261219!5744*1*u010698107",
+                    "Hm_lpvt_6bcd52f51e9b3dce32bec4a3997715ac": "1662818293",
+                    "Hm_lvt_6bcd52f51e9b3dce32bec4a3997715ac": "1660481659,1662295247",
+                    "Hm_up_6bcd52f51e9b3dce32bec4a3997715ac": "%7B%22islogin%22%3A%7B%22value%22%3A%221%22%2C%22scope%22%3A1%7D%2C%22isonline%22%3A%7B%22value%22%3A%221%22%2C%22scope%22%3A1%7D%2C%22isvip%22%3A%7B%22value%22%3A%220%22%2C%22scope%22%3A1%7D%2C%22uid_%22%3A%7B%22value%22%3A%22u010698107%22%2C%22scope%22%3A1%7D%7D",
+                    "SESSION": "0587b8a7-4566-4ce5-8e9d-96d789ccdd50",
+                    "UN": "u010698107",
+                    "UserInfo": "b77ccf6ff2f4474ebe233bc89cc3bbdc",
+                    "UserName": "u010698107",
+                    "UserNick": "%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E5%B0%8F%E8%AE%B0",
+                    "UserToken": "b77ccf6ff2f4474ebe233bc89cc3bbdc",
+                    "__gads": "ID=56a65d0766200e69-2249687494d00020:T=1643949553:RT=1644586348:S=ALNI_Mazg4lqQ9hH9HE7PstpnvQDG9Htjg",
+                    "__gpi": "UID=0000047d9670d63f:T=1649122937:RT=1662802741:S=ALNI_MYjA2xGsJECXdVsT_bYdXOG_0wl3g",
+                    "_ga": "GA1.2.2017807950.1643952472",
+                    "_ga_VHSCGE70LW": "GS1.1.1644658762.7.0.1644658762.0",
+                    "acw_sc__v2": "631c933b14a3df4d7838ea1a66f5080633fe3850",
+                    "c_dsid": "11_1662818236851.144024",
+                    "c_first_page": "https%3A//www.csdn.net/",
+                    "c_first_ref": "default",
+                    "c_page_id": "default",
+                    "c_pref": "default",
+                    "c_ref": "https%3A//www.csdn.net/",
+                    "c_segment": "3",
+                    "dc_session_id": "11_1662816382976.348388",
+                    "dc_sid": "123583ae4c9bca87b19f6b0b00bc7335",
+                    "dc_tos": "rhzysz",
+                    "firstDie": "1",
+                    "hide_login": "1",
+                    "log_Id_click": "642",
+                    "log_Id_pv": "1393",
+                    "log_Id_view": "2654",
+                    "p_uid": "U010000",
+                    "ssxmod_itna": "eqAOqjxRxfhxODBDlRQTYgY/DyiSiYUKWUDBkGO4iNDnD8x7YDvIGo+DGOSrVhhUY1tPe0QHWBdpi1vQBe+uevGcEReDHxY=DUOl2e3D4+KGwD0eG+DD4DWDmWHDnxAQDjxGP9R6sy=Dbxi3jxiaDGeDe2IODY5DhxDCUjPDwx0CjphtjpBF=FHpuOW+50KD91oDs2GfCKgf6fuzobSx4z+ODlIUDC91c2HHa4GdXc5z49qxvl0YlY2eQm+rkADxS7mYaCD7hG=NKGGYqDeqwQ0eljtDiPhoWl0q4D==",
+                    "ssxmod_itna2": "eqAOqjxRxfhxODBDlRQTYgY/DyiSiYUKWD8ulqxGNGOS7DFgOdF1PAP4D7+u+k=YyDO6iDWYUw6YDlrU52KnxgfzPT93F2v3p9LaHfWkc8BDk2DpLEF+gt4tE+7B+DCy0zBbBWs14n3ACmxvFAdQ4LLpM8oNqLMhpb+3qw8iC3lhdu3b0S4=/eQEioRN/funercUTq665dccWL4cN53IziGxHIOIbSP6arLv570QC+SFpaM0a9W3VlYHVfxQ4FgU+wAypEzi+ZL5nYixjr6E5tHLoajDHpx8QL27HEfXhXkGdxpQHETtiEoS0zcOoNSYoMWqmsixic33eQrMOWFOr+Mhq++uf5pd4Nfo5OqVEecbm6xO5xrN33=eamTxnDtEr4g0=4TYAraIx=TTwfoGwTiNOCaw8QYvWM=8rhcmEBCPQnNqj=NEb7ofHCirjhrWveY47wO57Pafp17P5YbbgxIDDwgYKmvxWjKlPRjqgI9z8HSbPPAGntUE=POeTjE9Z1N7lpviy7AGMjoODxIjHYdgS=DdVBqGY8jP5mT1FR0GIYADDjKDedNgPxMGkkGkM07jYx7L9NGvQD6SIv+03fT91GAe22sWBMY0B93eovPyg5d6Y0Qcz5gQB75xriDD",
+                    "uuid_tt_dd": "11_20922005770-1643949338491-261219"
+                }
+            },
+            "validate": [
+                {
+                    "check": "status_code",
+                    "assert": "equals",
+                    "expect": 200,
+                    "msg": "assert response status code"
+                },
+                {
+                    "check": "headers.\"Content-Type\"",
+                    "assert": "equals",
+                    "expect": "application/json; charset=UTF-8",
+                    "msg": "assert response header Content-Type"
+                },
+                {
+                    "check": "body.code",
+                    "assert": "equals",
+                    "expect": 200,
+                    "msg": "assert response body code"
+                },
+                {
+                    "check": "body.msg",
+                    "assert": "equals",
+                    "expect": "success",
+                    "msg": "assert response body msg"
+                }
+            ]
+        },
+        {
+            "name": "",
+            "request": {
+                "method": "POST",
+                "url": "https://mp-activity.csdn.net/activity/report",
+                "headers": {
+                    ":authority": "mp-activity.csdn.net",
+                    ":method": "POST",
+                    ":path": "/activity/report",
+                    ":scheme": "https",
+                    "accept": "application/json, text/javascript, */*; q=0.01",
+                    "accept-encoding": "gzip, deflate, br",
+                    "accept-language": "zh-CN,zh;q=0.9",
+                    "content-length": "116",
+                    "content-type": "application/json; charset=UTF-8",
+                    "origin": "https://mp.csdn.net",
+                    "referer": "https://mp.csdn.net/",
+                    "sec-ch-ua": "\"Chromium\";v=\"104\", \" Not A;Brand\";v=\"99\", \"Google Chrome\";v=\"104\"",
+                    "sec-ch-ua-mobile": "?0",
+                    "sec-ch-ua-platform": "\"Windows\"",
+                    "sec-fetch-dest": "empty",
+                    "sec-fetch-mode": "cors",
+                    "sec-fetch-site": "same-site",
+                    "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36"
+                },
+                "cookies": {
+                    "AU": "9C0",
+                    "BT": "1662818290725",
+                    "FCNEC": "%5B%5B%22AKsRol_5UVOdfzcjEXiaKh5mQJ8mMskdPVuvFwrb-PqPh7d2FEbZsKpcaOdAwr4e5UNpXGPcqFruUHnXCKMx8lE4gYvziE7BTFC8iA8Ya7FD8hfR5bzsQNKxLt8hPCnowutkeXEfmVYcmuD4aS1Jyikc5e3-j1QiPA%3D%3D%22%5D%2Cnull%2C%5B%5D%5D",
+                    "Hm_ct_6bcd52f51e9b3dce32bec4a3997715ac": "6525*1*11_20922005770-1643949338491-261219!5744*1*u010698107",
+                    "Hm_lpvt_6bcd52f51e9b3dce32bec4a3997715ac": "1662818293",
+                    "Hm_lvt_6bcd52f51e9b3dce32bec4a3997715ac": "1660481659,1662295247",
+                    "Hm_up_6bcd52f51e9b3dce32bec4a3997715ac": "%7B%22islogin%22%3A%7B%22value%22%3A%221%22%2C%22scope%22%3A1%7D%2C%22isonline%22%3A%7B%22value%22%3A%221%22%2C%22scope%22%3A1%7D%2C%22isvip%22%3A%7B%22value%22%3A%220%22%2C%22scope%22%3A1%7D%2C%22uid_%22%3A%7B%22value%22%3A%22u010698107%22%2C%22scope%22%3A1%7D%7D",
+                    "SESSION": "0587b8a7-4566-4ce5-8e9d-96d789ccdd50",
+                    "UN": "u010698107",
+                    "UserInfo": "b77ccf6ff2f4474ebe233bc89cc3bbdc",
+                    "UserName": "u010698107",
+                    "UserNick": "%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E5%B0%8F%E8%AE%B0",
+                    "UserToken": "b77ccf6ff2f4474ebe233bc89cc3bbdc",
+                    "__gads": "ID=56a65d0766200e69-2249687494d00020:T=1643949553:RT=1644586348:S=ALNI_Mazg4lqQ9hH9HE7PstpnvQDG9Htjg",
+                    "__gpi": "UID=0000047d9670d63f:T=1649122937:RT=1662802741:S=ALNI_MYjA2xGsJECXdVsT_bYdXOG_0wl3g",
+                    "_ga": "GA1.2.2017807950.1643952472",
+                    "_ga_VHSCGE70LW": "GS1.1.1644658762.7.0.1644658762.0",
+                    "acw_sc__v2": "631c933b14a3df4d7838ea1a66f5080633fe3850",
+                    "c_dsid": "11_1662818236851.144024",
+                    "c_first_page": "https%3A//www.csdn.net/",
+                    "c_first_ref": "default",
+                    "c_page_id": "default",
+                    "c_pref": "default",
+                    "c_ref": "https%3A//www.csdn.net/",
+                    "c_segment": "3",
+                    "dc_session_id": "11_1662816382976.348388",
+                    "dc_sid": "123583ae4c9bca87b19f6b0b00bc7335",
+                    "dc_tos": "rhzysz",
+                    "firstDie": "1",
+                    "hide_login": "1",
+                    "log_Id_click": "642",
+                    "log_Id_pv": "1393",
+                    "log_Id_view": "2654",
+                    "p_uid": "U010000",
+                    "ssxmod_itna": "eqAOqjxRxfhxODBDlRQTYgY/DyiSiYUKWUDBkGO4iNDnD8x7YDvIGo+DGOSrVhhUY1tPe0QHWBdpi1vQBe+uevGcEReDHxY=DUOl2e3D4+KGwD0eG+DD4DWDmWHDnxAQDjxGP9R6sy=Dbxi3jxiaDGeDe2IODY5DhxDCUjPDwx0CjphtjpBF=FHpuOW+50KD91oDs2GfCKgf6fuzobSx4z+ODlIUDC91c2HHa4GdXc5z49qxvl0YlY2eQm+rkADxS7mYaCD7hG=NKGGYqDeqwQ0eljtDiPhoWl0q4D==",
+                    "ssxmod_itna2": "eqAOqjxRxfhxODBDlRQTYgY/DyiSiYUKWD8ulqxGNGOS7DFgOdF1PAP4D7+u+k=YyDO6iDWYUw6YDlrU52KnxgfzPT93F2v3p9LaHfWkc8BDk2DpLEF+gt4tE+7B+DCy0zBbBWs14n3ACmxvFAdQ4LLpM8oNqLMhpb+3qw8iC3lhdu3b0S4=/eQEioRN/funercUTq665dccWL4cN53IziGxHIOIbSP6arLv570QC+SFpaM0a9W3VlYHVfxQ4FgU+wAypEzi+ZL5nYixjr6E5tHLoajDHpx8QL27HEfXhXkGdxpQHETtiEoS0zcOoNSYoMWqmsixic33eQrMOWFOr+Mhq++uf5pd4Nfo5OqVEecbm6xO5xrN33=eamTxnDtEr4g0=4TYAraIx=TTwfoGwTiNOCaw8QYvWM=8rhcmEBCPQnNqj=NEb7ofHCirjhrWveY47wO57Pafp17P5YbbgxIDDwgYKmvxWjKlPRjqgI9z8HSbPPAGntUE=POeTjE9Z1N7lpviy7AGMjoODxIjHYdgS=DdVBqGY8jP5mT1FR0GIYADDjKDedNgPxMGkkGkM07jYx7L9NGvQD6SIv+03fT91GAe22sWBMY0B93eovPyg5d6Y0Qcz5gQB75xriDD",
+                    "uuid_tt_dd": "11_20922005770-1643949338491-261219"
+                },
+                "body": {
+                    "action": "pageView",
+                    "pageUrl": "https://mp.csdn.net/mp_blog/manage/article?spm=1000.2115.3001.5448",
+                    "platform": "pc"
+                }
+            },
+            "validate": [
+                {
+                    "check": "status_code",
+                    "assert": "equals",
+                    "expect": 200,
+                    "msg": "assert response status code"
+                },
+                {
+                    "check": "headers.\"Content-Type\"",
+                    "assert": "equals",
+                    "expect": "application/json",
+                    "msg": "assert response header Content-Type"
+                },
+                {
+                    "check": "body.code",
+                    "assert": "equals",
+                    "expect": 200,
+                    "msg": "assert response body code"
+                },
+                {
+                    "check": "body.message",
+                    "assert": "equals",
+                    "expect": "请求成功",
+                    "msg": "assert response body message"
+                }
+            ]
+        },
+        {
+            "name": "",
+            "request": {
+                "method": "GET",
+                "url": "https://bizapi.csdn.net/blog-console-api/v1/user/info",
+                "headers": {
+                    ":authority": "bizapi.csdn.net",
+                    ":method": "GET",
+                    ":path": "/blog-console-api/v1/user/info",
+                    ":scheme": "https",
+                    "accept": "application/json, text/plain, */*",
+                    "accept-encoding": "gzip, deflate, br",
+                    "accept-language": "zh-CN,zh;q=0.9",
+                    "origin": "https://mp.csdn.net",
+                    "referer": "https://mp.csdn.net/mp_blog/manage/article?spm=1000.2115.3001.5448",
+                    "sec-ch-ua": "\"Chromium\";v=\"104\", \" Not A;Brand\";v=\"99\", \"Google Chrome\";v=\"104\"",
+                    "sec-ch-ua-mobile": "?0",
+                    "sec-ch-ua-platform": "\"Windows\"",
+                    "sec-fetch-dest": "empty",
+                    "sec-fetch-mode": "cors",
+                    "sec-fetch-site": "same-site",
+                    "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36",
+                    "x-ca-key": "203803574",
+                    "x-ca-nonce": "e365e08d-01dd-4536-b0fc-0a4717b37831",
+                    "x-ca-signature": "td3iWs1i/QgWsEfmJZvKwh05t7SxmOsWNakqUMsr6to=",
+                    "x-ca-signature-headers": "x-ca-key,x-ca-nonce"
+                },
+                "cookies": {
+                    "AU": "9C0",
+                    "BT": "1662818290725",
+                    "FCNEC": "%5B%5B%22AKsRol_5UVOdfzcjEXiaKh5mQJ8mMskdPVuvFwrb-PqPh7d2FEbZsKpcaOdAwr4e5UNpXGPcqFruUHnXCKMx8lE4gYvziE7BTFC8iA8Ya7FD8hfR5bzsQNKxLt8hPCnowutkeXEfmVYcmuD4aS1Jyikc5e3-j1QiPA%3D%3D%22%5D%2Cnull%2C%5B%5D%5D",
+                    "Hm_ct_6bcd52f51e9b3dce32bec4a3997715ac": "6525*1*11_20922005770-1643949338491-261219!5744*1*u010698107",
+                    "Hm_lpvt_6bcd52f51e9b3dce32bec4a3997715ac": "1662818300",
+                    "Hm_lvt_6bcd52f51e9b3dce32bec4a3997715ac": "1660481659,1662295247",
+                    "Hm_up_6bcd52f51e9b3dce32bec4a3997715ac": "%7B%22islogin%22%3A%7B%22value%22%3A%221%22%2C%22scope%22%3A1%7D%2C%22isonline%22%3A%7B%22value%22%3A%221%22%2C%22scope%22%3A1%7D%2C%22isvip%22%3A%7B%22value%22%3A%220%22%2C%22scope%22%3A1%7D%2C%22uid_%22%3A%7B%22value%22%3A%22u010698107%22%2C%22scope%22%3A1%7D%7D",
+                    "SESSION": "0587b8a7-4566-4ce5-8e9d-96d789ccdd50",
+                    "UN": "u010698107",
+                    "UserInfo": "b77ccf6ff2f4474ebe233bc89cc3bbdc",
+                    "UserName": "u010698107",
+                    "UserNick": "%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E5%B0%8F%E8%AE%B0",
+                    "UserToken": "b77ccf6ff2f4474ebe233bc89cc3bbdc",
+                    "__gads": "ID=56a65d0766200e69-2249687494d00020:T=1643949553:RT=1644586348:S=ALNI_Mazg4lqQ9hH9HE7PstpnvQDG9Htjg",
+                    "__gpi": "UID=0000047d9670d63f:T=1649122937:RT=1662802741:S=ALNI_MYjA2xGsJECXdVsT_bYdXOG_0wl3g",
+                    "_ga": "GA1.2.2017807950.1643952472",
+                    "_ga_VHSCGE70LW": "GS1.1.1644658762.7.0.1644658762.0",
+                    "acw_sc__v2": "631c933b14a3df4d7838ea1a66f5080633fe3850",
+                    "c_dsid": "11_1662818236851.144024",
+                    "c_first_page": "https%3A//www.csdn.net/",
+                    "c_first_ref": "default",
+                    "c_page_id": "default",
+                    "c_pref": "default",
+                    "c_ref": "https%3A//www.csdn.net/",
+                    "c_segment": "3",
+                    "dc_session_id": "11_1662816382976.348388",
+                    "dc_sid": "123583ae4c9bca87b19f6b0b00bc7335",
+                    "dc_tos": "rhzysz",
+                    "firstDie": "1",
+                    "hide_login": "1",
+                    "log_Id_click": "642",
+                    "log_Id_pv": "1393",
+                    "log_Id_view": "2654",
+                    "p_uid": "U010000",
+                    "ssxmod_itna": "eqAOqjxRxfhxODBDlRQTYgY/DyiSiYUKWUDBkGO4iNDnD8x7YDvIGo+DGOSrVhhUY1tPe0QHWBdpi1vQBe+uevGcEReDHxY=DUOl2e3D4+KGwD0eG+DD4DWDmWHDnxAQDjxGP9R6sy=Dbxi3jxiaDGeDe2IODY5DhxDCUjPDwx0CjphtjpBF=FHpuOW+50KD91oDs2GfCKgf6fuzobSx4z+ODlIUDC91c2HHa4GdXc5z49qxvl0YlY2eQm+rkADxS7mYaCD7hG=NKGGYqDeqwQ0eljtDiPhoWl0q4D==",
+                    "ssxmod_itna2": "eqAOqjxRxfhxODBDlRQTYgY/DyiSiYUKWD8ulqxGNGOS7DFgOdF1PAP4D7+u+k=YyDO6iDWYUw6YDlrU52KnxgfzPT93F2v3p9LaHfWkc8BDk2DpLEF+gt4tE+7B+DCy0zBbBWs14n3ACmxvFAdQ4LLpM8oNqLMhpb+3qw8iC3lhdu3b0S4=/eQEioRN/funercUTq665dccWL4cN53IziGxHIOIbSP6arLv570QC+SFpaM0a9W3VlYHVfxQ4FgU+wAypEzi+ZL5nYixjr6E5tHLoajDHpx8QL27HEfXhXkGdxpQHETtiEoS0zcOoNSYoMWqmsixic33eQrMOWFOr+Mhq++uf5pd4Nfo5OqVEecbm6xO5xrN33=eamTxnDtEr4g0=4TYAraIx=TTwfoGwTiNOCaw8QYvWM=8rhcmEBCPQnNqj=NEb7ofHCirjhrWveY47wO57Pafp17P5YbbgxIDDwgYKmvxWjKlPRjqgI9z8HSbPPAGntUE=POeTjE9Z1N7lpviy7AGMjoODxIjHYdgS=DdVBqGY8jP5mT1FR0GIYADDjKDedNgPxMGkkGkM07jYx7L9NGvQD6SIv+03fT91GAe22sWBMY0B93eovPyg5d6Y0Qcz5gQB75xriDD",
+                    "uuid_tt_dd": "11_20922005770-1643949338491-261219"
+                }
+            },
+            "validate": [
+                {
+                    "check": "status_code",
+                    "assert": "equals",
+                    "expect": 200,
+                    "msg": "assert response status code"
+                },
+                {
+                    "check": "headers.\"Content-Type\"",
+                    "assert": "equals",
+                    "expect": "application/json; charset=UTF-8",
+                    "msg": "assert response header Content-Type"
+                },
+                {
+                    "check": "body.code",
+                    "assert": "equals",
+                    "expect": 200,
+                    "msg": "assert response body code"
+                },
+                {
+                    "check": "body.msg",
+                    "assert": "equals",
+                    "expect": "success",
+                    "msg": "assert response body msg"
+                }
+            ]
+        }
+    ]
+}

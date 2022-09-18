@@ -1,0 +1,49 @@
+{
+    "config": {
+        "name": "testcase description"
+    },
+    "teststeps": [
+        {
+            "name": "",
+            "request": {
+                "method": "POST",
+                "url": "http://192.168.0.1/login/Auth",
+                "headers": {
+                    "Accept": "application/json, text/plain, */*",
+                    "Accept-Encoding": "gzip, deflate",
+                    "Accept-Language": "zh-CN,zh;q=0.9",
+                    "Connection": "keep-alive",
+                    "Content-Length": "66",
+                    "Content-Type": "application/json; charset=UTF-8",
+                    "Host": "192.168.0.1",
+                    "Origin": "http://192.168.0.1",
+                    "Referer": "http://192.168.0.1/login.html",
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36",
+                    "X-Requested-With": "XMLHttpRequest"
+                },
+                "cookies": {
+                    "_:USERNAME:_": "38c00fd074968175202aaf6e5eaee1ba",
+                    "bLanguage": "en"
+                },
+                "body": {
+                    "password": "25D55AD283AA400AF464C76D713C07AD",
+                    "userName": "admin"
+                }
+            },
+            "validate": [
+                {
+                    "check": "status_code",
+                    "assert": "equals",
+                    "expect": 200,
+                    "msg": "assert response status code"
+                },
+                {
+                    "check": "headers.\"Content-Type\"",
+                    "assert": "equals",
+                    "expect": "text/html",
+                    "msg": "assert response header Content-Type"
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,507 @@
+{
+    "config": {
+        "name": "testcase description"
+    },
+    "teststeps": [
+        {
+            "name": "",
+            "request": {
+                "method": "CONNECT",
+                "url": "http://passport.csdn.net:443",
+                "headers": {
+                    "Connection": "keep-alive",
+                    "Host": "passport.csdn.net:443",
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36"
+                }
+            },
+            "validate": [
+                {
+                    "check": "status_code",
+                    "assert": "equals",
+                    "expect": 200,
+                    "msg": "assert response status code"
+                }
+            ]
+        },
+        {
+            "name": "",
+            "request": {
+                "method": "CONNECT",
+                "url": "http://aeu.alicdn.com:443",
+                "headers": {
+                    "Connection": "keep-alive",
+                    "Host": "aeu.alicdn.com:443",
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36"
+                }
+            },
+            "validate": [
+                {
+                    "check": "status_code",
+                    "assert": "equals",
+                    "expect": 200,
+                    "msg": "assert response status code"
+                }
+            ]
+        },
+        {
+            "name": "",
+            "request": {
+                "method": "CONNECT",
+                "url": "http://g.alicdn.com:443",
+                "headers": {
+                    "Connection": "keep-alive",
+                    "Host": "g.alicdn.com:443",
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36"
+                }
+            },
+            "validate": [
+                {
+                    "check": "status_code",
+                    "assert": "equals",
+                    "expect": 200,
+                    "msg": "assert response status code"
+                }
+            ]
+        },
+        {
+            "name": "",
+            "request": {
+                "method": "CONNECT",
+                "url": "http://passport.gitcode.net:443",
+                "headers": {
+                    "Connection": "keep-alive",
+                    "Host": "passport.gitcode.net:443",
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36"
+                }
+            },
+            "validate": [
+                {
+                    "check": "status_code",
+                    "assert": "equals",
+                    "expect": 200,
+                    "msg": "assert response status code"
+                }
+            ]
+        },
+        {
+            "name": "",
+            "request": {
+                "method": "CONNECT",
+                "url": "http://event.csdn.net:443",
+                "headers": {
+                    "Connection": "keep-alive",
+                    "Host": "event.csdn.net:443",
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36"
+                }
+            },
+            "validate": [
+                {
+                    "check": "status_code",
+                    "assert": "equals",
+                    "expect": 200,
+                    "msg": "assert response status code"
+                }
+            ]
+        },
+        {
+            "name": "",
+            "request": {
+                "method": "CONNECT",
+                "url": "http://csdnimg.cn:443",
+                "headers": {
+                    "Connection": "keep-alive",
+                    "Host": "csdnimg.cn:443",
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36"
+                }
+            },
+            "validate": [
+                {
+                    "check": "status_code",
+                    "assert": "equals",
+                    "expect": 200,
+                    "msg": "assert response status code"
+                }
+            ]
+        },
+        {
+            "name": "",
+            "request": {
+                "method": "CONNECT",
+                "url": "http://hm.baidu.com:443",
+                "headers": {
+                    "Connection": "keep-alive",
+                    "Host": "hm.baidu.com:443",
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36"
+                }
+            },
+            "validate": [
+                {
+                    "check": "status_code",
+                    "assert": "equals",
+                    "expect": 200,
+                    "msg": "assert response status code"
+                }
+            ]
+        },
+        {
+            "name": "",
+            "request": {
+                "method": "CONNECT",
+                "url": "http://hm.baidu.com:443",
+                "headers": {
+                    "Connection": "keep-alive",
+                    "Host": "hm.baidu.com:443",
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36"
+                }
+            },
+            "validate": [
+                {
+                    "check": "status_code",
+                    "assert": "equals",
+                    "expect": 200,
+                    "msg": "assert response status code"
+                }
+            ]
+        },
+        {
+            "name": "",
+            "request": {
+                "method": "CONNECT",
+                "url": "http://kunyu.csdn.net:443",
+                "headers": {
+                    "Connection": "keep-alive",
+                    "Host": "kunyu.csdn.net:443",
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36"
+                }
+            },
+            "validate": [
+                {
+                    "check": "status_code",
+                    "assert": "equals",
+                    "expect": 200,
+                    "msg": "assert response status code"
+                }
+            ]
+        },
+        {
+            "name": "",
+            "request": {
+                "method": "CONNECT",
+                "url": "http://mp.csdn.net:443",
+                "headers": {
+                    "Connection": "keep-alive",
+                    "Host": "mp.csdn.net:443",
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36"
+                }
+            },
+            "validate": [
+                {
+                    "check": "status_code",
+                    "assert": "equals",
+                    "expect": 200,
+                    "msg": "assert response status code"
+                }
+            ]
+        },
+        {
+            "name": "",
+            "request": {
+                "method": "CONNECT",
+                "url": "http://csdnimg.cn:443",
+                "headers": {
+                    "Connection": "keep-alive",
+                    "Host": "csdnimg.cn:443",
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36"
+                }
+            },
+            "validate": [
+                {
+                    "check": "status_code",
+                    "assert": "equals",
+                    "expect": 200,
+                    "msg": "assert response status code"
+                }
+            ]
+        },
+        {
+            "name": "",
+            "request": {
+                "method": "CONNECT",
+                "url": "http://mp-activity.csdn.net:443",
+                "headers": {
+                    "Connection": "keep-alive",
+                    "Host": "mp-activity.csdn.net:443",
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36"
+                }
+            },
+            "validate": [
+                {
+                    "check": "status_code",
+                    "assert": "equals",
+                    "expect": 200,
+                    "msg": "assert response status code"
+                }
+            ]
+        },
+        {
+            "name": "",
+            "request": {
+                "method": "CONNECT",
+                "url": "http://mp-activity.csdn.net:443",
+                "headers": {
+                    "Connection": "keep-alive",
+                    "Host": "mp-activity.csdn.net:443",
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36"
+                }
+            },
+            "validate": [
+                {
+                    "check": "status_code",
+                    "assert": "equals",
+                    "expect": 200,
+                    "msg": "assert response status code"
+                }
+            ]
+        },
+        {
+            "name": "",
+            "request": {
+                "method": "CONNECT",
+                "url": "http://arms-retcode.aliyuncs.com:443",
+                "headers": {
+                    "Connection": "keep-alive",
+                    "Host": "arms-retcode.aliyuncs.com:443",
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36"
+                }
+            },
+            "validate": [
+                {
+                    "check": "status_code",
+                    "assert": "equals",
+                    "expect": 200,
+                    "msg": "assert response status code"
+                }
+            ]
+        },
+        {
+            "name": "",
+            "request": {
+                "method": "CONNECT",
+                "url": "http://mp-blog.csdn.net:443",
+                "headers": {
+                    "Connection": "keep-alive",
+                    "Host": "mp-blog.csdn.net:443",
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36"
+                }
+            },
+            "validate": [
+                {
+                    "check": "status_code",
+                    "assert": "equals",
+                    "expect": 200,
+                    "msg": "assert response status code"
+                }
+            ]
+        },
+        {
+            "name": "",
+            "request": {
+                "method": "CONNECT",
+                "url": "http://mp-download.csdn.net:443",
+                "headers": {
+                    "Connection": "keep-alive",
+                    "Host": "mp-download.csdn.net:443",
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36"
+                }
+            },
+            "validate": [
+                {
+                    "check": "status_code",
+                    "assert": "equals",
+                    "expect": 200,
+                    "msg": "assert response status code"
+                }
+            ]
+        },
+        {
+            "name": "",
+            "request": {
+                "method": "CONNECT",
+                "url": "http://mp-others.csdn.net:443",
+                "headers": {
+                    "Connection": "keep-alive",
+                    "Host": "mp-others.csdn.net:443",
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36"
+                }
+            },
+            "validate": [
+                {
+                    "check": "status_code",
+                    "assert": "equals",
+                    "expect": 200,
+                    "msg": "assert response status code"
+                }
+            ]
+        },
+        {
+            "name": "",
+            "request": {
+                "method": "CONNECT",
+                "url": "http://arms-retcode.aliyuncs.com:443",
+                "headers": {
+                    "Connection": "keep-alive",
+                    "Host": "arms-retcode.aliyuncs.com:443",
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36"
+                }
+            },
+            "validate": [
+                {
+                    "check": "status_code",
+                    "assert": "equals",
+                    "expect": 200,
+                    "msg": "assert response status code"
+                }
+            ]
+        },
+        {
+            "name": "",
+            "request": {
+                "method": "CONNECT",
+                "url": "http://mp-blog.csdn.net:443",
+                "headers": {
+                    "Connection": "keep-alive",
+                    "Host": "mp-blog.csdn.net:443",
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36"
+                }
+            },
+            "validate": [
+                {
+                    "check": "status_code",
+                    "assert": "equals",
+                    "expect": 200,
+                    "msg": "assert response status code"
+                }
+            ]
+        },
+        {
+            "name": "",
+            "request": {
+                "method": "CONNECT",
+                "url": "http://bizapi.csdn.net:443",
+                "headers": {
+                    "Connection": "keep-alive",
+                    "Host": "bizapi.csdn.net:443",
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36"
+                }
+            },
+            "validate": [
+                {
+                    "check": "status_code",
+                    "assert": "equals",
+                    "expect": 200,
+                    "msg": "assert response status code"
+                }
+            ]
+        },
+        {
+            "name": "",
+            "request": {
+                "method": "CONNECT",
+                "url": "http://content-autofill.googleapis.com:443",
+                "headers": {
+                    "Host": "content-autofill.googleapis.com:443",
+                    "Proxy-Connection": "keep-alive",
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36"
+                }
+            },
+            "validate": [
+                {
+                    "check": "status_code",
+                    "assert": "equals",
+                    "expect": 200,
+                    "msg": "assert response status code"
+                }
+            ]
+        },
+        {
+            "name": "",
+            "request": {
+                "method": "CONNECT",
+                "url": "http://hm.baidu.com:443",
+                "headers": {
+                    "Connection": "keep-alive",
+                    "Host": "hm.baidu.com:443",
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36"
+                }
+            },
+            "validate": [
+                {
+                    "check": "status_code",
+                    "assert": "equals",
+                    "expect": 200,
+                    "msg": "assert response status code"
+                }
+            ]
+        },
+        {
+            "name": "",
+            "request": {
+                "method": "CONNECT",
+                "url": "http://arms-retcode.aliyuncs.com:443",
+                "headers": {
+                    "Connection": "keep-alive",
+                    "Host": "arms-retcode.aliyuncs.com:443",
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36"
+                }
+            },
+            "validate": [
+                {
+                    "check": "status_code",
+                    "assert": "equals",
+                    "expect": 200,
+                    "msg": "assert response status code"
+                }
+            ]
+        },
+        {
+            "name": "",
+            "request": {
+                "method": "CONNECT",
+                "url": "http://hm.baidu.com:443",
+                "headers": {
+                    "Connection": "keep-alive",
+                    "Host": "hm.baidu.com:443",
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36"
+                }
+            },
+            "validate": [
+                {
+                    "check": "status_code",
+                    "assert": "equals",
+                    "expect": 200,
+                    "msg": "assert response status code"
+                }
+            ]
+        },
+        {
+            "name": "",
+            "request": {
+                "method": "CONNECT",
+                "url": "http://hm.baidu.com:443",
+                "headers": {
+                    "Connection": "keep-alive",
+                    "Host": "hm.baidu.com:443",
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36"
+                }
+            },
+            "validate": [
+                {
+                    "check": "status_code",
+                    "assert": "equals",
+                    "expect": 200,
+                    "msg": "assert response status code"
+                }
+            ]
+        }
+    ]
+}

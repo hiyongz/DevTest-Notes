@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <title>Test Report</title>
+    <link href="assets/style.css" rel="stylesheet" type="text/css"/></head>
+  <body onLoad="init()">
+    <script>/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+
+function toArray(iter) {
+    if (iter === null) {
+        return null;
+    }
+    return Array.prototype.slice.call(iter);
+}
+
+function find(selector, elem) { // eslint-disable-line no-redeclare
+    if (!elem) {
+        elem = document;
+    }
+    return elem.querySelector(selector);
+}
+
+function findAll(selector, elem) {
+    if (!elem) {
+        elem = document;
+    }
+    return toArray(elem.querySelectorAll(selector));
+}
+
+function sortColumn(elem) {
+    toggleSortStates(elem);
+    const colIndex = toArray(elem.parentNode.childNodes).indexOf(elem);
+    let key;
+    if (elem.classList.contains('result')) {
+        key = keyResult;
+    } else if (elem.classList.contains('links')) {
+        key = keyLink;
+    } else {
+        key = keyAlpha;
+    }
+    sortTable(elem, key(colIndex));
+}
+
+function showAllExtras() { // eslint-disable-line no-unused-vars
+    findAll('.col-result').forEach(showExtras);
+}
+
+function hideAllExtras() { // eslint-disable-line no-unused-vars
+    findAll('.col-result').forEach(hideExtras);
+}
+
+function showExtras(colresultElem) {
+    const extras = colresultElem.parentNode.nextElementSibling;
+    const expandcollapse = colresultElem.firstElementChild;
+    extras.classList.remove('collapsed');
+    expandcollapse.classList.remove('expander');
+    expandcollapse.classList.add('collapser');
+}
+
+function hideExtras(colresultElem) {
+    const extras = colresultElem.parentNode.nextElementSibling;
+    const expandcollapse = colresultElem.firstElementChild;
+    extras.classList.add('collapsed');
+    expandcollapse.classList.remove('collapser');
+    expandcollapse.classList.add('expander');
+}
+
+function showFilters() {
+    const filterItems = document.getElementsByClassName('filter');
+    for (let i = 0; i < filterItems.length; i++)
+        filterItems[i].hidden = false;
+}
+
+function addCollapse() {
+    // Add links for show/hide all
+    const resulttable = find('table#results-table');
+    const showhideall = document.createElement('p');
+    showhideall.innerHTML = '<a href="javascript:showAllExtras()">Show all details</a> / ' +
+                            '<a href="javascript:hideAllExtras()">Hide all details</a>';
+    resulttable.parentElement.insertBefore(showhideall, resulttable);
+
+    // Add show/hide link to each result
+    findAll('.col-result').forEach(function(elem) {
+        const collapsed = getQueryParameter('collapsed') || 'Passed';
+        const extras = elem.parentNode.nextElementSibling;
+        const expandcollapse = document.createElement('span');
+        if (extras.classList.contains('collapsed')) {
+            expandcollapse.classList.add('expander');
+        } else if (collapsed.includes(elem.innerHTML)) {
+            extras.classList.add('collapsed');
+            expandcollapse.classList.add('expander');
+        } else {
+            expandcollapse.classList.add('collapser');
+        }
+        elem.appendChild(expandcollapse);
+
+        elem.addEventListener('click', function(event) {
+            if (event.currentTarget.parentNode.nextElementSibling.classList.contains('collapsed')) {
+                showExtras(event.currentTarget);
+            } else {
+                hideExtras(event.currentTarget);
+            }
+        });
+    });
+}
+
+function getQueryParameter(name) {
+    const match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
+    return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
+}
+
+function init () { // eslint-disable-line no-unused-vars
+    resetSortHeaders();
+
+    addCollapse();
+
+    showFilters();
+
+    sortColumn(find('.initial-sort'));
+
+    findAll('.sortable').forEach(function(elem) {
+        elem.addEventListener('click',
+            function() {
+                sortColumn(elem);
+            }, false);
+    });
+}
+
+function sortTable(clicked, keyFunc) {
+    const rows = findAll('.results-table-row');
+    const reversed = !clicked.classList.contains('asc');
+    const sortedRows = sort(rows, keyFunc, reversed);
+    /* Whole table is removed here because browsers acts much slower
+     * when appending existing elements.
+     */
+    const thead = document.getElementById('results-table-head');
+    document.getElementById('results-table').remove();
+    const parent = document.createElement('table');
+    parent.id = 'results-table';
+    parent.appendChild(thead);
+    sortedRows.forEach(function(elem) {
+        parent.appendChild(elem);
+    });
+    document.getElementsByTagName('BODY')[0].appendChild(parent);
+}
+
+function sort(items, keyFunc, reversed) {
+    const sortArray = items.map(function(item, i) {
+        return [keyFunc(item), i];
+    });
+
+    sortArray.sort(function(a, b) {
+        const keyA = a[0];
+        const keyB = b[0];
+
+        if (keyA == keyB) return 0;
+
+        if (reversed) {
+            return keyA < keyB ? 1 : -1;
+        } else {
+            return keyA > keyB ? 1 : -1;
+        }
+    });
+
+    return sortArray.map(function(item) {
+        const index = item[1];
+        return items[index];
+    });
+}
+
+function keyAlpha(colIndex) {
+    return function(elem) {
+        return elem.childNodes[1].childNodes[colIndex].firstChild.data.toLowerCase();
+    };
+}
+
+function keyLink(colIndex) {
+    return function(elem) {
+        const dataCell = elem.childNodes[1].childNodes[colIndex].firstChild;
+        return dataCell == null ? '' : dataCell.innerText.toLowerCase();
+    };
+}
+
+function keyResult(colIndex) {
+    return function(elem) {
+        const strings = ['Error', 'Failed', 'Rerun', 'XFailed', 'XPassed',
+            'Skipped', 'Passed'];
+        return strings.indexOf(elem.childNodes[1].childNodes[colIndex].firstChild.data);
+    };
+}
+
+function resetSortHeaders() {
+    findAll('.sort-icon').forEach(function(elem) {
+        elem.parentNode.removeChild(elem);
+    });
+    findAll('.sortable').forEach(function(elem) {
+        const icon = document.createElement('div');
+        icon.className = 'sort-icon';
+        icon.textContent = 'vvv';
+        elem.insertBefore(icon, elem.firstChild);
+        elem.classList.remove('desc', 'active');
+        elem.classList.add('asc', 'inactive');
+    });
+}
+
+function toggleSortStates(elem) {
+    //if active, toggle between asc and desc
+    if (elem.classList.contains('active')) {
+        elem.classList.toggle('asc');
+        elem.classList.toggle('desc');
+    }
+
+    //if inactive, reset all other functions and add ascending active
+    if (elem.classList.contains('inactive')) {
+        resetSortHeaders();
+        elem.classList.remove('inactive');
+        elem.classList.add('active');
+    }
+}
+
+function isAllRowsHidden(value) {
+    return value.hidden == false;
+}
+
+function filterTable(elem) { // eslint-disable-line no-unused-vars
+    const outcomeAtt = 'data-test-result';
+    const outcome = elem.getAttribute(outcomeAtt);
+    const classOutcome = outcome + ' results-table-row';
+    const outcomeRows = document.getElementsByClassName(classOutcome);
+
+    for(let i = 0; i < outcomeRows.length; i++){
+        outcomeRows[i].hidden = !elem.checked;
+    }
+
+    const rows = findAll('.results-table-row').filter(isAllRowsHidden);
+    const allRowsHidden = rows.length == 0 ? true : false;
+    const notFoundMessage = document.getElementById('not-found-message');
+    notFoundMessage.hidden = !allRowsHidden;
+}
+</script>
+    <h1>index.html</h1>
+    <p>Report generated on 12-Sep-2022 at 19:42:41 by <a href="https://pypi.python.org/pypi/pytest-html">pytest-html</a> v3.1.1</p>
+    <h2>Environment</h2>
+    <table id="environment">
+      <tr>
+        <td>JAVA_HOME</td>
+        <td>C:\Program Files\Java\jdk-11.0.13</td></tr>
+      <tr>
+        <td>Packages</td>
+        <td>{"pluggy": "1.0.0", "py": "1.11.0", "pytest": "7.1.3"}</td></tr>
+      <tr>
+        <td>Platform</td>
+        <td>Windows-10-10.0.19043-SP0</td></tr>
+      <tr>
+        <td>Plugins</td>
+        <td>{"html": "3.1.1", "metadata": "2.0.2"}</td></tr>
+      <tr>
+        <td>Python</td>
+        <td>3.9.13</td></tr></table>
+    <h2>Summary</h2>
+    <p>1 tests ran in 0.74 seconds. </p>
+    <p class="filter" hidden="true">(Un)check the boxes to filter the results.</p><input checked="true" class="filter" data-test-result="passed" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="passed">0 passed</span>, <input checked="true" class="filter" data-test-result="skipped" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="skipped">0 skipped</span>, <input checked="true" class="filter" data-test-result="failed" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="failed">1 failed</span>, <input checked="true" class="filter" data-test-result="error" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="error">0 errors</span>, <input checked="true" class="filter" data-test-result="xfailed" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="xfailed">0 expected failures</span>, <input checked="true" class="filter" data-test-result="xpassed" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="xpassed">0 unexpected passes</span>
+    <h2>Results</h2>
+    <table id="results-table">
+      <thead id="results-table-head">
+        <tr>
+          <th class="sortable result initial-sort" col="result">Result</th>
+          <th class="sortable" col="name">Test</th>
+          <th class="sortable" col="duration">Duration</th>
+          <th class="sortable links" col="links">Links</th></tr>
+        <tr hidden="true" id="not-found-message">
+          <th colspan="4">No results found. Try to check the filters</th></tr></thead>
+      <tbody class="failed results-table-row">
+        <tr>
+          <td class="col-result">Failed</td>
+          <td class="col-name">testcases/csdn_login_test_test.py::TestCaseCsdnLoginTest::test_start</td>
+          <td class="col-duration">0.30</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">C:\Users\10287\.hrp\venv\lib\site-packages\httprunner\parser.py:239: in get_mapping_variable<br/>    return variables_mapping[variable_name]<br/><span class="error">E   KeyError: &#x27;headers&#x27;</span><br/><br/>During handling of the above exception, another exception occurred:<br/>C:\Users\10287\.hrp\venv\lib\site-packages\httprunner\runner.py:231: in test_start<br/>    self.__run_step(step)<br/>C:\Users\10287\.hrp\venv\lib\site-packages\httprunner\runner.py:190: in __run_step<br/>    step_result: StepResult = step.run(self)<br/>C:\Users\10287\.hrp\venv\lib\site-packages\httprunner\step.py:67: in run<br/>    return self.__step.run(runner)<br/>C:\Users\10287\.hrp\venv\lib\site-packages\httprunner\step_request.py:348: in run<br/>    return run_step_request(runner, self.__step)<br/>C:\Users\10287\.hrp\venv\lib\site-packages\httprunner\step_request.py:163: in run_step_request<br/>    call_hooks(runner, step.teardown_hooks, step_variables, &quot;teardown request&quot;)<br/>C:\Users\10287\.hrp\venv\lib\site-packages\httprunner\step_request.py:56: in call_hooks<br/>    runner.parser.parse_data(hook, step_variables)<br/>C:\Users\10287\.hrp\venv\lib\site-packages\httprunner\parser.py:603: in parse_data<br/>    return parse_data(raw_data, variables_mapping, self.functions_mapping)<br/>C:\Users\10287\.hrp\venv\lib\site-packages\httprunner\parser.py:415: in parse_data<br/>    return parse_string(raw_data, variables_mapping, functions_mapping)<br/>C:\Users\10287\.hrp\venv\lib\site-packages\httprunner\parser.py:346: in parse_string<br/>    parsed_args = parse_data(args, variables_mapping, functions_mapping)<br/>C:\Users\10287\.hrp\venv\lib\site-packages\httprunner\parser.py:418: in parse_data<br/>    return [<br/>C:\Users\10287\.hrp\venv\lib\site-packages\httprunner\parser.py:419: in &lt;listcomp&gt;<br/>    parse_data(item, variables_mapping, functions_mapping) for item in raw_data<br/>C:\Users\10287\.hrp\venv\lib\site-packages\httprunner\parser.py:415: in parse_data<br/>    return parse_string(raw_data, variables_mapping, functions_mapping)<br/>C:\Users\10287\.hrp\venv\lib\site-packages\httprunner\parser.py:375: in parse_string<br/>    var_value = get_mapping_variable(var_name, variables_mapping)<br/>C:\Users\10287\.hrp\venv\lib\site-packages\httprunner\parser.py:241: in get_mapping_variable<br/>    raise exceptions.VariableNotFound(<br/><span class="error">E   httprunner.exceptions.VariableNotFound: headers not found in {&#x27;pwdOrVerifyCode&#x27;: &#x27;zhy1994317&#x27;, &#x27;userIdentification&#x27;: &#x27;18883285613&#x27;, &#x27;request&#x27;: {&#x27;params&#x27;: {}, &#x27;data&#x27;: None, &#x27;cookies&#x27;: {}, &#x27;timeout&#x27;: 120, &#x27;allow_redirects&#x27;: True, &#x27;verify&#x27;: False, &#x27;headers&#x27;: {&#x27;Accept&#x27;: &#x27;application/json, text/plain, */*&#x27;, &#x27;Accept-Encoding&#x27;: &#x27;gzip, deflate, br&#x27;, &#x27;Accept-Language&#x27;: &#x27;zh-CN,zh;q=0.9&#x27;, &#x27;Connection&#x27;: &#x27;keep-alive&#x27;, &#x27;Content-Length&#x27;: &#x27;114&#x27;, &#x27;Content-Type&#x27;: &#x27;application/json;charset=UTF-8&#x27;, &#x27;Host&#x27;: &#x27;passport.csdn.net&#x27;, &#x27;Origin&#x27;: &#x27;https://passport.csdn.net&#x27;, &#x27;Referer&#x27;: &#x27;https://passport.csdn.net/login?code=applets&#x27;, &#x27;Sec-Fetch-Dest&#x27;: &#x27;empty&#x27;, &#x27;Sec-Fetch-Mode&#x27;: &#x27;cors&#x27;, &#x27;Sec-Fetch-Site&#x27;: &#x27;same-origin&#x27;, &#x27;User-Agent&#x27;: &#x27;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36&#x27;, &#x27;sec-ch-ua&#x27;: &#x27;&quot;Chromium&quot;;v=&quot;104&quot;, &quot; Not A;Brand&quot;;v=&quot;99&quot;, &quot;Google Chrome&quot;;v=&quot;104&quot;&#x27;, &#x27;sec-ch-ua-mobile&#x27;: &#x27;?0&#x27;, &#x27;sec-ch-ua-platform&#x27;: &#x27;&quot;Windows&quot;&#x27;, &#x27;HRUN-Request-ID&#x27;: &#x27;HRUN-f6cedd7d-6052-42c2-a437-4de79feb3855-960662&#x27;}, &#x27;json&#x27;: {&#x27;loginType&#x27;: &#x27;1&#x27;, &#x27;pwdOrVerifyCode&#x27;: &#x27;zhy1994317&#x27;, &#x27;uaToken&#x27;: &#x27;&#x27;, &#x27;userIdentification&#x27;: &#x27;18883285613&#x27;, &#x27;webUmidToken&#x27;: &#x27;&#x27;}}, &#x27;response&#x27;: &lt;httprunner.response.ResponseObject object at 0x000001FECA55F130&gt;}</span><br/> -----------------------------Captured stdout setup------------------------------ <br/>运行于测试用例之前
+<br/> ------------------------------Captured stdout call------------------------------ <br/>
+
+<br/> ------------------------------Captured stderr call------------------------------ <br/>--- Logging error in Loguru Handler #1 ---
+Record was: {&#x27;elapsed&#x27;: datetime.timedelta(seconds=2, microseconds=36556), &#x27;exception&#x27;: None, &#x27;extra&#x27;: {}, &#x27;file&#x27;: (name=&#x27;loader.py&#x27;, path=&#x27;C:\\Users\\10287\\.hrp\\venv\\lib\\site-packages\\httprunner\\loader.py&#x27;), &#x27;function&#x27;: &#x27;load_dot_env_file&#x27;, &#x27;level&#x27;: (name=&#x27;INFO&#x27;, no=20, icon=&#x27;ℹ️&#x27;), &#x27;line&#x27;: 104, &#x27;message&#x27;: &#x27;Loading environment variables from D:\\ProgramWorkspace\\DevTest-Notes\\API\\HttpRunner\\.env&#x27;, &#x27;module&#x27;: &#x27;loader&#x27;, &#x27;name&#x27;: &#x27;httprunner.loader&#x27;, &#x27;process&#x27;: (id=1264, name=&#x27;MainProcess&#x27;), &#x27;thread&#x27;: (id=14188, name=&#x27;MainThread&#x27;), &#x27;time&#x27;: datetime(2022, 9, 12, 19, 42, 40, 645193, tzinfo=datetime.timezone(datetime.timedelta(seconds=28800), &#x27;中国标准时间&#x27;))}
+Traceback (most recent call last):
+  File &quot;C:\Users\10287\.hrp\venv\lib\site-packages\loguru\_handler.py&quot;, line 177, in emit
+    self._sink.write(str_record)
+  File &quot;C:\Users\10287\.hrp\venv\lib\site-packages\loguru\_simple_sinks.py&quot;, line 26, in write
+    self._stream.write(message)
+  File &quot;C:\Users\10287\.hrp\venv\lib\site-packages\colorama\ansitowin32.py&quot;, line 47, in write
+    self.__convertor.write(text)
+  File &quot;C:\Users\10287\.hrp\venv\lib\site-packages\colorama\ansitowin32.py&quot;, line 170, in write
+    self.write_and_convert(text)
+  File &quot;C:\Users\10287\.hrp\venv\lib\site-packages\colorama\ansitowin32.py&quot;, line 195, in write_and_convert
+    self.write_plain_text(text, cursor, start)
+  File &quot;C:\Users\10287\.hrp\venv\lib\site-packages\colorama\ansitowin32.py&quot;, line 204, in write_plain_text
+    self.wrapped.flush()
+OSError: [WinError 6] 句柄无效。
+--- End of logging error ---
+--- Logging error in Loguru Handler #1 ---
+Record was: {&#x27;elapsed&#x27;: datetime.timedelta(seconds=2, microseconds=44535), &#x27;exception&#x27;: None, &#x27;extra&#x27;: {}, &#x27;file&#x27;: (name=&#x27;runner.py&#x27;, path=&#x27;C:\\Users\\10287\\.hrp\\venv\\lib\\site-packages\\httprunner\\runner.py&#x27;), &#x27;function&#x27;: &#x27;test_start&#x27;, &#x27;level&#x27;: (name=&#x27;INFO&#x27;, no=20, icon=&#x27;ℹ️&#x27;), &#x27;line&#x27;: 222, &#x27;message&#x27;: &#x27;Start to run testcase: testcase description, TestCase ID: f6cedd7d-6052-42c2-a437-4de79feb3855&#x27;, &#x27;module&#x27;: &#x27;runner&#x27;, &#x27;name&#x27;: &#x27;httprunner.runner&#x27;, &#x27;process&#x27;: (id=1264, name=&#x27;MainProcess&#x27;), &#x27;thread&#x27;: (id=14188, name=&#x27;MainThread&#x27;), &#x27;time&#x27;: datetime(2022, 9, 12, 19, 42, 40, 653172, tzinfo=datetime.timezone(datetime.timedelta(seconds=28800), &#x27;中国标准时间&#x27;))}
+Traceback (most recent call last):
+  File &quot;C:\Users\10287\.hrp\venv\lib\site-packages\loguru\_handler.py&quot;, line 177, in emit
+    self._sink.write(str_record)
+  File &quot;C:\Users\10287\.hrp\venv\lib\site-packages\loguru\_simple_sinks.py&quot;, line 26, in write
+    self._stream.write(message)
+  File &quot;C:\Users\10287\.hrp\venv\lib\site-packages\colorama\ansitowin32.py&quot;, line 47, in write
+    self.__convertor.write(text)
+  File &quot;C:\Users\10287\.hrp\venv\lib\site-packages\colorama\ansitowin32.py&quot;, line 170, in write
+    self.write_and_convert(text)
+  File &quot;C:\Users\10287\.hrp\venv\lib\site-packages\colorama\ansitowin32.py&quot;, line 195, in write_and_convert
+    self.write_plain_text(text, cursor, start)
+  File &quot;C:\Users\10287\.hrp\venv\lib\site-packages\colorama\ansitowin32.py&quot;, line 204, in write_plain_text
+    self.wrapped.flush()
+OSError: [WinError 6] 句柄无效。
+--- End of logging error ---
+--- Logging error in Loguru Handler #1 ---
+Record was: {&#x27;elapsed&#x27;: datetime.timedelta(seconds=2, microseconds=51516), &#x27;exception&#x27;: None, &#x27;extra&#x27;: {}, &#x27;file&#x27;: (name=&#x27;runner.py&#x27;, path=&#x27;C:\\Users\\10287\\.hrp\\venv\\lib\\site-packages\\httprunner\\runner.py&#x27;), &#x27;function&#x27;: &#x27;__run_step&#x27;, &#x27;level&#x27;: (name=&#x27;INFO&#x27;, no=20, icon=&#x27;ℹ️&#x27;), &#x27;line&#x27;: 181, &#x27;message&#x27;: &#x27;run step begin:  &gt;&gt;&gt;&gt;&gt;&gt;&#x27;, &#x27;module&#x27;: &#x27;runner&#x27;, &#x27;name&#x27;: &#x27;httprunner.runner&#x27;, &#x27;process&#x27;: (id=1264, name=&#x27;MainProcess&#x27;), &#x27;thread&#x27;: (id=14188, name=&#x27;MainThread&#x27;), &#x27;time&#x27;: datetime(2022, 9, 12, 19, 42, 40, 660153, tzinfo=datetime.timezone(datetime.timedelta(seconds=28800), &#x27;中国标准时间&#x27;))}
+Traceback (most recent call last):
+  File &quot;C:\Users\10287\.hrp\venv\lib\site-packages\loguru\_handler.py&quot;, line 177, in emit
+    self._sink.write(str_record)
+  File &quot;C:\Users\10287\.hrp\venv\lib\site-packages\loguru\_simple_sinks.py&quot;, line 26, in write
+    self._stream.write(message)
+  File &quot;C:\Users\10287\.hrp\venv\lib\site-packages\colorama\ansitowin32.py&quot;, line 47, in write
+    self.__convertor.write(text)
+  File &quot;C:\Users\10287\.hrp\venv\lib\site-packages\colorama\ansitowin32.py&quot;, line 170, in write
+    self.write_and_convert(text)
+  File &quot;C:\Users\10287\.hrp\venv\lib\site-packages\colorama\ansitowin32.py&quot;, line 195, in write_and_convert
+    self.write_plain_text(text, cursor, start)
+  File &quot;C:\Users\10287\.hrp\venv\lib\site-packages\colorama\ansitowin32.py&quot;, line 204, in write_plain_text
+    self.wrapped.flush()
+OSError: [WinError 6] 句柄无效。
+--- End of logging error ---
+--- Logging error in Loguru Handler #2 ---
+Record was: {&#x27;elapsed&#x27;: datetime.timedelta(seconds=2, microseconds=321793), &#x27;exception&#x27;: None, &#x27;extra&#x27;: {}, &#x27;file&#x27;: (name=&#x27;client.py&#x27;, path=&#x27;C:\\Users\\10287\\.hrp\\venv\\lib\\site-packages\\httprunner\\client.py&#x27;), &#x27;function&#x27;: &#x27;log_print&#x27;, &#x27;level&#x27;: (name=&#x27;DEBUG&#x27;, no=10, icon=&#x27;🐞&#x27;), &#x27;line&#x27;: 39, &#x27;message&#x27;: &#x27;\n================== response details ==================\nstatus_code : 200\nheaders  : {\n    &quot;Server&quot;: &quot;Tengine&quot;,\n    &quot;Date&quot;: &quot;Mon, 12 Sep 2022 11:42:41 GMT&quot;,\n    &quot;Content-Type&quot;: &quot;text/html&quot;,\n    &quot;Transfer-Encoding&quot;: &quot;chunked&quot;,\n    &quot;Connection&quot;: &quot;keep-alive&quot;,\n    &quot;Set-Cookie&quot;: &quot;acw_tc=2760829d16629829616412353e2a040708648e3c168b55d0917a60ecbbfb65;path=/;HttpOnly;Max-Age=1800&quot;,\n    &quot;cache-control&quot;: &quot;no-cache, no-store&quot;,\n    &quot;Pragma&quot;: &quot;no-cache&quot;,\n    &quot;Access-Control-Allow-Origin&quot;: &quot;https://passport.csdn.net&quot;,\n    &quot;Access-Control-Allow-Credentials&quot;: &quot;true&quot;,\n    &quot;Strict-Transport-Security&quot;: &quot;max-age=31536000&quot;\n}\ncookies  : {\n    &quot;acw_tc&quot;: &quot;2760829d16629829616412353e2a040708648e3c168b55d0917a60ecbbfb65&quot;\n}\nencoding : ISO-8859-1\ncontent_type : text/html\nbody     : &lt;!DOCTYPE html&gt;\n&lt;html&gt;\n&lt;head&gt;\n\t&lt;meta charset=&quot;UTF-8&quot;&gt;\n\t&lt;title&gt;æ»\x91å\x8a¨éª\x8cè¯\x81é¡µé\x9d¢&lt;/title&gt;\n  &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot; /&gt;\n\t&lt;style type=&quot;text/css&quot;&gt;\n\t\thtml, body, div, span, p{\n\t\t    margin:0;\n\t\t    padding:0;\n\t\t    border:0;\n\t\t    outline:0;\n\t\t    font-size:100%;\n\t\t    vertical-align:baseline;\n\t\t    background:transparent;\n\t\t}\n\t\tbody{\n\t\t\tbackground: #fff;\n\t\t}\n\t\t.head{\n\t\t\tposition: relative;\n\t\t\theight: 70px;\n\t\t\tpadding-left: 25px;\n\t\t\tborder-bottom: 1px solid #EBECEC;\n ... OMITTED 14248 CHARACTORS ...\n&#x27;, &#x27;module&#x27;: &#x27;client&#x27;, &#x27;name&#x27;: &#x27;httprunner.client&#x27;, &#x27;process&#x27;: (id=1264, name=&#x27;MainProcess&#x27;), &#x27;thread&#x27;: (id=14188, name=&#x27;MainThread&#x27;), &#x27;time&#x27;: datetime(2022, 9, 12, 19, 42, 40, 930430, tzinfo=datetime.timezone(datetime.timedelta(seconds=28800), &#x27;中国标准时间&#x27;))}
+Traceback (most recent call last):
+  File &quot;C:\Users\10287\.hrp\venv\lib\site-packages\loguru\_handler.py&quot;, line 177, in emit
+    self._sink.write(str_record)
+  File &quot;C:\Users\10287\.hrp\venv\lib\site-packages\loguru\_file_sink.py&quot;, line 179, in write
+    self._file.write(message)
+UnicodeEncodeError: &#x27;gbk&#x27; codec can&#x27;t encode character &#x27;\xe6&#x27; in position 886: illegal multibyte sequence
+--- End of logging error ---
+--- Logging error in Loguru Handler #1 ---
+Record was: {&#x27;elapsed&#x27;: datetime.timedelta(seconds=2, microseconds=323788), &#x27;exception&#x27;: None, &#x27;extra&#x27;: {}, &#x27;file&#x27;: (name=&#x27;client.py&#x27;, path=&#x27;C:\\Users\\10287\\.hrp\\venv\\lib\\site-packages\\httprunner\\client.py&#x27;), &#x27;function&#x27;: &#x27;request&#x27;, &#x27;level&#x27;: (name=&#x27;INFO&#x27;, no=20, icon=&#x27;ℹ️&#x27;), &#x27;line&#x27;: 216, &#x27;message&#x27;: &#x27;status_code: 200, response_time(ms): 264.29 ms, response_length: 0 bytes&#x27;, &#x27;module&#x27;: &#x27;client&#x27;, &#x27;name&#x27;: &#x27;httprunner.client&#x27;, &#x27;process&#x27;: (id=1264, name=&#x27;MainProcess&#x27;), &#x27;thread&#x27;: (id=14188, name=&#x27;MainThread&#x27;), &#x27;time&#x27;: datetime(2022, 9, 12, 19, 42, 40, 932425, tzinfo=datetime.timezone(datetime.timedelta(seconds=28800), &#x27;中国标准时间&#x27;))}
+Traceback (most recent call last):
+  File &quot;C:\Users\10287\.hrp\venv\lib\site-packages\loguru\_handler.py&quot;, line 177, in emit
+    self._sink.write(str_record)
+  File &quot;C:\Users\10287\.hrp\venv\lib\site-packages\loguru\_simple_sinks.py&quot;, line 26, in write
+    self._stream.write(message)
+  File &quot;C:\Users\10287\.hrp\venv\lib\site-packages\colorama\ansitowin32.py&quot;, line 47, in write
+    self.__convertor.write(text)
+  File &quot;C:\Users\10287\.hrp\venv\lib\site-packages\colorama\ansitowin32.py&quot;, line 170, in write
+    self.write_and_convert(text)
+  File &quot;C:\Users\10287\.hrp\venv\lib\site-packages\colorama\ansitowin32.py&quot;, line 195, in write_and_convert
+    self.write_plain_text(text, cursor, start)
+  File &quot;C:\Users\10287\.hrp\venv\lib\site-packages\colorama\ansitowin32.py&quot;, line 204, in write_plain_text
+    self.wrapped.flush()
+OSError: [WinError 6] 句柄无效。
+--- End of logging error ---
+--- Logging error in Loguru Handler #1 ---
+Record was: {&#x27;elapsed&#x27;: datetime.timedelta(seconds=2, microseconds=325783), &#x27;exception&#x27;: None, &#x27;extra&#x27;: {}, &#x27;file&#x27;: (name=&#x27;step_request.py&#x27;, path=&#x27;C:\\Users\\10287\\.hrp\\venv\\lib\\site-packages\\httprunner\\step_request.py&#x27;), &#x27;function&#x27;: &#x27;call_hooks&#x27;, &#x27;level&#x27;: (name=&#x27;INFO&#x27;, no=20, icon=&#x27;ℹ️&#x27;), &#x27;line&#x27;: 46, &#x27;message&#x27;: &#x27;call hook actions: teardown request&#x27;, &#x27;module&#x27;: &#x27;step_request&#x27;, &#x27;name&#x27;: &#x27;httprunner.step_request&#x27;, &#x27;process&#x27;: (id=1264, name=&#x27;MainProcess&#x27;), &#x27;thread&#x27;: (id=14188, name=&#x27;MainThread&#x27;), &#x27;time&#x27;: datetime(2022, 9, 12, 19, 42, 40, 934420, tzinfo=datetime.timezone(datetime.timedelta(seconds=28800), &#x27;中国标准时间&#x27;))}
+Traceback (most recent call last):
+  File &quot;C:\Users\10287\.hrp\venv\lib\site-packages\loguru\_handler.py&quot;, line 177, in emit
+    self._sink.write(str_record)
+  File &quot;C:\Users\10287\.hrp\venv\lib\site-packages\loguru\_simple_sinks.py&quot;, line 26, in write
+    self._stream.write(message)
+  File &quot;C:\Users\10287\.hrp\venv\lib\site-packages\colorama\ansitowin32.py&quot;, line 47, in write
+    self.__convertor.write(text)
+  File &quot;C:\Users\10287\.hrp\venv\lib\site-packages\colorama\ansitowin32.py&quot;, line 170, in write
+    self.write_and_convert(text)
+  File &quot;C:\Users\10287\.hrp\venv\lib\site-packages\colorama\ansitowin32.py&quot;, line 195, in write_and_convert
+    self.write_plain_text(text, cursor, start)
+  File &quot;C:\Users\10287\.hrp\venv\lib\site-packages\colorama\ansitowin32.py&quot;, line 204, in write_plain_text
+    self.wrapped.flush()
+OSError: [WinError 6] 句柄无效。
+--- End of logging error ---
+--- Logging error in Loguru Handler #1 ---
+Record was: {&#x27;elapsed&#x27;: datetime.timedelta(seconds=2, microseconds=326780), &#x27;exception&#x27;: None, &#x27;extra&#x27;: {}, &#x27;file&#x27;: (name=&#x27;runner.py&#x27;, path=&#x27;C:\\Users\\10287\\.hrp\\venv\\lib\\site-packages\\httprunner\\runner.py&#x27;), &#x27;function&#x27;: &#x27;test_start&#x27;, &#x27;level&#x27;: (name=&#x27;INFO&#x27;, no=20, icon=&#x27;ℹ️&#x27;), &#x27;line&#x27;: 233, &#x27;message&#x27;: &#x27;generate testcase log: D:\\ProgramWorkspace\\DevTest-Notes\\API\\HttpRunner\\logs\\f6cedd7d-6052-42c2-a437-4de79feb3855.run.log&#x27;, &#x27;module&#x27;: &#x27;runner&#x27;, &#x27;name&#x27;: &#x27;httprunner.runner&#x27;, &#x27;process&#x27;: (id=1264, name=&#x27;MainProcess&#x27;), &#x27;thread&#x27;: (id=14188, name=&#x27;MainThread&#x27;), &#x27;time&#x27;: datetime(2022, 9, 12, 19, 42, 40, 935417, tzinfo=datetime.timezone(datetime.timedelta(seconds=28800), &#x27;中国标准时间&#x27;))}
+Traceback (most recent call last):
+  File &quot;C:\Users\10287\.hrp\venv\lib\site-packages\httprunner\parser.py&quot;, line 239, in get_mapping_variable
+    return variables_mapping[variable_name]
+KeyError: &#x27;headers&#x27;
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File &quot;C:\Users\10287\.hrp\venv\lib\site-packages\httprunner\runner.py&quot;, line 231, in test_start
+    self.__run_step(step)
+  File &quot;C:\Users\10287\.hrp\venv\lib\site-packages\httprunner\runner.py&quot;, line 190, in __run_step
+    step_result: StepResult = step.run(self)
+  File &quot;C:\Users\10287\.hrp\venv\lib\site-packages\httprunner\step.py&quot;, line 67, in run
+    return self.__step.run(runner)
+  File &quot;C:\Users\10287\.hrp\venv\lib\site-packages\httprunner\step_request.py&quot;, line 348, in run
+    return run_step_request(runner, self.__step)
+  File &quot;C:\Users\10287\.hrp\venv\lib\site-packages\httprunner\step_request.py&quot;, line 163, in run_step_request
+    call_hooks(runner, step.teardown_hooks, step_variables, &quot;teardown request&quot;)
+  File &quot;C:\Users\10287\.hrp\venv\lib\site-packages\httprunner\step_request.py&quot;, line 56, in call_hooks
+    runner.parser.parse_data(hook, step_variables)
+  File &quot;C:\Users\10287\.hrp\venv\lib\site-packages\httprunner\parser.py&quot;, line 603, in parse_data
+    return parse_data(raw_data, variables_mapping, self.functions_mapping)
+  File &quot;C:\Users\10287\.hrp\venv\lib\site-packages\httprunner\parser.py&quot;, line 415, in parse_data
+    return parse_string(raw_data, variables_mapping, functions_mapping)
+  File &quot;C:\Users\10287\.hrp\venv\lib\site-packages\httprunner\parser.py&quot;, line 346, in parse_string
+    parsed_args = parse_data(args, variables_mapping, functions_mapping)
+  File &quot;C:\Users\10287\.hrp\venv\lib\site-packages\httprunner\parser.py&quot;, line 418, in parse_data
+    return [
+  File &quot;C:\Users\10287\.hrp\venv\lib\site-packages\httprunner\parser.py&quot;, line 419, in &lt;listcomp&gt;
+    parse_data(item, variables_mapping, functions_mapping) for item in raw_data
+  File &quot;C:\Users\10287\.hrp\venv\lib\site-packages\httprunner\parser.py&quot;, line 415, in parse_data
+    return parse_string(raw_data, variables_mapping, functions_mapping)
+  File &quot;C:\Users\10287\.hrp\venv\lib\site-packages\httprunner\parser.py&quot;, line 375, in parse_string
+    var_value = get_mapping_variable(var_name, variables_mapping)
+  File &quot;C:\Users\10287\.hrp\venv\lib\site-packages\httprunner\parser.py&quot;, line 241, in get_mapping_variable
+    raise exceptions.VariableNotFound(
+httprunner.exceptions.VariableNotFound: headers not found in {&#x27;pwdOrVerifyCode&#x27;: &#x27;zhy1994317&#x27;, &#x27;userIdentification&#x27;: &#x27;18883285613&#x27;, &#x27;request&#x27;: {&#x27;params&#x27;: {}, &#x27;data&#x27;: None, &#x27;cookies&#x27;: {}, &#x27;timeout&#x27;: 120, &#x27;allow_redirects&#x27;: True, &#x27;verify&#x27;: False, &#x27;headers&#x27;: {&#x27;Accept&#x27;: &#x27;application/json, text/plain, */*&#x27;, &#x27;Accept-Encoding&#x27;: &#x27;gzip, deflate, br&#x27;, &#x27;Accept-Language&#x27;: &#x27;zh-CN,zh;q=0.9&#x27;, &#x27;Connection&#x27;: &#x27;keep-alive&#x27;, &#x27;Content-Length&#x27;: &#x27;114&#x27;, &#x27;Content-Type&#x27;: &#x27;application/json;charset=UTF-8&#x27;, &#x27;Host&#x27;: &#x27;passport.csdn.net&#x27;, &#x27;Origin&#x27;: &#x27;https://passport.csdn.net&#x27;, &#x27;Referer&#x27;: &#x27;https://passport.csdn.net/login?code=applets&#x27;, &#x27;Sec-Fetch-Dest&#x27;: &#x27;empty&#x27;, &#x27;Sec-Fetch-Mode&#x27;: &#x27;cors&#x27;, &#x27;Sec-Fetch-Site&#x27;: &#x27;same-origin&#x27;, &#x27;User-Agent&#x27;: &#x27;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36&#x27;, &#x27;sec-ch-ua&#x27;: &#x27;&quot;Chromium&quot;;v=&quot;104&quot;, &quot; Not A;Brand&quot;;v=&quot;99&quot;, &quot;Google Chrome&quot;;v=&quot;104&quot;&#x27;, &#x27;sec-ch-ua-mobile&#x27;: &#x27;?0&#x27;, &#x27;sec-ch-ua-platform&#x27;: &#x27;&quot;Windows&quot;&#x27;, &#x27;HRUN-Request-ID&#x27;: &#x27;HRUN-f6cedd7d-6052-42c2-a437-4de79feb3855-960662&#x27;}, &#x27;json&#x27;: {&#x27;loginType&#x27;: &#x27;1&#x27;, &#x27;pwdOrVerifyCode&#x27;: &#x27;zhy1994317&#x27;, &#x27;uaToken&#x27;: &#x27;&#x27;, &#x27;userIdentification&#x27;: &#x27;18883285613&#x27;, &#x27;webUmidToken&#x27;: &#x27;&#x27;}}, &#x27;response&#x27;: &lt;httprunner.response.ResponseObject object at 0x000001FECA55F130&gt;}
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File &quot;C:\Users\10287\.hrp\venv\lib\site-packages\loguru\_handler.py&quot;, line 177, in emit
+    self._sink.write(str_record)
+  File &quot;C:\Users\10287\.hrp\venv\lib\site-packages\loguru\_simple_sinks.py&quot;, line 26, in write
+    self._stream.write(message)
+  File &quot;C:\Users\10287\.hrp\venv\lib\site-packages\colorama\ansitowin32.py&quot;, line 47, in write
+    self.__convertor.write(text)
+  File &quot;C:\Users\10287\.hrp\venv\lib\site-packages\colorama\ansitowin32.py&quot;, line 170, in write
+    self.write_and_convert(text)
+  File &quot;C:\Users\10287\.hrp\venv\lib\site-packages\colorama\ansitowin32.py&quot;, line 195, in write_and_convert
+    self.write_plain_text(text, cursor, start)
+  File &quot;C:\Users\10287\.hrp\venv\lib\site-packages\colorama\ansitowin32.py&quot;, line 204, in write_plain_text
+    self.wrapped.flush()
+OSError: [WinError 6] 句柄无效。
+--- End of logging error ---
+<br/> ----------------------------Captured stdout teardown---------------------------- <br/>运行于测试用例之后
+<br/></div></td></tr></tbody></table></body></html>
