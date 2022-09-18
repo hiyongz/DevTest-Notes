@@ -4,8 +4,27 @@ def getTime() {
 }
 
 def getJenkinsHome(){
-	return "${JENKINS_HOME}";
+	println "${JENKINS_HOME}";
+	println "${env.JENKINS_HOME}";
 }
+
+
+def myEnv(){
+	def jobVariables = currentBuild.getBuildVariables();
+	println "${jobVariables.MY_VERSION}";
+	println "${env.MY_VERSION}";
+	println "${MY_VERSION}";
+}
+
+def ParamDemo(){
+	def deploy_env = params.get("DEPLOY_ENV") // or: params."${paramName}"
+	println "DEPLOY_ENV = ${deploy_env}";
+	
+	def debug_build = env.getProperty("DEBUG_BUILD")
+	println "DEBUG_BUILD = ${debug_build}";
+}
+
+
 def String getJobPath(){
 	String jobName = "${JOB_NAME}";
 	String[] temps = jobName.split("/");	

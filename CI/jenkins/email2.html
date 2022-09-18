@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+        <meta charset="UTF-8">
+        <title>${ENV,var="JOB_NAME"}-第${BUILD_NUMBER}次构建日志</title>
+</head>
+<body leftmargin="8" marginwidth="0" topmargin="8" marginheight="4" offset="0">
+<hr/>(自动化构建邮件，无需回复！)<br/><hr/>
+
+项目名称：$PROJECT_NAME<br/><br/>
+
+项目描述：$JOB_DESCRIPTION<br/><br/>
+
+运行编号：$BUILD_NUMBER<br/><br/>
+
+运行结果：$BUILD_STATUS<br/><br/>
+
+触发原因：${CAUSE}<br/><br/>
+
+构建日志地址：<a href="${BUILD_URL}console">${BUILD_URL}console</a><br/><br/>
+
+构建地址：<a href="$BUILD_URL">$BUILD_URL</a><br/><br/>
+
+详情：${JELLY_SCRIPT,template="html"}<br/>
+
+<hr/>
+</body>
+</html>

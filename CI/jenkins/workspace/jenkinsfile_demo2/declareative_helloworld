@@ -1,7 +1,7 @@
 pipeline {
     agent {
 	node {
-		label "linux_agent"
+		label "win_agent"
 		}
 	}
     stages {

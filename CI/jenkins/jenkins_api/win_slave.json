@@ -1,9 +1,9 @@
 {
-    "name": "win_98.172",
-    "nodeDescription": "192.168.98.172",
+    "name": "win_slave",
+    "nodeDescription": "192.168.30.100",
     "numExecutors": "1",
     "remoteFS": "D:\\jenkins",
-    "labelString": "win_98.172",
+    "labelString": "win_slave",
     "mode": "NORMAL",
     "": [
         "hudson.slaves.JNLPLauncher",
