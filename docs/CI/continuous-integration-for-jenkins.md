@@ -167,7 +167,7 @@ docker restart jenkins
 
 ##  执行机管理
 在实际工作中，考虑到宿主机资源限制，可以采用多节点的方式，将任务分配到其他节点执行。通过添加多个Jenkins Nodes来执行Jenkins任务， Jenkins运行的主机称为Built-In Node：
-* 节点上需要配置Java运行环境, Java_Version>1.5
+* 节点上需要配置Java运行环境, Java_Version>1.5，注意：Jenkins 2.357 及 LTS 2.361.1之后的版本要求Java 11 或者 17
 * 节点支持Windows, Linux，Mac系统
 
 先查看是否配置了Java运行环境：
