@@ -2,6 +2,21 @@
 本文介绍使用docker来安装Jenkins服务的步骤。
 
 <!--more-->
+
+## 环境准备
+
+本文介绍在linux上如何使用docker来搭建Jenkins服务，我使用的系统为centos7：
+
+```bash
+$ cat /etc/redhat-release 
+CentOS Linux release 7.8.2003 (Core)
+```
+
+在CentOS 7中安装docker的方法可参考[容器技术介绍：Docker简介及安装](https://blog.csdn.net/u010698107/article/details/113820115) 。
+
+准备好docker环境之后还需要安装配置Java环境，在Jenkins 2.357 及 LTS 2.361.1之后的版本要求Java 11 或者 17，Java版本安装及升级步骤可参考[Java环境安装配置步骤介绍](https://blog.csdn.net/u010698107/article/details/126612602)。
+
+
 ## Docker搭建Jenkins
 ### 1. 安装
 Jenkins docker hub地址: [https://hub.docker.com/r/jenkins/jenkins](https://hub.docker.com/r/jenkins/jenkins)
@@ -57,15 +72,15 @@ docker.io/jenkins/jenkins:latest
 ```
 
 ### 3. 运行: 创建实例
-创建一个挂载目录jenkins，添加可执行权限：`chmod 777 jenkins`
-
-```docker
-docker run --name=jenkins -d -p 8080:8080 -p 50000:50000 -v jenkins_test:/var/jenkins_home jenkins/jenkins
+jenkins默认启动后的时区为美国，启动时可设置为中国时区：
+```sh
+# 重新创建实例并设置时区
+docker run --name=jenkins -d -p 8080:8080 -p 50000:50000 -v jenkins_test:/var/jenkins_home -e JAVA_OPTS=-Duser.timezone=Asia/Shanghai jenkins/jenkins
 ```
 
 运行：
 ```sh
-[root@server /]# docker run --name=jenkins -d -p 8080:8080 -p 50000:50000 -v jenkins_test:/var/jenkins_home jenkins/jenkins
+[root@server /]# docker run --name=jenkins -d -p 8080:8080 -p 50000:50000 -v jenkins_test:/var/jenkins_home -e JAVA_OPTS=-Duser.timezone=Asia/Shanghai jenkins/jenkins
 c7fb87aec99402febd95edddda5cf1dc7ad15437f674bf71a09692d93369ccb9
 [root@server /]# 
 [root@server /]# docker ps
@@ -79,13 +94,6 @@ c7fb87aec994   jenkins/jenkins   "/sbin/tini -- /usr/…"   9 minutes ago   Up 9
 `docker logs -f jenkins`  查看输出日志
 ![](container-docker-for-jenkins-install/jenkins-init-pwd.png)
 
-注意：jenkins默认启动后的时区为美国，通过以下命令启动中国时区：
-```sh
-# 先删除已经构建的jenkins实例
-docker rm -f jenkins
-# 重新创建实例并设置时区
-docker run --name=jenkins -d -p 8080:8080 -p 50000:50000 -v jenkins_test:/var/jenkins_home -e JAVA_OPTS=-Duser.timezone=Asia/Shanghai jenkins/jenkins
-```
 ### 4. 查看默认密码
 
 ```docker
