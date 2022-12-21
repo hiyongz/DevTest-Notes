@@ -523,10 +523,10 @@ Array
 | 函数名称                                                     | 排序依据 | 数组索引键保持                    | 排序的顺序               |
 | :----------------------------------------------------------- | :------- | :-------------------------------- | :----------------------- |
 | [array_multisort()](https://www.php.net/manual/zh/function.array-multisort.php) | 值       | string 键保持不变，int 键重新索引 | 第一个数组或者由选项指定 |
-| [asort()](https://www.php.net/manual/zh/function.asort.php)  | 值       | 是                                | 升序                     |
+| [asort()](https://www.php.net/manual/zh/function.asort.php)  | 值       | 是                                | 升序：根据键值升序排序   |
 | [arsort()](https://www.php.net/manual/zh/function.arsort.php) | 值       | 是                                | 降序                     |
 | [krsort()](https://www.php.net/manual/zh/function.krsort.php) | 键       | 是                                | 降序                     |
-| [ksort()](https://www.php.net/manual/zh/function.ksort.php)  | 键       | 是                                | 升序                     |
+| [ksort()](https://www.php.net/manual/zh/function.ksort.php)  | 键       | 是                                | 升序：根据键名升序排序   |
 | [natcasesort()](https://www.php.net/manual/zh/function.natcasesort.php) | 值       | 是                                | 自然排序，大小写不敏感   |
 | [natsort()](https://www.php.net/manual/zh/function.natsort.php) | 值       | 是                                | 自然排序                 |
 | [rsort()](https://www.php.net/manual/zh/function.rsort.php)  | 值       | 否                                | 降序                     |
@@ -536,7 +536,7 @@ Array
 | [uksort()](https://www.php.net/manual/zh/function.uksort.php) | 键       | 是                                | 由用户定义               |
 | [usort()](https://www.php.net/manual/zh/function.usort.php)  | 值       | 否                                | 由用户定义               |
 
-举例：
+例1：asort
 
 ```php
 <?php
@@ -546,14 +546,6 @@ asort($array1);
 echo "<pre>";
 print_r($array1);
 echo "</pre>";
-
-/* ksort */
-$array1 = [1 => 'one', 3 => 'three', 2 => 'two', 5 => 'five', 4 => 'four'];
-ksort($array1);
-echo "<pre>";
-print_r($array1);
-echo "</pre>";
-
 ?>
 ```
 
@@ -568,6 +560,23 @@ Array
     [four] => 4
     [five] => 5
 )
+```
+
+例2：ksort
+
+```php
+/* ksort */
+$array1 = [1 => 'one', 3 => 'three', 2 => 'two', 5 => 'five', 4 => 'four'];
+ksort($array1);
+echo "<pre>";
+print_r($array1);
+echo "</pre>";
+?>
+```
+
+结果：
+
+```php
 Array
 (
     [1] => one
@@ -575,6 +584,123 @@ Array
     [3] => three
     [4] => four
     [5] => five
+)
+```
+
+例3：array_multisort()多维数组排序
+
+```php
+$records = array(
+    array(
+        'id' => 2,
+        'name' => 'zhangsan',
+    ),
+    array(
+        'id' => 1,
+        'name' => 'lishi',
+    ),
+    array(
+        'id' => 3,
+        'name' => 'wanger',
+    )
+);
+
+$ids = array_column($records, 'id');
+array_multisort($ids, SORT_DESC, $records); // 根据id进行降序排序
+// array_multisort($ids, SORT_DESC, SORT_NUMERIC, $records); // 按照数字大小比较 SORT_STRING - 按照字符串比较
+
+echo "<xmp class='a-left'>";
+print_r($records);
+echo "</xmp>";
+```
+
+结果：
+
+```php
+Array
+(
+    [0] => Array
+        (
+            [id] => 3
+            [name] => wanger
+        )
+
+    [1] => Array
+        (
+            [id] => 2
+            [name] => zhangsan
+        )
+
+    [2] => Array
+        (
+            [id] => 1
+            [name] => lishi
+        )
+
+)
+```
+
+
+
+## 12.读取多维数组某一列的值
+
+[array_column](https://www.php.net/manual/zh/function.array-column)方法可用来读取多维数组或对象数组某一列的值。
+
+```php
+$records = array(
+    array(
+        'id' => 1,
+        'name' => 'zhangsan',
+    ),
+    array(
+        'id' => 2,
+        'name' => 'lishi',
+    ),
+    array(
+        'id' => 3,
+        'name' => 'wanger',
+    )
+);
+
+echo "<xmp class='a-left'>";
+print_r($records);
+echo "</xmp>";
+
+$names = array_column($records, 'name', 'id');
+echo "<xmp class='a-left'>";
+print_r($names);
+echo "</xmp>";
+```
+
+结果：
+
+```php
+Array
+(
+    [0] => Array
+        (
+            [id] => 1
+            [name] => zhangsan
+        )
+
+    [1] => Array
+        (
+            [id] => 2
+            [name] => lishi
+        )
+
+    [2] => Array
+        (
+            [id] => 3
+            [name] => wanger
+        )
+
+)
+Array
+(
+    [1] => zhangsan
+    [2] => lishi
+    [3] => wanger
 )
 ```
 

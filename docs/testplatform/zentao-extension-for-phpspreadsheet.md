@@ -6,7 +6,7 @@ PhpSpreadsheet是一个PHP表格文件处理库，可用来读写excel文件，�
 
 ## 安装PhpSpreadsheet
 
-PhpSpreadsheet要求PHP 7.3及以上版本，如果禅道使用的PHP版本低于7.3请不要使用它来处理excel格式文件。
+当前最新的PhpSpreadsheet要求PHP 7.4及以上版本。
 
 由于禅道安装在centos7中，这里介绍如何在centos7中安装PhpSpreadsheet，另外顺便也记录一下在windows系统中安装phpspreadsheet的步骤。
 

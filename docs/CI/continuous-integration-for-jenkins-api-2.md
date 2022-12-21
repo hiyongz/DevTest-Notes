@@ -426,7 +426,206 @@ jenkins_server.shutdown()
 
 更多方法可以查看库的相关函数。
 
+## jenkins API使用示例
 
+举一个jenkins API使用实例。
+
+**1、触发构建**
+
+```bash
+$ curl -i -L -X POST --USER admin:1142ea7ea6919fadad76b2e0057ec01e17 http://192.168.168.228:8080/view/demo/job/PipelineDemo/build
+HTTP/1.1 201 Created
+Date: Thu, 15 Dec 2022 07:12:57 GMT
+X-Content-Type-Options: nosniff
+Location: http://192.168.168.228:8080/queue/item/449/
+Content-Length: 0
+Server: Jetty(9.4.45.v20220203)
+```
+
+通过响应数据可以知道当前构建的queue number为449。
+
+**2、查看执行状态**
+
+查看构建的队列状态
+
+```bash
+$ curl -i -L --user admin:1142ea7ea6919fadad76b2e0057ec01e17 http://192.168.168.228:8080/queue/item/449/api/json
+HTTP/1.1 404 Not Found
+X-Content-Type-Options: nosniff
+Cache-Control: must-revalidate,no-cache,no-store
+Content-Type: text/html;charset=iso-8859-1
+Content-Length: 473
+Server: Jetty(9.4.45.v20220203)
+
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=ISO-8859-1"/>
+<title>Error 404 Not Found</title>
+</head>
+<body><h2>HTTP ERROR 404 Not Found</h2>
+<table>
+<tr><th>URI:</th><td>/queue/item/449/api/json</td></tr>
+<tr><th>STATUS:</th><td>404</td></tr>
+<tr><th>MESSAGE:</th><td>Not Found</td></tr>
+<tr><th>SERVLET:</th><td>Stapler</td></tr>
+</table>
+<hr/><a href="https://eclipse.org/jetty">Powered by Jetty:// 9.4.45.v20220203</a><hr/>
+
+</body>
+</html>
+```
+
+返回404表明队列不存在了，可能是已经执行完了。
+
+**3、读取build number和构建结果**
+
+通过queue number读取对应的build number和构建结果：
+
+```bash
+$ curl -k -L --user admin:1142ea7ea6919fadad76b2e0057ec01e17 "http://192.168.168.228:8080/job/PipelineDemo/api/xml?tree=builds\[id,number,result,queueId\]&xpath=//build\[queueId=449\]"
+<build _class="org.jenkinsci.plugins.workflow.job.WorkflowRun"><id>62</id><number>62</number><queueId>449</queueId><result>SUCCESS</result></build>
+```
+
+可以得到build number为62，result为SUCCESS。
+
+**4、读取构建日志**
+
+根据build number读取构建日志
+
+```bash
+$ curl -k -L --user admin:1142ea7ea6919fadad76b2e0057ec01e17 http://192.168.168.228:8080/job/PipelineDemo/62/consoleText
+Started by user admin
+Loading library pipelinelib@1.0
+Opening connection to https://192.168.100.21/svn/attrobot-testcase/MX_release/pipelinelib/
+Updating https://192.168.100.21/svn/attrobot-testcase/MX_release/pipelinelib/1.0@940 at revision 940
+Using sole credentials admin/****** (https://192.168.100.21/svn/) in realm ‘<https://192.168.100.21:443> VisualSVN Server’
+At revision 940
+
+No changes for https://192.168.100.21/svn/attrobot-testcase/MX_release/pipelinelib/1.0 since the previous build
+Loading library pipelinelib2@1.0
+Opening connection to https://192.168.100.21/svn/attrobot-testcase/MX_release/pipelinelib/
+Updating https://192.168.100.21/svn/attrobot-testcase/MX_release/pipelinelib/1.0@940 at revision 940
+Using sole credentials admin/****** (https://192.168.100.21/svn/) in realm ‘<https://192.168.100.21:443> VisualSVN Server’
+At revision 940
+
+[Pipeline] Start of Pipeline
+[Pipeline] node
+Still waiting to schedule task
+Waiting for next available executor on ‘win_98.178’
+Running on win_98.178 in D:/jenkins/workspace/PipelineDemo
+[Pipeline] {
+[Pipeline] ws
+Running in D:/jenkins
+[Pipeline] {
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (initialize)
+[Pipeline] echo
+init
+[Pipeline] bat
+
+D:\jenkins>echo hello
+hello
+[Pipeline] script
+[Pipeline] {
+
+............
+
+[Pipeline] End of Pipeline
+Finished: SUCCESS
+```
+
+在第2步查看执行状态时，可能队列还存在：
+
+```bash
+$ curl -i -L --user admin:1142ea7ea6919fadad76b2e0057ec01e17 http://192.168.168.228:8080/queue/item/453/api/json
+HTTP/1.1 200 OK
+Date: Thu, 15 Dec 2022 07:34:44 GMT
+X-Content-Type-Options: nosniff
+X-Jenkins: 2.337
+X-Jenkins-Session: 02235fb0
+X-Frame-Options: deny
+Content-Type: application/json;charset=utf-8
+Content-Length: 696
+Server: Jetty(9.4.45.v20220203)
+
+{"_class":"hudson.model.Queue$LeftItem","actions":[{"_class":"hudson.model.CauseAction","causes":[{"_class":"hudson.model.Cause$UserIdCause","shortDescription":"Started by user admin","userId":"admin","userName":"admin"}]}],"blocked":false,"buildable":false,"id":453,"inQueueSince":1671089427803,"params":"","stuck":false,"task":{"_class":"org.jenkinsci.plugins.workflow.job.WorkflowJob","name":"PipelineDemo","url":"http://192.168.168.228:8080/job/PipelineDemo/","color":"blue"},"url":"queue/item/453/","why":null,"cancelled":false,"executable":{"_class":"org.jenkinsci.plugins.workflow.job.WorkflowRun","number":64,"url":"http://192.168.168.228:8080/job/PipelineDemo/64/"}}
+```
+
+返回信息中有`executable`字段：
+
+```json
+"executable":{"_class":"org.jenkinsci.plugins.workflow.job.WorkflowRun","number":64,"url":"http://192.168.168.228:8080/job/PipelineDemo/64/"}
+```
+
+通过里面的url（包含了build number）来读取构建状态：
+
+```bash
+C:\Users\DELL>curl -i -L --user admin:1142ea7ea6919fadad76b2e0057ec01e17 http://192.168.168.228:8080/job/PipelineDemo/64/api/json?pretty=true
+HTTP/1.1 200 OK
+Date: Thu, 15 Dec 2022 07:43:23 GMT
+X-Content-Type-Options: nosniff
+X-Jenkins: 2.337
+X-Jenkins-Session: 02235fb0
+X-Frame-Options: deny
+Content-Type: application/json;charset=utf-8
+Content-Length: 1704
+Server: Jetty(9.4.45.v20220203)
+
+{
+  "_class" : "org.jenkinsci.plugins.workflow.job.WorkflowRun",
+  "actions" : [
+    {
+      "_class" : "hudson.model.CauseAction",
+      "causes" : [
+        {
+          "_class" : "hudson.model.Cause$UserIdCause",
+          "shortDescription" : "Started by user admin",
+          "userId" : "admin",
+          "userName" : "admin"
+        }
+      ]
+    },
+    
+...................
+
+    {
+
+    }
+  ],
+  "artifacts" : [
+
+  ],
+  "building" : false,
+  "description" : null,
+  "displayName" : "#64",
+  "duration" : 88477,
+  "estimatedDuration" : 54084,
+  "executor" : null,
+  "fullDisplayName" : "PipelineDemo #64",
+  "id" : "64",
+  "keepLog" : false,
+  "number" : 64,
+  "queueId" : 453,
+  "result" : "SUCCESS",
+  "timestamp" : 1671089435140,
+  "url" : "http://192.168.168.228:8080/job/PipelineDemo/64/",
+  "changeSets" : [
+
+  ],
+  "culprits" : [
+
+  ],
+  "nextBuild" : null,
+  "previousBuild" : {
+    "number" : 63,
+    "url" : "http://192.168.168.228:8080/job/PipelineDemo/63/"
+  }
+}
+```
+
+查看返回信息中的building字段是否为true，为true表示正在执行。为false表示执行完成，可以读取构建结果，result字段的值。
 
 参考资料：
 
