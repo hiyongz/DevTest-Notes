@@ -17,7 +17,7 @@ Allure 报告更加灵活美观，本文介绍如何使用pytest 生成 allure�
 3. 把bin目录加入PATH环境变量
 ![](pytest-allure-report/1.png)
 
-allure官网 : http://allure.qatools.ru/
+allure官网 : [https://qameta.io/allure-report/](https://qameta.io/allure-report/)
 
 allure文档 : https://docs.qameta.io/allure/#
 

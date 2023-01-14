@@ -68,6 +68,7 @@
    app/appium-android-webview.md
    app/appium-automatic-traversal-test-appcrawler.md
    app/appium-automatic-traversal-test-monkey.md
+   app/app-testing-tools-for-fastbot-android.md   
    app/app-testing-tools-for-uiautomator2.md
    app/app-testing-tools-for-airtestproject.md   
    app/app-testing-for-ios-app-on-windows.md
@@ -125,6 +126,8 @@
    CI/continuous-integration-for-source-control-jenkinsfile.md
    CI/continuous-integration-for-jenkins-api-2.md
    CI/continuous-integration-for-jenkins-global-variable-reference.md
+   CI/continuous-integration-for-jenkins-docker-images-upgrade.md
+   CI/continuous-integration-for-jenkins-api-create-job-and-slave.md
 
 .. toctree::
    :maxdepth: 1
@@ -144,6 +147,7 @@
    database/database-for-mysql-architecture-introduction.md
    database/database-for-mysql-log-system.md
    database/database-for-mysql-lock.md
+   database/database-for-mysql-index.md
 
 .. toctree::
    :maxdepth: 1

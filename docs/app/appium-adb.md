@@ -288,14 +288,15 @@ root@M5:/mnt/sdcard # ^C
 C:\Users\DELL>d:
 ```
 #### 手机和电脑文件传输
-将手机文件pull到电脑
+1、将手机文件pull到电脑
 ```bash
 D:\>adb pull sdcard/cmcc_sso_config.dat  # 将手机sdcard中的cmcc_sso_config.dat 文件copy到电脑D：根目录下
 D:\>adb pull sdcard/cmcc_sso_config.dat D:\adbtest
 D:\>
 ```
 ![](appium-adb/adb_pull.jpg)
-* 将电脑文件push到手机目录下D
+
+1、将电脑文件push到手机目录下D
 ```bash
 D:\>adb push D:/adbtest/cmcc_sso_config111.dat /sdcard/ # 将D:中的cmcc_sso_config111.dat copy到手机sdcard 文件夹下
 D:\>adb shell
@@ -314,12 +315,27 @@ find /data -name "cmcc_sso_config*"
 ```
 
 ### 6. 其它实用功能
-#### 屏幕截图-截图保存到SD卡里再导出
+### 屏幕截图
+
+可使用 `screencap` 工具进行截图。下面介绍两种方法：
+
+1、截图保存到SD卡里再导出
+
 ```bash
 D:\>adb shell screencap -p /sdcard/screen.png
 D:\>adb pull /sdcard/screen.png
 D:\>adb shell rm /sdcard/screen.png
 ```
+
+2、 `adb exec-out` 命令直接保存到PC
+
+Android 5.0及之后的版本引入了shell V2协议，可直接使用 `adb exec-out` 命令将文件保存到PC：
+
+```bash
+D:\> adb exec-out screencap -p > D:\adbtest\test.png
+```
+
+与第一种方式相比，`adb exec-out` 命令效率更高。
 
 #### 录制屏幕
 ```bash
