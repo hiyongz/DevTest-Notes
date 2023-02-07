@@ -129,6 +129,7 @@
    CI/continuous-integration-for-jenkins-global-variable-reference.md
    CI/continuous-integration-for-jenkins-docker-images-upgrade.md
    CI/continuous-integration-for-jenkins-api-create-job-and-slave.md
+   CI/continuous-integration-for-jenkins-api-create-view.md
 
 .. toctree::
    :maxdepth: 1
