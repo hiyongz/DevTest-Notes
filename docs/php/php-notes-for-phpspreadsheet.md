@@ -5,7 +5,7 @@
 
 
 ## 简介
-PhpSpreadsheet要求PHP 7.3及以上版本，是PHPExcel库的扩展版本，可用来读写xls、xlsx、CSV、HTML等格式文件。
+PhpSpreadsheet是PHPExcel库的扩展版本，可用来读写xls、xlsx、CSV、HTML等格式文件。当前最新的PhpSpreadsheet要求PHP 7.4及以上版本。
 
 | Format                                                       | Reading | Writing |
 | ------------------------------------------------------------ | ------- | ------- |
