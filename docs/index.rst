@@ -88,6 +88,7 @@
    api/api-test-charles-ca-certificate-install.md
    api/api-test-charles-guide.md
    api/api-test-mitmproxy-guide.md
+   api/api-test-guide-for-mobile-app-with-fiddler.md
 
 .. toctree::
    :maxdepth: 1
