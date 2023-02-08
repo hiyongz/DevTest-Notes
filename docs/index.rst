@@ -89,6 +89,7 @@
    api/api-test-charles-guide.md
    api/api-test-mitmproxy-guide.md
    api/api-test-guide-for-mobile-app-with-fiddler.md
+   api/api-test-guide-for-mobile-app-with-jmeter.md
 
 .. toctree::
    :maxdepth: 1
