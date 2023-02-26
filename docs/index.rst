@@ -140,6 +140,7 @@
    testplatform/zentao-extension-for-zentao-framework-introduction.md
    testplatform/zentao-extension-example.md
    testplatform/zentao-extension-for-phpspreadsheet.md
+   testplatform/devtest-notes-for-zentao-extension-skills.md
 
 .. toctree::
    :maxdepth: 1
