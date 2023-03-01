@@ -140,6 +140,7 @@
    testplatform/zentao-extension-for-zentao-framework-introduction.md
    testplatform/zentao-extension-example.md
    testplatform/zentao-extension-for-phpspreadsheet.md
+   testplatform/devtest-notes-for-zentao-extension-skills.md
 
 .. toctree::
    :maxdepth: 1
@@ -187,12 +188,13 @@
    other/front-end-for-typora-css.md
    other/git-generate-ssh-public-key-guide.md
    other/git-install-and-guide.md
+   other/version-management-notes-for-git-merge-and-git-rebase.md
    other/linux-svn-install-in-centos7.md
    other/github-skills-for-shields-build.md
    other/personal-blog-hexo-construction-guide.md
    other/personal-blog-hexo-construction-guide2.md
    other/personal-blog-for-sphinx-readthedocs-and-github-guide.md   
-   other/typora-picture-host-setting-with-picgo-and-gitee.md
+   other/typora-picture-host-setting-with-picgo-and-gitee.md   
    
    
    
