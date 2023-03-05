@@ -311,6 +311,25 @@ ele = d(text="微信")
 ele.swipe(direction, steps=10) # 从UI元素中心开始滑动，direction包括"left", "right", "up", "down" 4个方向。
 ```
 
+## SwipeExt 扩展功能
+
+```python
+d.swipe_ext("right") # 右滑，可选4个方向："left", "right", "up", "down"
+d.swipe_ext("right", scale=0.9) # 默认0.9, 滑动距离为屏幕宽度的90%
+d.swipe_ext("right", box=(0, 0, 100, 100)) # 在 (0,0) -> (100, 100) 这个区域做滑动
+
+# 实践发现上滑或下滑的时候，从中点开始滑动成功率会高一些
+d.swipe_ext("up", scale=0.8) # 代码会vkk
+
+# 还可以使用Direction作为参数
+from uiautomator2 import Direction
+
+d.swipe_ext(Direction.FORWARD) # 页面下翻, 等价于 d.swipe_ext("up"), 只是更好理解
+d.swipe_ext(Direction.BACKWARD) # 页面上翻
+d.swipe_ext(Direction.HORIZ_FORWARD) # 页面水平右翻
+d.swipe_ext(Direction.HORIZ_BACKWARD) # 页面水平左翻
+```
+
 ### 拖动drag_to
 
 ```python
