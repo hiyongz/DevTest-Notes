@@ -24,7 +24,8 @@ robot部分选项参数：
 - `-s --suite name *`：通过套件名选择测试用例，通过 `*` 匹配任意用例，`?` 匹配任意字符
 - `-i --include tag *`：通过标签名选择测试用例，支持3种方式：①单个标签，比如`tag*`、`tag1`；②`AND`或者`&`连接多个标签，例如`tag1&tag2`；③`NOT`连接多个标签，例如`tag*NOTtag1`，表示所有标签以`tag`开头的用例，但不包括`tag1`。
 - `-e --exclude tag *`：不运行的标签用例。比`include`参数优先级高。
-- `-d --outputdir dir`：设置测试输出路径
+- `-d --outputdir dir`：设置测试日志输出路径
+- `-b --debugfile file`：控制台输出日志保存到文件中
 - `-l --log file`：指定HTML log文件名，默认为log.html
 - `-r --report file`：指定HTML report文件名，默认为report.html
 - `-T --timestampoutputs`：时间戳形式的日志文件名
@@ -189,5 +190,4 @@ Output:  D:\rf_results\output-20220102-163828.xml
 Log:     D:\rf_results\log-20220102-163828.html
 Report:  D:\rf_results\report-20220102-163828.html
 ```
-
 
