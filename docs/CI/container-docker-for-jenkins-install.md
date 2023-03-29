@@ -1,8 +1,6 @@
 # Docker搭建持续集成平台Jenkins
 本文介绍使用docker来安装Jenkins服务的步骤。
 
-<!--more-->
-
 ## 环境准备
 
 本文介绍在linux上如何使用docker来搭建Jenkins服务，我使用的系统为centos7：
