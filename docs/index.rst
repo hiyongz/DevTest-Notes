@@ -99,6 +99,7 @@
    perf/performance-testing-jmeter-concurrency.md
    perf/performance-testing-for-performance-monitoring-system.md
    perf/performance-monitoring-for-server-with-prometheus.md
+   perf/performance-testing-with-ixchariot.md
    
 .. toctree::
    :maxdepth: 1
