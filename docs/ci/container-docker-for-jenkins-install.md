@@ -223,3 +223,50 @@ java -jar jenkins.war --httpPort=8081
 
 
 
+# 其它
+
+## jenkins系统日志查看
+
+可使用 `docker logs` 命令查看jenkins日志。
+
+```bash
+docker logs -h
+Flag shorthand -h has been deprecated, please use --help
+
+Usage:  docker logs [OPTIONS] CONTAINER
+
+Fetch the logs of a container
+
+Options:
+      --details        Show extra details provided to logs
+  -f, --follow         Follow log output
+      --since string   Show logs since timestamp (e.g. 2013-01-02T13:23:37Z) or relative (e.g. 42m
+                       for 42 minutes)
+  -n, --tail string    Number of lines to show from the end of the logs (default "all")
+  -t, --timestamps     Show timestamps
+      --until string   Show logs before a timestamp (e.g. 2013-01-02T13:23:37Z) or relative (e.g.
+                       42m for 42 minutes)
+
+```
+
+例如：
+
+```bash
+# 查看jenkins最后10行日志
+$ docker logs --tail 10 jenkins
+# 查看jenkins过去10分钟的日志
+$ docker logs --since 10m jenkins
+# 跟踪jenkins日志输出
+$ docker logs -f jenkins
+# 保存日志到指定文件
+$ docker logs --tail 10 jenkins >& jenkins.log
+```
+
+如果要查看jenkins所有系统日志，可直接查看jenkins日志文件，执行如下命令查询jenkins日志保存路径：
+
+```bash
+$ docker inspect --format='{{.LogPath}}' jenkins
+/var/lib/docker/containers/c4cf018db45ca99025f3734e6356f93901870cce322deb58408489fce50c0e65/c4cf018db45ca99025f3734e6356f93901870cce322deb58408489fce50c0e65-json.log
+```
+
+返回的就是jenkins的日志文件路径。
