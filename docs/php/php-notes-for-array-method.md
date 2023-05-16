@@ -704,6 +704,44 @@ Array
 )
 ```
 
+## 13.统计数组某一列的值
+
+例如有一个这样的数组：
+
+```php
+$array = [
+    ['id' => 1, 'name' => 'one'],
+    ['id' => 2, 'name' => 'two'],
+    ['id' => 1, 'name' => 'one'],
+    ['id' => 2, 'name' => 'two'],
+    ['id' => 3, 'name' => 'three']
+];
+//或者数组对象
+$array = [
+    (object)['id' => 1, 'name' => 'one'],
+    (object)['id' => 2, 'name' => 'two'],
+    (object)['id' => 1, 'name' => 'one'],
+    (object)['id' => 2, 'name' => 'two'],
+    (object)['id' => 3, 'name' => 'three']
+];
+```
+
+使用 `array_count_values` 方法统计name列的值：
+
+```php
+$count = array_count_values(array_column($array, 'name'));
+print_r($count);
+
+// 输出
+Array
+(
+    [one] => 2
+    [two] => 2
+    [three] => 1
+)
+```
+
+
 参考资料：
 
 1. 数组排序：[https://www.php.net/manual/zh/array.sorting.php](https://www.php.net/manual/zh/array.sorting.php)
