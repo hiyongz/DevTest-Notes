@@ -1,15 +1,13 @@
 #-*-coding:utf-8-*-
-# @Time:    2023/03/04 21:12
+# @Time:    2023/05/19 21:12
 # @Author:  haiyongz
-# @File:    getCpuIdle.py
+# @File:    calcDemo.py
 # @description: 读取DUT CPU idle数据
-# 执行方式：python getCpuIdle.py -d 30 -n 6
+# 执行方式：python calcDemo.py
 
 import datetime
 import logging
 import os
-from time import sleep
-import time
 import uiautomation as auto
 import subprocess
 
@@ -58,94 +56,83 @@ class Loggers():
         return self.logger
 
 class uiautoCalc(Loggers):
-    """读取DUT CPU信息
+    """uiautomation控制计算器
 
     """
     def __init__(self):
         super().__init__()
         self.logger = Loggers().myLogger()
-
-    def calc_demo1(self):
-        """返回DUT CPU Idle值
-
-        :return cpuIdle: CPU Idle值
-        """        
-        # 显示搜索控件所遍历的控件数和搜索时间
-        # uiautomation.DEBUG_SEARCH_TIME =True# 设置全局搜索超时时间为1秒
-        # uiautomation.SetGlobalSearchTimeout(1)# 创建计算器窗口控件
-        self.logger.info("1")
-        calc = auto.WindowControl(Name="计算器")
-        calc_list = ["二", "加", "八", "等于"]
-        for i in range(0, len(calc_list)):
-            calc.ButtonControl(Name=calc_list[i]).Click()
-            time.sleep(0.5)
-        calc_result = calc.TextControl(foundIndex=3).Name
-        print(calc_result)
-
-
-    def calc_demo2(self):
-        """返回DUT CPU Idle值
-
-        :return cpuIdle: CPU Idle值
-        """        
-
-        # 显示搜索控件所遍历的控件数和搜索时间
-        auto.uiautomation.DEBUG_SEARCH_TIME =True# 设置全局搜索超时时间为1秒
-        auto.uiautomation.SetGlobalSearchTimeout(1)# 创建计算器窗口控件
-        calcWindow = auto.WindowControl(
-            searchDepth=1, Name='计算器', desc='计算器窗口')
-        if not calcWindow.Exists(0,0):
+        auto.uiautomation.DEBUG_SEARCH_TIME =True 
+        auto.uiautomation.SetGlobalSearchTimeout(2) # 设置全局搜索超时时间
+        self.calcWindow = auto.WindowControl(searchDepth=1, Name='计算器', desc='计算器窗口') # 计算器窗口
+        if not self.calcWindow.Exists(0,0):
             subprocess.Popen('calc')# 设置窗口前置
-        calcWindow.SetActive() # 激活窗口
-        calcWindow.SetTopmost(True)# 设置为顶层
-        calcWindow.ButtonControl(AutomationId='TogglePaneButton',
-                                desc='打开导航').Click(waitTime=0.01)
-        
-        calcWindow.ListItemControl(AutomationId='Scientific',
-                                desc='选择科学计算器').Click(waitTime=0.01)
-        clearButton = calcWindow.ButtonControl(AutomationId='clearEntryButton',
-                                            desc='点击CE清空所有输入')
+            self.calcWindow = auto.WindowControl(
+            searchDepth=1, Name='计算器', desc='计算器窗口')
+        self.calcWindow.SetActive() # 激活窗口
+        self.calcWindow.SetTopmost(True) # 设置为顶层
+
+    def gotoScientific(self):
+        self.calcWindow.ButtonControl(AutomationId='TogglePaneButton', desc='打开导航').Click(waitTime=0.01)        
+        self.calcWindow.ListItemControl(AutomationId='Scientific', desc='选择科学计算器').Click(waitTime=0.01)
+        clearButton = self.calcWindow.ButtonControl(AutomationId='clearEntryButton', desc='点击CE清空输入')
         if clearButton.Exists(0,0):
             clearButton.Click(waitTime=0)
         else:
-            calcWindow.ButtonControl(AutomationId='clearButton',
-                                    desc='点击C清空所有输入').Click(waitTime=0)
-        id2char ={'num0Button':'0','num1Button':'1','num2Button':'2','num3Button':'3','num4Button':'4','num5Button':'5','num6Button':'6','num7Button':'7','num8Button':'8','num9Button':'9','decimalSeparatorButton':'.','plusButton':'+','minusButton':'-','multiplyButton':'*','divideButton':'/','equalButton':'=','openParenthesisButton':'(','closeParenthesisButton':')'}
-        char2Button ={}
-        for c, d in auto.WalkControl(calcWindow, maxDepth=4):
-            if c.AutomationId in id2char:
-                char2Button[id2char[c.AutomationId]]= c
-        
-        
-        def calc(expression):
-            expression =''.join(expression.split())
-            if not expression.endswith('='):
-                expression +='='
-                for char in expression:
-                    char2Button[char].Click(waitTime=0)
-            time.sleep(0.1)
-            calcWindow.SendKeys('{Ctrl}c', waitTime=0.1)
-            return auto.GetClipboardText()
-        
-        
-        result = calc('1234 * (4 + 5 + 6) - 78 / 90.8')
-        print('1234 * (4 + 5 + 6) - 78 / 90.8 =', result)
-        result = calc('3*3+4*4')
-        print('3*3+4*4 =', result)
-        result = calc('2*3.14159*10')
-        print('2*3.14159*10 =', result)
-        calcWindow.CaptureToImage('calc.png', x=7, y=0, width=-14, height=-7)
-        calcWindow.GetWindowPattern().Close()
+            self.calcWindow.ButtonControl(AutomationId='clearButton', desc='点击C清空输入').Click(waitTime=0.01)
 
+    def getKeyControl(self):
+        automationId2key ={'num0Button':'0','num1Button':'1','num2Button':'2','num3Button':'3','num4Button':'4','num5Button':'5','num6Button':'6','num7Button':'7','num8Button':'8','num9Button':'9','decimalSeparatorButton':'.','plusButton':'+','minusButton':'-','multiplyButton':'*','divideButton':'/','equalButton':'=','openParenthesisButton':'(','closeParenthesisButton':')'}
+        
+        calckeys = self.calcWindow.GroupControl(ClassName='LandmarkTarget')
+        keyControl ={}
+        for control, depth in auto.WalkControl(calckeys, maxDepth=3):
+            if control.AutomationId in automationId2key:
+                self.logger.info(control.AutomationId)
+                keyControl[automationId2key[control.AutomationId]]= control
+        return keyControl
 
+    def calculate(self, expression, keyControl):
+        expression =''.join(expression.split())
+        if not expression.endswith('='):
+            expression +='='
+            for char in expression:
+                keyControl[char].Click(waitTime=0)
+        self.calcWindow.SendKeys('{Ctrl}c', waitTime=0.1)
+        return auto.GetClipboardText()
 
+    def calc_demo1(self):
+        """计算器示例1
+
+        :return 
+        """
+        self.gotoScientific()
+        # calc = auto.WindowControl(Name="计算器")
+        calc_list = ["二", "加", "八", "等于"]
+        for i in range(0, len(calc_list)):
+            self.calcWindow.ButtonControl(Name=calc_list[i]).Click(waitTime=0.2)
+        # calc_result = self.calcWindow.TextControl(AutomationId='CalculatorResults').Name
+        self.calcWindow.SendKeys('{Ctrl}c', waitTime=0.1)
+        calc_result = auto.GetClipboardText()
+        print(calc_result)
+
+    def calc_demo2(self):
+        """计算器示例2
+
+        :return : 
+        """        
+        self.gotoScientific() # 选择科学计算器        
+        keyControl = self.getKeyControl() # 获取按键控件
+        result     = self.calculate('(1 + 2 - 3) * 4 / 5.6 - 7', keyControl)
+        print('(1 + 2 - 3) * 4 / 5.6 - 7 =', result)
+        self.calcWindow.CaptureToImage('calc.png', x=7, y=0, width=-14, height=-7) # 截图
+        # self.calcWindow.GetWindowPattern().Close() # 关闭计算机
 
 if __name__ == "__main__":
     ui = uiautoCalc()
-    ui.calc_demo1()
-    # ci.calc_demo2()
-    # ci.dfjh_demo1()
-    # ci.attrobot_demo()
+    # ui.calc_demo1()
+    ui.calc_demo2()
+
  
 
 
