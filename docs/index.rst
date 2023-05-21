@@ -198,6 +198,7 @@
    other/personal-blog-hexo-construction-guide2.md
    other/personal-blog-for-sphinx-readthedocs-and-github-guide.md   
    other/typora-picture-host-setting-with-picgo-and-gitee.md   
+   other/windows-lateral-movement-tool-psexec-and-wmiexec.md   
    
    
    
