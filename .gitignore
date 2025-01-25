@@ -1,6 +1,7 @@
 .git
 .idea
 venv
+.venv
 __pycache__
 .pytest_cache
 pytest_encode.egg-info
